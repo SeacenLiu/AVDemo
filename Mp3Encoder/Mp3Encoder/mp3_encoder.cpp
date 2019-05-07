@@ -26,6 +26,7 @@ int Mp3Encoder::Init(const char *pcmFilePath, const char *mp3FilePath, int sampl
             lame_set_in_samplerate(lameClient, sampleRate);
             lame_set_out_samplerate(lameClient, sampleRate);
             lame_set_num_channels(lameClient, channels);
+            // bps -> kbps
             lame_set_brate(lameClient, bitRate/1000);
             lame_init_params(lameClient);
             ret = 0;
@@ -35,13 +36,17 @@ int Mp3Encoder::Init(const char *pcmFilePath, const char *mp3FilePath, int sampl
 }
 
 void Mp3Encoder::Encode() {
-    int bufferSize = 1024 * 256;
-    short* buffer = new short[bufferSize / 2];
+    // FIXME: - bufferSize 其实设置不合理
+    int bufferSize = 256 * 1024;
+    short* buffer = new short[bufferSize / 2]; // 1024 * 128
+    // 左声道
     short* leftBuffer = new short[bufferSize / 4];
+    // 右声道
     short* rightBuffer = new short[bufferSize / 4];
     unsigned char* mp3_buffer = new unsigned char[bufferSize];
     size_t readBufferSize = 0;
     while ((readBufferSize = fread(buffer, 2, bufferSize/2, pcmFile)) > 0) {
+        // 拆分左右声道并交错排序
         for (int i = 0; i < readBufferSize; ++i) {
             if (i % 2 == 0) {
                 leftBuffer[i / 2] = buffer[i];

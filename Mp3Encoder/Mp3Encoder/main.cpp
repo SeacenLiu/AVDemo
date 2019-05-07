@@ -17,7 +17,8 @@ int main(int argc, const char * argv[]) {
     const char* mp3FilePath = "./Resource/output.mp3";
     int sampleRate = 44100;
     int channels = 2;
-    int bitRate = 128 * 1024;
+    // 128 kbps 为普通MP3质量
+    int bitRate = 128 * 1000; // 128*1024
     if (encoder->Init(pcmFilePath, mp3FilePath, sampleRate, channels, bitRate) == 0) {
         encoder->Encode();
         cout << "Encode successed!" << endl;
