@@ -13,8 +13,10 @@ using namespace std;
 int main(int argc, const char * argv[]) {
     Mp3Encoder *encoder = new Mp3Encoder();
     // FIXME: - Edit Scheme -> Run -> Options -> Working Directory 设置工作路径
-    const char* pcmFilePath = "./Resource/vocal.pcm";
-    const char* mp3FilePath = "./Resource/output.mp3";
+//    const char* pcmFilePath = "./Resource/vocal.pcm";
+//    const char* mp3FilePath = "./Resource/output.mp3";
+    const char* pcmFilePath = "./Resource/seacen.pcm";
+    const char* mp3FilePath = "./Resource/output2.mp3";
     int sampleRate = 44100;
     int channels = 2;
     // 128 kbps 为普通MP3质量
