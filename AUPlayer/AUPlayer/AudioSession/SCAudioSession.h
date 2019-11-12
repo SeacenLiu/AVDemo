@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
 
 extern const NSTimeInterval AUSAudioSessionLatency_Background;
 extern const NSTimeInterval AUSAudioSessionLatency_Default;
