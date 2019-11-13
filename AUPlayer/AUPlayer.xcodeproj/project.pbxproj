@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		141B7E9F22B37C32003E535D /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 141B7E9E22B37C32003E535D /* NSString+Path.m */; };
+		1426E6A8237B0EFD00B5B1DD /* test2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1426E6A7237B0EFD00B5B1DD /* test2.mp3 */; };
 		142E006522B5E50200DD0DFB /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 142E006422B5E50200DD0DFB /* test.mp3 */; };
 		143A355422B138FC00E0B01D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A355322B138FC00E0B01D /* AppDelegate.m */; };
 		143A355722B138FC00E0B01D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A355622B138FC00E0B01D /* ViewController.m */; };
@@ -42,6 +43,7 @@
 /* Begin PBXFileReference section */
 		141B7E9D22B37C32003E535D /* NSString+Path.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Path.h"; sourceTree = "<group>"; };
 		141B7E9E22B37C32003E535D /* NSString+Path.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
+		1426E6A7237B0EFD00B5B1DD /* test2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test2.mp3; sourceTree = "<group>"; };
 		142E006422B5E50200DD0DFB /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
 		143A354F22B138FC00E0B01D /* AUPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AUPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		143A355222B138FC00E0B01D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		142E006122B5E46700DD0DFB /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				1426E6A7237B0EFD00B5B1DD /* test2.mp3 */,
 				142E006422B5E50200DD0DFB /* test.mp3 */,
 			);
 			path = Resource;
@@ -291,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				143A355F22B138FE00E0B01D /* LaunchScreen.storyboard in Resources */,
+				1426E6A8237B0EFD00B5B1DD /* test2.mp3 in Resources */,
 				143A355C22B138FE00E0B01D /* Assets.xcassets in Resources */,
 				142E006522B5E50200DD0DFB /* test.mp3 in Resources */,
 				143A355A22B138FC00E0B01D /* Main.storyboard in Resources */,

@@ -47,12 +47,17 @@
     if (self = [super init]) {
         // 初始化 AudioSession
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
+        // 设置采集率
         [[SCAudioSession sharedInstance] setPreferredSampleRate:44100];
+        // 启动 AudioSession
         [[SCAudioSession sharedInstance] setActive:YES];
+        // 监听音频路线变化
         [[SCAudioSession sharedInstance] addRouteChangeListener];
         
+        // 打断处理
         [self addAudioSessionInterruptedObserver];
         _playPath = [NSURL URLWithString:path];
+        // 初始化音频图
         [self initializePlayGraph];
     }
     return self;
@@ -72,7 +77,7 @@
     CheckStatus(status, @"Could not create a new AUGraph", YES);
     
     // 2: 为 AUGraph 添加结点
-    // 2-1: 添加 IONode
+    // 2-1: 添加 IONode (音频输入输出结点)
     AudioComponentDescription ioDescription;
     bzero(&ioDescription, sizeof(ioDescription));
     ioDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -80,7 +85,7 @@
     ioDescription.componentSubType = kAudioUnitSubType_RemoteIO;
     status = AUGraphAddNode(mPlayerGraph, &ioDescription, &mPlayerIONode);
     CheckStatus(status, @"Could not add I/O node to AUGraph", YES);
-    // 2-2: 添加 PlayerNode
+    // 2-2: 添加 PlayerNode (播放器结点)
     AudioComponentDescription playerDescription;
     bzero(&playerDescription, sizeof(playerDescription));
     playerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -88,7 +93,7 @@
     playerDescription.componentSubType = kAudioUnitSubType_AudioFilePlayer;
     status = AUGraphAddNode(mPlayerGraph, &playerDescription, &mPlayerNode);
     CheckStatus(status, @"Could not add Player node to AUGraph", YES);
-    // 2-3: 添加 Splitter
+    // 2-3: 添加 Splitter (格式转化器)
     AudioComponentDescription splitterDescription;
     bzero(&splitterDescription, sizeof(splitterDescription));
     splitterDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -96,7 +101,7 @@
     splitterDescription.componentSubType = kAudioUnitSubType_Splitter;
     status = AUGraphAddNode(mPlayerGraph, &splitterDescription, &mSplitterNode);
     CheckStatus(status, @"Could not add Splitter node to AUGraph", YES);
-    // 2-4: 添加两个 Mixer
+    // 2-4: 添加两个 Mixer (混音效果器)
     AudioComponentDescription mixerDescription;
     bzero(&mixerDescription, sizeof(mixerDescription));
     mixerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -112,7 +117,7 @@
     CheckStatus(status, @"Could not open AUGraph", YES);
     
     // 4: 获取 AudioUnit
-    // 4-1: 获取出 IONode 的 AudioUnit
+    // 4-1: (*)获取出 IONode 的 AudioUnit
     status = AUGraphNodeInfo(mPlayerGraph, mPlayerIONode, NULL, &mPlayerIOUnit);
     CheckStatus(status, @"Could not retrieve node info for I/O node", YES);
     // 4-2: 获取出 PlayerNode 的 AudioUnit
@@ -130,6 +135,7 @@
     
     // 5: 给 AudioUnit 设置参数
     // 5-1: 将 PlayerIOUnit 和 PlayerUnit 设置为 AudioUnit 的属性
+    // 使用 stereoStream 流连通 PlayerIOUnit(输入) 和 PlayerUnit(输出)
     AudioStreamBasicDescription stereoStreamFormat;
     UInt32 bytesPerSample = sizeof(Float32);
     bzero(&stereoStreamFormat, sizeof(stereoStreamFormat));
@@ -159,7 +165,7 @@
                                   sizeof (stereoStreamFormat)
                                   );
     CheckStatus(status, @"Could not Set StreamFormat for Player Unit", YES);
-    // 5-2: 配置 Splitter 的属性
+    // 5-2: 配置 Splitter 的属性 (输入输出都需要配置)
     status = AudioUnitSetProperty(
                                   mSplitterUnit,
                                   kAudioUnitProperty_StreamFormat,
@@ -178,7 +184,7 @@
                                   sizeof(stereoStreamFormat)
                                   );
     CheckStatus(status, @"Could not Set StreamFormat for Splitter Unit", YES);
-    // 5-3: 配置 VocalMixerUnit 的属性
+    // 5-3: 配置 VocalMixerUnit 的属性 (设置输入输出和输入元素数)
     status = AudioUnitSetProperty(
                                   mVocalMixerUnit,
                                   kAudioUnitProperty_StreamFormat,
@@ -206,7 +212,7 @@
                                   &mixerElementCount,
                                   sizeof(mixerElementCount)
                                   );
-    // 5-4: 配置 AccMixerUnit 的属性
+    // 5-4: 配置 AccMixerUnit 的属性 (设置输入输出和输入元素数)
     status = AudioUnitSetProperty(
                                   mAccMixerUnit,
                                   kAudioUnitProperty_StreamFormat,
@@ -261,11 +267,11 @@
     OSStatus status = noErr;
     AudioFileID musicFile;
     CFURLRef songURL = (__bridge  CFURLRef) _playPath;
-    // open the input audio file
+    // 打开输入的音频文件
     status = AudioFileOpenURL(songURL, kAudioFileReadPermission, 0, &musicFile);
     CheckStatus(status, @"Open AudioFile... ", YES);
     
-    // tell the file player unit to load the file we want to play
+    // 设置播放器单元目标文件
     status = AudioUnitSetProperty(
                                   mPlayerUnit,
                                   kAudioUnitProperty_ScheduledFileIDs,
@@ -277,7 +283,7 @@
     CheckStatus(status, @"Tell AudioFile Player Unit Load Which File... ", YES);
     
     AudioStreamBasicDescription fileASBD;
-    // get the audio data format from the file
+    // 通过音频文件获取音频数据
     UInt32 propSize = sizeof(fileASBD);
     status = AudioFileGetProperty(
                                   musicFile,
@@ -294,7 +300,7 @@
                          &propsize,
                          &nPackets
                          );
-    // tell the file player AU to play the entire file
+    // 告知文件播放单元播放整个文件
     ScheduledAudioFileRegion rgn;
     memset (&rgn.mTimeStamp, 0, sizeof(rgn.mTimeStamp));
     rgn.mTimeStamp.mFlags = kAudioTimeStampSampleTimeValid;
@@ -315,7 +321,7 @@
                                   );
     CheckStatus(status, @"Set Region... ", YES);
     
-    // prime the file player AU with default values
+    // 设置文件播放单元参数为默认值
     UInt32 defaultVal = 0;
     status = AudioUnitSetProperty(
                                   mPlayerUnit,
@@ -327,7 +333,7 @@
                                   );
     CheckStatus(status, @"Prime Player Unit With Default Value... ", YES);
     
-    // tell the file player AU when to start playing (-1 sample time means next render cycle)
+    // 设置何时开始播放(播放模式)(-1 sample time means next render cycle)
     AudioTimeStamp startTime;
     memset (&startTime, 0, sizeof(startTime));
     startTime.mFlags = kAudioTimeStampSampleTimeValid;

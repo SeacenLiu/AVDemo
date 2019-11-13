@@ -30,7 +30,8 @@
     if(graphPlayer) {
         [graphPlayer stop];
     }
-    NSString* filePath = [NSString bundlePath:@"test.mp3"];
+//    NSString* filePath = [NSString bundlePath:@"test.mp3"];
+    NSString* filePath = [NSString bundlePath:@"test2.mp3"];
     graphPlayer = [[AUGraphPlayer alloc] initWithFilePath:filePath];
     [graphPlayer play];
 }
