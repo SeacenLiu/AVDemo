@@ -374,15 +374,15 @@
     CheckStatus(status, @"get parameter fail", YES);
     NSLog(@"Acc Mixer 1 %lf", value);
     
-//    status = AudioUnitSetParameter(
-//                                   mVocalMixerUnit,
-//                                   kMultiChannelMixerParam_Volume,
-//                                   kAudioUnitScope_Input,
-//                                   0,
-//                                   1.0,
-//                                   0
-//                                   );
-//    CheckStatus(status, @"set parameter fail", YES);
+    status = AudioUnitSetParameter(
+                                   mVocalMixerUnit,
+                                   kMultiChannelMixerParam_Volume,
+                                   kAudioUnitScope_Input,
+                                   0,
+                                   1.0,
+                                   0
+                                   );
+    CheckStatus(status, @"set parameter fail", YES);
     if(isAcc) {
         status = AudioUnitSetParameter(
                                        mAccMixerUnit,
