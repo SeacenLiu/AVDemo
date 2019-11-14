@@ -204,8 +204,6 @@
 			isa = PBXGroup;
 			children = (
 				1462975E237D3AB30013555C /* AudioSession */,
-				146296F8237D04110013555C /* 3rdparty */,
-				1462974E237D048A0013555C /* libffmpeg_decoder */,
 				146296C3237D033C0013555C /* AppDelegate.h */,
 				146296C4237D033C0013555C /* AppDelegate.m */,
 				146296C6237D033C0013555C /* SceneDelegate.h */,
@@ -217,6 +215,8 @@
 				146296D1237D033E0013555C /* LaunchScreen.storyboard */,
 				146296D4237D033E0013555C /* Info.plist */,
 				146296D5237D033E0013555C /* main.m */,
+				146296F8237D04110013555C /* 3rdparty */,
+				1462974E237D048A0013555C /* libffmpeg_decoder */,
 			);
 			path = AudioPlayer;
 			sourceTree = "<group>";
