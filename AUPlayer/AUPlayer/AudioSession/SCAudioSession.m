@@ -64,7 +64,9 @@ const NSTimeInterval AUSAudioSessionLatency_LowLatency = 0.0058;
     _category = category;
     
     NSError *error = nil;
-    if(![self.audioSession setCategory:_category error:&error])
+    if(![self.audioSession setCategory:_category
+                           withOptions:AVAudioSessionCategoryOptionAllowBluetoothA2DP
+                                 error:&error])
         NSLog(@"Could note set category on audio session: %@", error.localizedDescription);
 }
 

@@ -25,8 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) Float64 currentSampleRate;
 @property (nonatomic, assign) NSTimeInterval preferredLatency;
 @property (nonatomic, assign) BOOL active;
-// copy NSString
-@property (nonatomic, assign) AVAudioSessionCategory category;
+@property (nonatomic, copy) AVAudioSessionCategory category;
 
 - (void)addRouteChangeListener;
 

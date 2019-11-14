@@ -25,6 +25,7 @@
 		14629763237D3AC80013555C /* SCAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629760237D3AC80013555C /* SCAudioSession.m */; };
 		14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629762237D3AC80013555C /* AVAudioSession+RouteUtils.m */; };
 		14629774237D46960013555C /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629773237D46960013555C /* NSString+Path.m */; };
+		1462977C237D4AA90013555C /* SCAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1462977B237D4AA90013555C /* SCAudioOutput.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +156,8 @@
 		14629773237D46960013555C /* NSString+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
 		14629777237D472E0013555C /* 111.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = 111.aac; sourceTree = "<group>"; };
 		14629778237D472E0013555C /* 131.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = 131.aac; sourceTree = "<group>"; };
+		1462977A237D4AA90013555C /* SCAudioOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCAudioOutput.h; sourceTree = "<group>"; };
+		1462977B237D4AA90013555C /* SCAudioOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCAudioOutput.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +211,7 @@
 		146296C2237D033C0013555C /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				14629779237D4A7E0013555C /* AudioOutput */,
 				1462975E237D3AB30013555C /* AudioSession */,
 				14629765237D46360013555C /* Category */,
 				14629776237D471C0013555C /* Resource */,
@@ -453,6 +457,15 @@
 			path = Resource;
 			sourceTree = "<group>";
 		};
+		14629779237D4A7E0013555C /* AudioOutput */ = {
+			isa = PBXGroup;
+			children = (
+				1462977A237D4AA90013555C /* SCAudioOutput.h */,
+				1462977B237D4AA90013555C /* SCAudioOutput.m */,
+			);
+			path = AudioOutput;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -586,6 +599,7 @@
 				1462975A237D048A0013555C /* accompany_decoder_controller.cpp in Sources */,
 				14629758237D048A0013555C /* accompany_decoder.cpp in Sources */,
 				14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */,
+				1462977C237D4AA90013555C /* SCAudioOutput.m in Sources */,
 				14629774237D46960013555C /* NSString+Path.m in Sources */,
 				146296CB237D033C0013555C /* ViewController.m in Sources */,
 				146296C5237D033C0013555C /* AppDelegate.m in Sources */,
