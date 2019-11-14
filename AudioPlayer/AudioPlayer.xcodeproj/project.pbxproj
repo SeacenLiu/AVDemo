@@ -22,6 +22,8 @@
 		14629759237D048A0013555C /* packet_queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14629755237D048A0013555C /* packet_queue.cpp */; };
 		1462975A237D048A0013555C /* accompany_decoder_controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14629756237D048A0013555C /* accompany_decoder_controller.cpp */; };
 		1462975D237D368D0013555C /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1462975C237D368D0013555C /* libiconv.2.4.0.tbd */; };
+		14629763237D3AC80013555C /* SCAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629760237D3AC80013555C /* SCAudioSession.m */; };
+		14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629762237D3AC80013555C /* AVAudioSession+RouteUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +146,10 @@
 		14629755237D048A0013555C /* packet_queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = packet_queue.cpp; sourceTree = "<group>"; };
 		14629756237D048A0013555C /* accompany_decoder_controller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = accompany_decoder_controller.cpp; sourceTree = "<group>"; };
 		1462975C237D368D0013555C /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
+		1462975F237D3AC80013555C /* SCAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAudioSession.h; path = ../../../AUPlayer/AUPlayer/AudioSession/SCAudioSession.h; sourceTree = "<group>"; };
+		14629760237D3AC80013555C /* SCAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCAudioSession.m; path = ../../../AUPlayer/AUPlayer/AudioSession/SCAudioSession.m; sourceTree = "<group>"; };
+		14629761237D3AC80013555C /* AVAudioSession+RouteUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AVAudioSession+RouteUtils.h"; path = "../../../AUPlayer/AUPlayer/AudioSession/AVAudioSession+RouteUtils.h"; sourceTree = "<group>"; };
+		14629762237D3AC80013555C /* AVAudioSession+RouteUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AVAudioSession+RouteUtils.m"; path = "../../../AUPlayer/AUPlayer/AudioSession/AVAudioSession+RouteUtils.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +203,7 @@
 		146296C2237D033C0013555C /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				1462975E237D3AB30013555C /* AudioSession */,
 				146296F8237D04110013555C /* 3rdparty */,
 				1462974E237D048A0013555C /* libffmpeg_decoder */,
 				146296C3237D033C0013555C /* AppDelegate.h */,
@@ -409,6 +416,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		1462975E237D3AB30013555C /* AudioSession */ = {
+			isa = PBXGroup;
+			children = (
+				1462975F237D3AC80013555C /* SCAudioSession.h */,
+				14629760237D3AC80013555C /* SCAudioSession.m */,
+				14629761237D3AC80013555C /* AVAudioSession+RouteUtils.h */,
+				14629762237D3AC80013555C /* AVAudioSession+RouteUtils.m */,
+			);
+			path = AudioSession;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -541,10 +559,12 @@
 			files = (
 				1462975A237D048A0013555C /* accompany_decoder_controller.cpp in Sources */,
 				14629758237D048A0013555C /* accompany_decoder.cpp in Sources */,
+				14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */,
 				146296CB237D033C0013555C /* ViewController.m in Sources */,
 				146296C5237D033C0013555C /* AppDelegate.m in Sources */,
 				14629759237D048A0013555C /* packet_queue.cpp in Sources */,
 				146296D6237D033E0013555C /* main.m in Sources */,
+				14629763237D3AC80013555C /* SCAudioSession.m in Sources */,
 				146296C8237D033C0013555C /* SceneDelegate.m in Sources */,
 				14629757237D048A0013555C /* packet_pool.cpp in Sources */,
 			);

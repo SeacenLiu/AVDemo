@@ -8,6 +8,28 @@
 
 #import "AVAudioSession+RouteUtils.h"
 
+/// AVAudioSessionPort 是音频会话接口，用于辨别输入输出的硬件接口
+/** 输入接口
+    AVAudioSessionPortLineIn: 有线连接在总线坞的外置输入装置
+    AVAudioSessionPortBuiltInMic: 内置麦克风
+    AVAudioSessionPortHeadsetMic: 有线耳机的麦克风
+ */
+/** 输出接口
+    AVAudioSessionPortLineOut: 有线连接在总线坞的外置输出装置
+    AVAudioSessionPortHeadphones: 有线耳机
+    AVAudioSessionPortBluetoothA2DP: 蓝牙无线设备(A2DP)
+    AVAudioSessionPortBuiltInReceiver: 听筒
+    AVAudioSessionPortBuiltInSpeaker: 内置扬声器
+    AVAudioSessionPortHDMI: 通过HDMI(高清多媒体接口)连接的设备
+    AVAudioSessionPortAirPlay: 远程 AirPlay 设备
+    AVAudioSessionPortBluetoothLE: 低能耗蓝牙设备
+ */
+/** 输入输出接口
+    AVAudioSessionPortBluetoothHFP: 基于蓝牙的免提设备
+    AVAudioSessionPortUSBAudio: USB连接的设备
+    AVAudioSessionPortCarAudio: 车载音频设备
+ */
+
 @implementation AVAudioSession (RouteUtils)
 
 - (BOOL)usingBlueTooth {

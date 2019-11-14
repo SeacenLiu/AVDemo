@@ -28,16 +28,6 @@ const NSTimeInterval AUSAudioSessionLatency_LowLatency = 0.0058;
     if (self = [super init]) {
         _preferredSampleRate = _currentSampleRate = 44100.0;
         _audioSession = [AVAudioSession sharedInstance];
-        NSError *error;
-        if ([[UIDevice currentDevice] systemVersion].floatValue>=10.0) {
-            [_audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-                          withOptions:AVAudioSessionCategoryOptionAllowBluetoothA2DP
-                                error:&error];
-        } else {
-            [_audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-                          withOptions:AVAudioSessionCategoryOptionAllowBluetooth
-                                error:&error];
-        }
     }
     return self;
 }
