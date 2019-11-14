@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol FillDataDelegate <NSObject>
+@protocol SCFillDataDelegate <NSObject>
 
 /// 填充音频数据
 /// @param sampleBuffer 音频数据
@@ -28,7 +28,7 @@
 - (instancetype)initWithChannels:(NSInteger)channels
                       sampleRate:(NSInteger)sampleRate
                   bytesPerSample:(NSInteger) bytePerSample
-               filleDataDelegate:(id<FillDataDelegate>) fillAudioDataDelegate;
+               filleDataDelegate:(id<SCFillDataDelegate>) fillAudioDataDelegate;
 
 - (BOOL) play;
 - (BOOL) stop;

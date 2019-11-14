@@ -26,6 +26,7 @@
 		14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629762237D3AC80013555C /* AVAudioSession+RouteUtils.m */; };
 		14629774237D46960013555C /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 14629773237D46960013555C /* NSString+Path.m */; };
 		1462977C237D4AA90013555C /* SCAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1462977B237D4AA90013555C /* SCAudioOutput.m */; };
+		14629780237D85F30013555C /* SCAudioPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1462977F237D85F30013555C /* SCAudioPlayer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +159,8 @@
 		14629778237D472E0013555C /* 131.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = 131.aac; sourceTree = "<group>"; };
 		1462977A237D4AA90013555C /* SCAudioOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCAudioOutput.h; sourceTree = "<group>"; };
 		1462977B237D4AA90013555C /* SCAudioOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCAudioOutput.m; sourceTree = "<group>"; };
+		1462977E237D85F30013555C /* SCAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCAudioPlayer.h; sourceTree = "<group>"; };
+		1462977F237D85F30013555C /* SCAudioPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SCAudioPlayer.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +214,7 @@
 		146296C2237D033C0013555C /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				1462977D237D85BD0013555C /* AudioPlayer */,
 				14629779237D4A7E0013555C /* AudioOutput */,
 				1462975E237D3AB30013555C /* AudioSession */,
 				14629765237D46360013555C /* Category */,
@@ -408,12 +412,12 @@
 			isa = PBXGroup;
 			children = (
 				1462974F237D048A0013555C /* packet_queue.h */,
+				14629755237D048A0013555C /* packet_queue.cpp */,
+				14629753237D048A0013555C /* packet_pool.h */,
 				14629750237D048A0013555C /* packet_pool.cpp */,
+				14629754237D048A0013555C /* accompany_decoder.h */,
 				14629751237D048A0013555C /* accompany_decoder.cpp */,
 				14629752237D048A0013555C /* accompany_decoder_controller.h */,
-				14629753237D048A0013555C /* packet_pool.h */,
-				14629754237D048A0013555C /* accompany_decoder.h */,
-				14629755237D048A0013555C /* packet_queue.cpp */,
 				14629756237D048A0013555C /* accompany_decoder_controller.cpp */,
 			);
 			path = libffmpeg_decoder;
@@ -464,6 +468,15 @@
 				1462977B237D4AA90013555C /* SCAudioOutput.m */,
 			);
 			path = AudioOutput;
+			sourceTree = "<group>";
+		};
+		1462977D237D85BD0013555C /* AudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				1462977E237D85F30013555C /* SCAudioPlayer.h */,
+				1462977F237D85F30013555C /* SCAudioPlayer.mm */,
+			);
+			path = AudioPlayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -600,6 +613,7 @@
 				14629758237D048A0013555C /* accompany_decoder.cpp in Sources */,
 				14629764237D3AC80013555C /* AVAudioSession+RouteUtils.m in Sources */,
 				1462977C237D4AA90013555C /* SCAudioOutput.m in Sources */,
+				14629780237D85F30013555C /* SCAudioPlayer.mm in Sources */,
 				14629774237D46960013555C /* NSString+Path.m in Sources */,
 				146296CB237D033C0013555C /* ViewController.m in Sources */,
 				146296C5237D033C0013555C /* AppDelegate.m in Sources */,
@@ -781,6 +795,7 @@
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/AudioPlayer/3rdparty/ffmpeg/include";
 				INFOPLIST_FILE = AudioPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -804,6 +819,7 @@
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/AudioPlayer/3rdparty/ffmpeg/include";
 				INFOPLIST_FILE = AudioPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

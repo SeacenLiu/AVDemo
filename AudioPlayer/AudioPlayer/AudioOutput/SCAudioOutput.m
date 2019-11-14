@@ -61,7 +61,7 @@ static void CheckStatus(OSStatus status, NSString *message, BOOL fatal);
 @property(nonatomic, assign) AudioUnit          convertUnit;
 
 // 填充音频数据代理
-@property (readwrite, copy) id<FillDataDelegate> fillAudioDataDelegate;
+@property (readwrite, copy) id<SCFillDataDelegate> fillAudioDataDelegate;
 
 @end
 
@@ -73,7 +73,7 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
 - (instancetype)initWithChannels:(NSInteger)channels
                       sampleRate:(NSInteger)sampleRate
                   bytesPerSample:(NSInteger)bytePerSample
-               filleDataDelegate:(id<FillDataDelegate>)fillAudioDataDelegate {
+               filleDataDelegate:(id<SCFillDataDelegate>)fillAudioDataDelegate {
     if (self = [super init]) {
         // 音频会话配置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback];
