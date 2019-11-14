@@ -14,6 +14,14 @@
 
 @implementation ViewController
 
+- (IBAction)playClick:(id)sender {
+    
+}
+
+- (IBAction)stopClick:(id)sender {
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

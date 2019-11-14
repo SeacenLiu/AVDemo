@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		141B7E9F22B37C32003E535D /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 141B7E9E22B37C32003E535D /* NSString+Path.m */; };
 		1426E6A8237B0EFD00B5B1DD /* test2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1426E6A7237B0EFD00B5B1DD /* test2.mp3 */; };
 		142E006522B5E50200DD0DFB /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 142E006422B5E50200DD0DFB /* test.mp3 */; };
 		143A355422B138FC00E0B01D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A355322B138FC00E0B01D /* AppDelegate.m */; };
@@ -21,6 +20,7 @@
 		143A358822B141E400E0B01D /* AUGraphPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A358722B141E400E0B01D /* AUGraphPlayer.m */; };
 		143A358C22B1425300E0B01D /* SCAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A358B22B1425300E0B01D /* SCAudioSession.m */; };
 		143A358F22B164B700E0B01D /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 143A358E22B164B700E0B01D /* AVAudioSession+RouteUtils.m */; };
+		1462976E237D465B0013555C /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 1462976D237D465B0013555C /* NSString+Path.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,8 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		141B7E9D22B37C32003E535D /* NSString+Path.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Path.h"; sourceTree = "<group>"; };
-		141B7E9E22B37C32003E535D /* NSString+Path.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
 		1426E6A7237B0EFD00B5B1DD /* test2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test2.mp3; sourceTree = "<group>"; };
 		142E006422B5E50200DD0DFB /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
 		143A354F22B138FC00E0B01D /* AUPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AUPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +66,8 @@
 		143A358D22B164B700E0B01D /* AVAudioSession+RouteUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AVAudioSession+RouteUtils.h"; sourceTree = "<group>"; };
 		143A358E22B164B700E0B01D /* AVAudioSession+RouteUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AVAudioSession+RouteUtils.m"; sourceTree = "<group>"; };
 		146296B6237D02890013555C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1462976C237D465B0013555C /* NSString+Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Path.h"; sourceTree = "<group>"; };
+		1462976D237D465B0013555C /* NSString+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +98,8 @@
 		141B7E9C22B37C11003E535D /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				141B7E9D22B37C32003E535D /* NSString+Path.h */,
-				141B7E9E22B37C32003E535D /* NSString+Path.m */,
+				1462976C237D465B0013555C /* NSString+Path.h */,
+				1462976D237D465B0013555C /* NSString+Path.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -328,7 +328,7 @@
 				143A355722B138FC00E0B01D /* ViewController.m in Sources */,
 				143A358C22B1425300E0B01D /* SCAudioSession.m in Sources */,
 				143A356222B138FE00E0B01D /* main.m in Sources */,
-				141B7E9F22B37C32003E535D /* NSString+Path.m in Sources */,
+				1462976E237D465B0013555C /* NSString+Path.m in Sources */,
 				143A355422B138FC00E0B01D /* AppDelegate.m in Sources */,
 				143A358822B141E400E0B01D /* AUGraphPlayer.m in Sources */,
 			);
