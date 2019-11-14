@@ -67,6 +67,7 @@
 		143A358B22B1425300E0B01D /* SCAudioSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCAudioSession.m; sourceTree = "<group>"; };
 		143A358D22B164B700E0B01D /* AVAudioSession+RouteUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AVAudioSession+RouteUtils.h"; sourceTree = "<group>"; };
 		143A358E22B164B700E0B01D /* AVAudioSession+RouteUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AVAudioSession+RouteUtils.m"; sourceTree = "<group>"; };
+		146296B6237D02890013555C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +136,7 @@
 		143A355122B138FC00E0B01D /* AUPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				146296B6237D02890013555C /* README.md */,
 				143A358922B1423A00E0B01D /* AudioSession */,
 				143A358522B141C200E0B01D /* AUPlayer */,
 				141B7E9C22B37C11003E535D /* Category */,
