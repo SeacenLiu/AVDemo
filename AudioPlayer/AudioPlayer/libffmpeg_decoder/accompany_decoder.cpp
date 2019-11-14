@@ -301,7 +301,7 @@ int AccompanyDecoder::readFrame() {
 }
 
 void AccompanyDecoder::destroy() {
-//	LOGI("start destroy!!!");
+	LOGI("AccompanyDecoder start destroy!!!");
 	if (NULL != swrBuffer) {
 		free(swrBuffer);
 		swrBuffer = NULL;
