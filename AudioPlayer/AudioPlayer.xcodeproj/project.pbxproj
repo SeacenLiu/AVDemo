@@ -165,6 +165,7 @@
 		1462977E237D85F30013555C /* SCAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCAudioPlayer.h; sourceTree = "<group>"; };
 		1462977F237D85F30013555C /* SCAudioPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SCAudioPlayer.mm; sourceTree = "<group>"; };
 		14A0A6C2237D98F000CE32A7 /* test.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.aac; sourceTree = "<group>"; };
+		14A0A6C4237D9AA300CE32A7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +219,7 @@
 		146296C2237D033C0013555C /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				14A0A6C4237D9AA300CE32A7 /* README.md */,
 				1462977D237D85BD0013555C /* AudioPlayer */,
 				14629779237D4A7E0013555C /* AudioOutput */,
 				1462975E237D3AB30013555C /* AudioSession */,
