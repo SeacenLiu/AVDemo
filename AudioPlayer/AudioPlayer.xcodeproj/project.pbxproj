@@ -30,6 +30,7 @@
 		14629785237D90C10013555C /* 111.aac in Resources */ = {isa = PBXBuildFile; fileRef = 14629777237D472E0013555C /* 111.aac */; };
 		14629786237D90C10013555C /* 131.aac in Resources */ = {isa = PBXBuildFile; fileRef = 14629778237D472E0013555C /* 131.aac */; };
 		14A0A6C3237D99B400CE32A7 /* test.aac in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A6C2237D98F000CE32A7 /* test.aac */; };
+		14A0A6C7237E90D500CE32A7 /* flowChart.png in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A6C6237E90D500CE32A7 /* flowChart.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,6 +167,7 @@
 		1462977F237D85F30013555C /* SCAudioPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SCAudioPlayer.mm; sourceTree = "<group>"; };
 		14A0A6C2237D98F000CE32A7 /* test.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.aac; sourceTree = "<group>"; };
 		14A0A6C4237D9AA300CE32A7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		14A0A6C6237E90D500CE32A7 /* flowChart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flowChart.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				14A0A6C4237D9AA300CE32A7 /* README.md */,
+				14A0A6C5237E90B700CE32A7 /* img */,
 				1462977D237D85BD0013555C /* AudioPlayer */,
 				14629779237D4A7E0013555C /* AudioOutput */,
 				1462975E237D3AB30013555C /* AudioSession */,
@@ -486,6 +489,14 @@
 			path = AudioPlayer;
 			sourceTree = "<group>";
 		};
+		14A0A6C5237E90B700CE32A7 /* img */ = {
+			isa = PBXGroup;
+			children = (
+				14A0A6C6237E90D500CE32A7 /* flowChart.png */,
+			);
+			path = img;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -594,6 +605,7 @@
 				146296CE237D033C0013555C /* Main.storyboard in Resources */,
 				14629785237D90C10013555C /* 111.aac in Resources */,
 				14629786237D90C10013555C /* 131.aac in Resources */,
+				14A0A6C7237E90D500CE32A7 /* flowChart.png in Resources */,
 				14A0A6C3237D99B400CE32A7 /* test.aac in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
