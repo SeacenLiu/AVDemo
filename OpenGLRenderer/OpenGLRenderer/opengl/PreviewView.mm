@@ -44,6 +44,7 @@
         // 初始化渲染锁
         _shouldEnableOpenGLLock = [NSLock new];
         [_shouldEnableOpenGLLock lock];
+        // 根据应用活跃状态判断是否可以使用 OpenGL 进行渲染，避免应用在应用挂起的时候消耗不必要的资源
         _shouldEnableOpenGL = [UIApplication sharedApplication].applicationState == UIApplicationStateActive;
         [_shouldEnableOpenGLLock unlock];
         
@@ -60,9 +61,10 @@
                                         nil];
         
         // 使用GCD队列，用于为OpenGL渲染开辟线程
-        _contextQueue = dispatch_queue_create("com.changba.video_player.videoRenderQueue", NULL);
+        _contextQueue = dispatch_queue_create("com.seacen.video_player.videoRenderQueue", NULL);
+        // --- 串行队列同步执行 ---
         dispatch_sync(_contextQueue, ^{
-            // EAGL 与 OpenGL ES 建立连接
+            // EAGL 与 OpenGL ES 建立连接（构建 EAGL 的上下文）
             _context = [self buildEAGLContext];
             if (!_context || ![EAGLContext setCurrentContext:_context]) {
                 NSLog(@"Setup EAGLContext Failed...");
@@ -73,12 +75,15 @@
                 NSLog(@"create Dispaly Framebuffer failed...");
             }
             
-            
+            // 获取图片的展示信息
             _frame = [self getRGBAFrame:filePath];
+            // 初始化渲染器（将图片像素拷贝到OpenGL的纹理上进行展示）
             _frameCopier = [[RGBAFrameCopier alloc] init];
+            // 渲染器准备工作
             if (![_frameCopier prepareRender:_frame->width height:_frame->height]) {
                 NSLog(@"RGBAFrameCopier prepareRender failed...");
             }
+            // 渲染准备工作完成
             self.readyToRender = YES;
         });
         
@@ -91,8 +96,10 @@
     if (_stopping) {
         return;
     }
+    // --- 串行队列异步执行 ---
     dispatch_async(_contextQueue, ^{
         if(_frame) {
+            // 判断是否需要渲染
             [self.shouldEnableOpenGLLock lock];
             if (!self.readyToRender || !self.shouldEnableOpenGL) {
                 glFinish();
@@ -100,17 +107,21 @@
                 return;
             }
             [self.shouldEnableOpenGLLock unlock];
+            
+            // *** 绑定部分 ***
             // 绑定当前上下文环境
             [EAGLContext setCurrentContext:_context];
+            // 绑定帧缓冲区
             glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
+            // 绑定渲染缓冲区
+            glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
             
             // *** 绘制部分 ***
             // 规定窗口大小
             glViewport(0, _backingHeight - _backingWidth - 75, _backingWidth, _backingWidth);
             // 帧渲染
             [_frameCopier renderFrame:_frame->pixels];
-            //
-            glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+            // 展示渲染缓冲区
             [_context presentRenderbuffer:GL_RENDERBUFFER];
         }
     });

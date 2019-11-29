@@ -24,6 +24,7 @@
 
 - (instancetype)initWithContentPath:(NSString *)path contentFrame:(CGRect)frame {
     if (self = [super init]) {
+        // 初始化 OpenGL 相关代码
         _previewView = [[PreviewView alloc] initWithFrame:frame filePath:path];
         _previewView.contentMode = UIViewContentModeScaleAspectFill;
         self.view.backgroundColor = [UIColor whiteColor];
@@ -34,6 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // 渲染视图
     [_previewView render];
 }
 

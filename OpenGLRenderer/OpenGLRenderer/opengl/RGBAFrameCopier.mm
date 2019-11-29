@@ -45,11 +45,14 @@ NSString *const rgbFragmentShaderString = SHADER_STRING
     
     // 纹理过滤器程序
     GLuint                              filterProgram;
+    // 位置属性
     GLint                               filterPositionAttribute;
+    // 纹理坐标属性
     GLint                               filterTextureCoordinateAttribute;
+    // 纹理样式属性
     GLint                               filterInputTextureUniform;
     
-    // 纹理
+    // 输入纹理
     GLuint                              _inputTexture;
 }
 - (BOOL) prepareRender:(NSInteger)textureWidth height:(NSInteger)textureHeight;
