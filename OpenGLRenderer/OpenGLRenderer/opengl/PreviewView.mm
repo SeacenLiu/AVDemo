@@ -109,7 +109,7 @@
             glViewport(0, _backingHeight - _backingWidth - 75, _backingWidth, _backingWidth);
             // 帧渲染
             [_frameCopier renderFrame:_frame->pixels];
-            // 
+            //
             glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
             [_context presentRenderbuffer:GL_RENDERBUFFER];
         }

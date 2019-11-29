@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		14414FEC238F7E47003EE5F2 /* PreviewView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14414FEB238F7E47003EE5F2 /* PreviewView.mm */; };
 		14A0A6D6237EA7DF00CE32A7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A6D5237EA7DF00CE32A7 /* AppDelegate.m */; };
-		14A0A6D9237EA7DF00CE32A7 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A6D8237EA7DF00CE32A7 /* SceneDelegate.m */; };
 		14A0A6DC237EA7DF00CE32A7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A6DB237EA7DF00CE32A7 /* ViewController.m */; };
 		14A0A6DF237EA7DF00CE32A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A6DD237EA7DF00CE32A7 /* Main.storyboard */; };
 		14A0A6E1237EA7E100CE32A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A6E0237EA7E100CE32A7 /* Assets.xcassets */; };
@@ -57,6 +56,7 @@
 		14A0A762237EAB7800CE32A7 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A761237EAB7800CE32A7 /* CommonUtil.m */; };
 		14A0A796237ED2F200CE32A7 /* rgba_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A794237ED2F100CE32A7 /* rgba_frame.cpp */; };
 		14A0A799237ED32F00CE32A7 /* RGBAFrameCopier.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A798237ED32F00CE32A7 /* RGBAFrameCopier.mm */; };
+		C35EEE912390237B008475B3 /* PngPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEE902390237B008475B3 /* PngPreviewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,8 +82,6 @@
 		14A0A6D1237EA7DF00CE32A7 /* OpenGLRenderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGLRenderer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14A0A6D4237EA7DF00CE32A7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		14A0A6D5237EA7DF00CE32A7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		14A0A6D7237EA7DF00CE32A7 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		14A0A6D8237EA7DF00CE32A7 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		14A0A6DA237EA7DF00CE32A7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		14A0A6DB237EA7DF00CE32A7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		14A0A6DE237EA7DF00CE32A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -149,6 +147,8 @@
 		14A0A795237ED2F100CE32A7 /* rgba_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rgba_frame.h; sourceTree = "<group>"; };
 		14A0A797237ED32E00CE32A7 /* RGBAFrameCopier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBAFrameCopier.h; sourceTree = "<group>"; };
 		14A0A798237ED32F00CE32A7 /* RGBAFrameCopier.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RGBAFrameCopier.mm; sourceTree = "<group>"; };
+		C35EEE8F2390237B008475B3 /* PngPreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PngPreviewController.h; sourceTree = "<group>"; };
+		C35EEE902390237B008475B3 /* PngPreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PngPreviewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +199,8 @@
 		14A0A6D3237EA7DF00CE32A7 /* OpenGLRenderer */ = {
 			isa = PBXGroup;
 			children = (
+				C35EEE8F2390237B008475B3 /* PngPreviewController.h */,
+				C35EEE902390237B008475B3 /* PngPreviewController.m */,
 				14A0A794237ED2F100CE32A7 /* rgba_frame.cpp */,
 				14A0A795237ED2F100CE32A7 /* rgba_frame.h */,
 				14A0A763237EABE400CE32A7 /* opengl */,
@@ -207,8 +209,6 @@
 				14A0A709237EA96F00CE32A7 /* 3rdparty */,
 				14A0A6D4237EA7DF00CE32A7 /* AppDelegate.h */,
 				14A0A6D5237EA7DF00CE32A7 /* AppDelegate.m */,
-				14A0A6D7237EA7DF00CE32A7 /* SceneDelegate.h */,
-				14A0A6D8237EA7DF00CE32A7 /* SceneDelegate.m */,
 				14A0A6DA237EA7DF00CE32A7 /* ViewController.h */,
 				14A0A6DB237EA7DF00CE32A7 /* ViewController.m */,
 				14A0A6DD237EA7DF00CE32A7 /* Main.storyboard */,
@@ -493,6 +493,7 @@
 				14414FEC238F7E47003EE5F2 /* PreviewView.mm in Sources */,
 				14A0A6D6237EA7DF00CE32A7 /* AppDelegate.m in Sources */,
 				14A0A762237EAB7800CE32A7 /* CommonUtil.m in Sources */,
+				C35EEE912390237B008475B3 /* PngPreviewController.m in Sources */,
 				14A0A74A237EA96F00CE32A7 /* pngwutil.c in Sources */,
 				14A0A74E237EA96F00CE32A7 /* png_decoder.cpp in Sources */,
 				14A0A750237EA96F00CE32A7 /* pngread.c in Sources */,
@@ -500,7 +501,6 @@
 				14A0A739237EA96F00CE32A7 /* pngrio.c in Sources */,
 				14A0A796237ED2F200CE32A7 /* rgba_frame.cpp in Sources */,
 				14A0A74F237EA96F00CE32A7 /* pngpread.c in Sources */,
-				14A0A6D9237EA7DF00CE32A7 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
