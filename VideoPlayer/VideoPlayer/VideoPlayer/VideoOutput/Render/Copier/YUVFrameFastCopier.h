@@ -8,10 +8,9 @@
 
 #import "YUVFrameCopier.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
+@class VideoFrame;
 @interface YUVFrameFastCopier : YUVFrameCopier
 
-@end
+- (void)renderWithTexId:(VideoFrame*)videoFrame;
 
-NS_ASSUME_NONNULL_END
+@end

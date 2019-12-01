@@ -8,10 +8,6 @@
 
 #import "BaseEffectFilter.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface DirectPassRenderer : BaseEffectFilter
+@interface DirectPassRenderer : BaseEffectFilter<ImageFilterInput>
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -7,11 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BaseEffectFilter.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
+@class VideoFrame;
 @interface SCVideoOutput : UIView
 
-@end
+- (instancetype)initWithFrame:(CGRect)frame textureWidth:(NSInteger)textureWidth textureHeight:(NSInteger)textureHeight usingHWCodec:(BOOL)usingHWCodec;
+- (instancetype)initWithFrame:(CGRect)frame textureWidth:(NSInteger)textureWidth textureHeight:(NSInteger)textureHeight usingHWCodec:(BOOL)usingHWCodec shareGroup:(EAGLSharegroup *)shareGroup;
 
-NS_ASSUME_NONNULL_END
+- (void)presentVideoFrame:(VideoFrame*) frame;
+
+- (BaseEffectFilter*)createImageProcessFilterInstance;
+- (BaseEffectFilter*)getImageProcessFilterInstance;
+
+- (void) destroy;
+
+@end

@@ -8,10 +8,9 @@
 
 #import "BaseEffectFilter.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
+@class VideoFrame;
 @interface YUVFrameCopier : BaseEffectFilter
 
-@end
+- (void)renderWithTexId:(VideoFrame*)videoFrame;
 
-NS_ASSUME_NONNULL_END
+@end

@@ -25,6 +25,11 @@
 		C31A65F923940BEA00DA1A8F /* YUVFrameCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65F823940BEA00DA1A8F /* YUVFrameCopier.m */; };
 		C31A65FC23940C0200DA1A8F /* YUVFrameFastCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65FB23940C0200DA1A8F /* YUVFrameFastCopier.m */; };
 		C31A65FF23940C2900DA1A8F /* SCVideoOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65FE23940C2900DA1A8F /* SCVideoOutput.m */; };
+		C31A660A2394148700DA1A8F /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66052394148600DA1A8F /* VideoDecoder.m */; };
+		C31A660B2394148700DA1A8F /* VideoToolboxDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66072394148700DA1A8F /* VideoToolboxDecoder.m */; };
+		C31A661D239419B600DA1A8F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A66132394195500DA1A8F /* libz.tbd */; };
+		C31A661E239419CD00DA1A8F /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A66112394194100DA1A8F /* libbz2.tbd */; };
+		C31A661F239419E100DA1A8F /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A660F2394193500DA1A8F /* libiconv.tbd */; };
 		C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF812393F6C6008475B3 /* AppDelegate.m */; };
 		C35EEF852393F6C6008475B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF842393F6C6008475B3 /* ViewController.m */; };
 		C35EEF882393F6C6008475B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C35EEF862393F6C6008475B3 /* Main.storyboard */; };
@@ -195,6 +200,18 @@
 		C31A65FD23940C2900DA1A8F /* SCVideoOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCVideoOutput.h; sourceTree = "<group>"; };
 		C31A65FE23940C2900DA1A8F /* SCVideoOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCVideoOutput.m; sourceTree = "<group>"; };
 		C31A660123940EA500DA1A8F /* ShaderUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderUtils.h; sourceTree = "<group>"; };
+		C31A66022394148600DA1A8F /* VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDecoder.h; sourceTree = "<group>"; };
+		C31A66052394148600DA1A8F /* VideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDecoder.m; sourceTree = "<group>"; };
+		C31A66072394148700DA1A8F /* VideoToolboxDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoToolboxDecoder.m; sourceTree = "<group>"; };
+		C31A66082394148700DA1A8F /* VideoToolboxDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoToolboxDecoder.h; sourceTree = "<group>"; };
+		C31A660D2394191500DA1A8F /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
+		C31A660F2394193500DA1A8F /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
+		C31A66112394194100DA1A8F /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		C31A66132394195500DA1A8F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		C31A66152394197700DA1A8F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		C31A66172394198000DA1A8F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C31A66192394198B00DA1A8F /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		C31A661B2394199600DA1A8F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		C35EEF7D2393F6C5008475B3 /* VideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C35EEF802393F6C6008475B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C35EEF812393F6C6008475B3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -218,6 +235,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31A661E239419CD00DA1A8F /* libbz2.tbd in Frameworks */,
+				C31A661D239419B600DA1A8F /* libz.tbd in Frameworks */,
+				C31A661F239419E100DA1A8F /* libiconv.tbd in Frameworks */,
 				C31A65C22393FC5D00DA1A8F /* libavdevice.a in Frameworks */,
 				C31A65C42393FC5D00DA1A8F /* libswscale.a in Frameworks */,
 				C31A65BF2393FC5D00DA1A8F /* libavfilter.a in Frameworks */,
@@ -464,9 +484,9 @@
 		C31A65D22393FE8700DA1A8F /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				C31A65DE2393FF1E00DA1A8F /* Sync */,
 				C31A65D42393FE9F00DA1A8F /* AudioOutput */,
 				C31A65DF2393FF2700DA1A8F /* VideoOutput */,
-				C31A65DE2393FF1E00DA1A8F /* Sync */,
 				C31A65CE2393FE2F00DA1A8F /* Utils */,
 			);
 			path = VideoPlayer;
@@ -506,6 +526,9 @@
 		C31A65E02393FF4D00DA1A8F /* Decoder */ = {
 			isa = PBXGroup;
 			children = (
+				C31A66062394148700DA1A8F /* hw_decoder */,
+				C31A66022394148600DA1A8F /* VideoDecoder.h */,
+				C31A66052394148600DA1A8F /* VideoDecoder.m */,
 			);
 			path = Decoder;
 			sourceTree = "<group>";
@@ -552,6 +575,30 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		C31A66062394148700DA1A8F /* hw_decoder */ = {
+			isa = PBXGroup;
+			children = (
+				C31A66072394148700DA1A8F /* VideoToolboxDecoder.m */,
+				C31A66082394148700DA1A8F /* VideoToolboxDecoder.h */,
+			);
+			path = hw_decoder;
+			sourceTree = "<group>";
+		};
+		C31A660C2394191400DA1A8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C31A661B2394199600DA1A8F /* CoreMedia.framework */,
+				C31A66192394198B00DA1A8F /* VideoToolbox.framework */,
+				C31A66172394198000DA1A8F /* CoreGraphics.framework */,
+				C31A66152394197700DA1A8F /* AudioToolbox.framework */,
+				C31A66132394195500DA1A8F /* libz.tbd */,
+				C31A66112394194100DA1A8F /* libbz2.tbd */,
+				C31A660F2394193500DA1A8F /* libiconv.tbd */,
+				C31A660D2394191500DA1A8F /* libiconv.2.4.0.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C35EEF742393F6C5008475B3 = {
 			isa = PBXGroup;
 			children = (
@@ -559,6 +606,7 @@
 				C35EEF982393F6C7008475B3 /* VideoPlayerTests */,
 				C35EEFA32393F6C7008475B3 /* VideoPlayerUITests */,
 				C35EEF7E2393F6C5008475B3 /* Products */,
+				C31A660C2394191400DA1A8F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -744,6 +792,7 @@
 				C31A65E72393FFB200DA1A8F /* SCAudioOutput.m in Sources */,
 				C35EEF852393F6C6008475B3 /* ViewController.m in Sources */,
 				C31A65F223940B9900DA1A8F /* ContrastEnhancerFilter.m in Sources */,
+				C31A660B2394148700DA1A8F /* VideoToolboxDecoder.m in Sources */,
 				C31A65E92393FFB200DA1A8F /* AVAudioSession+RouteUtils.m in Sources */,
 				C31A65EF23940B7E00DA1A8F /* BaseEffectFilter.m in Sources */,
 				C35EEF902393F6C7008475B3 /* main.m in Sources */,
@@ -753,6 +802,7 @@
 				C31A65D12393FE2F00DA1A8F /* CommonUtil.m in Sources */,
 				C31A65F523940BBF00DA1A8F /* DirectPassRenderer.m in Sources */,
 				C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */,
+				C31A660A2394148700DA1A8F /* VideoDecoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -924,6 +974,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/VideoPlayer/FFmpeg-iOS/include";
 				INFOPLIST_FILE = VideoPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -944,6 +995,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/VideoPlayer/FFmpeg-iOS/include";
 				INFOPLIST_FILE = VideoPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
