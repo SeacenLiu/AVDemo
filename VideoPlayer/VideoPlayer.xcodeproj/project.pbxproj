@@ -16,6 +16,9 @@
 		C31A65C42393FC5D00DA1A8F /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A65BD2393FC5D00DA1A8F /* libswscale.a */; };
 		C31A65C82393FCA200DA1A8F /* test.flv in Resources */ = {isa = PBXBuildFile; fileRef = C31A65C62393FCA100DA1A8F /* test.flv */; };
 		C31A65D12393FE2F00DA1A8F /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65CF2393FE2F00DA1A8F /* CommonUtil.m */; };
+		C31A65E72393FFB200DA1A8F /* SCAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65E12393FFB100DA1A8F /* SCAudioOutput.m */; };
+		C31A65E82393FFB200DA1A8F /* SCAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65E32393FFB100DA1A8F /* SCAudioSession.m */; };
+		C31A65E92393FFB200DA1A8F /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A65E62393FFB100DA1A8F /* AVAudioSession+RouteUtils.m */; };
 		C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF812393F6C6008475B3 /* AppDelegate.m */; };
 		C35EEF852393F6C6008475B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF842393F6C6008475B3 /* ViewController.m */; };
 		C35EEF882393F6C6008475B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C35EEF862393F6C6008475B3 /* Main.storyboard */; };
@@ -167,6 +170,12 @@
 		C31A65C62393FCA100DA1A8F /* test.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.flv; sourceTree = "<group>"; };
 		C31A65CF2393FE2F00DA1A8F /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
 		C31A65D02393FE2F00DA1A8F /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
+		C31A65E12393FFB100DA1A8F /* SCAudioOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAudioOutput.m; sourceTree = "<group>"; };
+		C31A65E22393FFB100DA1A8F /* SCAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAudioSession.h; sourceTree = "<group>"; };
+		C31A65E32393FFB100DA1A8F /* SCAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAudioSession.m; sourceTree = "<group>"; };
+		C31A65E42393FFB100DA1A8F /* SCAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAudioOutput.h; sourceTree = "<group>"; };
+		C31A65E52393FFB100DA1A8F /* AVAudioSession+RouteUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAudioSession+RouteUtils.h"; sourceTree = "<group>"; };
+		C31A65E62393FFB100DA1A8F /* AVAudioSession+RouteUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAudioSession+RouteUtils.m"; sourceTree = "<group>"; };
 		C35EEF7D2393F6C5008475B3 /* VideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C35EEF802393F6C6008475B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C35EEF812393F6C6008475B3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -424,14 +433,59 @@
 			path = resource;
 			sourceTree = "<group>";
 		};
-		C31A65CE2393FE2F00DA1A8F /* utils */ = {
+		C31A65CE2393FE2F00DA1A8F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				C31A65D02393FE2F00DA1A8F /* CommonUtil.h */,
 				C31A65CF2393FE2F00DA1A8F /* CommonUtil.m */,
 			);
-			name = utils;
-			path = ../../OpenGLRenderer/OpenGLRenderer/utils;
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		C31A65D22393FE8700DA1A8F /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				C31A65D42393FE9F00DA1A8F /* AudioOutput */,
+				C31A65DF2393FF2700DA1A8F /* VideoOutput */,
+				C31A65DE2393FF1E00DA1A8F /* Sync */,
+				C31A65CE2393FE2F00DA1A8F /* Utils */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		C31A65D42393FE9F00DA1A8F /* AudioOutput */ = {
+			isa = PBXGroup;
+			children = (
+				C31A65E42393FFB100DA1A8F /* SCAudioOutput.h */,
+				C31A65E12393FFB100DA1A8F /* SCAudioOutput.m */,
+				C31A65E22393FFB100DA1A8F /* SCAudioSession.h */,
+				C31A65E32393FFB100DA1A8F /* SCAudioSession.m */,
+				C31A65E52393FFB100DA1A8F /* AVAudioSession+RouteUtils.h */,
+				C31A65E62393FFB100DA1A8F /* AVAudioSession+RouteUtils.m */,
+			);
+			path = AudioOutput;
+			sourceTree = "<group>";
+		};
+		C31A65DE2393FF1E00DA1A8F /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				C31A65E02393FF4D00DA1A8F /* Decoder */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		C31A65DF2393FF2700DA1A8F /* VideoOutput */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = VideoOutput;
+			sourceTree = "<group>";
+		};
+		C31A65E02393FF4D00DA1A8F /* Decoder */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Decoder;
 			sourceTree = "<group>";
 		};
 		C35EEF742393F6C5008475B3 = {
@@ -457,7 +511,7 @@
 		C35EEF7F2393F6C5008475B3 /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				C31A65CE2393FE2F00DA1A8F /* utils */,
+				C31A65D22393FE8700DA1A8F /* VideoPlayer */,
 				C31A653C2393FC5D00DA1A8F /* FFmpeg-iOS */,
 				C31A65C52393FCA100DA1A8F /* resource */,
 				C35EEF802393F6C6008475B3 /* AppDelegate.h */,
@@ -622,8 +676,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31A65E72393FFB200DA1A8F /* SCAudioOutput.m in Sources */,
 				C35EEF852393F6C6008475B3 /* ViewController.m in Sources */,
+				C31A65E92393FFB200DA1A8F /* AVAudioSession+RouteUtils.m in Sources */,
 				C35EEF902393F6C7008475B3 /* main.m in Sources */,
+				C31A65E82393FFB200DA1A8F /* SCAudioSession.m in Sources */,
 				C31A65D12393FE2F00DA1A8F /* CommonUtil.m in Sources */,
 				C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */,
 			);
