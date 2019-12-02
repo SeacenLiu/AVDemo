@@ -30,6 +30,10 @@
 		C31A661D239419B600DA1A8F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A66132394195500DA1A8F /* libz.tbd */; };
 		C31A661E239419CD00DA1A8F /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A66112394194100DA1A8F /* libbz2.tbd */; };
 		C31A661F239419E100DA1A8F /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C31A660F2394193500DA1A8F /* libiconv.tbd */; };
+		C31A66222394B23900DA1A8F /* AVSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66212394B23900DA1A8F /* AVSynchronizer.m */; };
+		C31A66252394BBEA00DA1A8F /* SCVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66242394BBEA00DA1A8F /* SCVideoPlayerViewController.m */; };
+		C31A662A2394BDDA00DA1A8F /* ELVideoViewPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66272394BDDA00DA1A8F /* ELVideoViewPlayerController.m */; };
+		C31A662B2394BDDA00DA1A8F /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66292394BDDA00DA1A8F /* LoadingView.m */; };
 		C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF812393F6C6008475B3 /* AppDelegate.m */; };
 		C35EEF852393F6C6008475B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEF842393F6C6008475B3 /* ViewController.m */; };
 		C35EEF882393F6C6008475B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C35EEF862393F6C6008475B3 /* Main.storyboard */; };
@@ -212,6 +216,14 @@
 		C31A66172394198000DA1A8F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		C31A66192394198B00DA1A8F /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		C31A661B2394199600DA1A8F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		C31A66202394B23900DA1A8F /* AVSynchronizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVSynchronizer.h; sourceTree = "<group>"; };
+		C31A66212394B23900DA1A8F /* AVSynchronizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVSynchronizer.m; sourceTree = "<group>"; };
+		C31A66232394BBEA00DA1A8F /* SCVideoPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCVideoPlayerViewController.h; sourceTree = "<group>"; };
+		C31A66242394BBEA00DA1A8F /* SCVideoPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCVideoPlayerViewController.m; sourceTree = "<group>"; };
+		C31A66262394BDDA00DA1A8F /* ELVideoViewPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELVideoViewPlayerController.h; sourceTree = "<group>"; };
+		C31A66272394BDDA00DA1A8F /* ELVideoViewPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELVideoViewPlayerController.m; sourceTree = "<group>"; };
+		C31A66282394BDDA00DA1A8F /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		C31A66292394BDDA00DA1A8F /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		C35EEF7D2393F6C5008475B3 /* VideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C35EEF802393F6C6008475B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C35EEF812393F6C6008475B3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -488,6 +500,8 @@
 				C31A65D42393FE9F00DA1A8F /* AudioOutput */,
 				C31A65DF2393FF2700DA1A8F /* VideoOutput */,
 				C31A65CE2393FE2F00DA1A8F /* Utils */,
+				C31A66232394BBEA00DA1A8F /* SCVideoPlayerViewController.h */,
+				C31A66242394BBEA00DA1A8F /* SCVideoPlayerViewController.m */,
 			);
 			path = VideoPlayer;
 			sourceTree = "<group>";
@@ -508,6 +522,8 @@
 		C31A65DE2393FF1E00DA1A8F /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				C31A66202394B23900DA1A8F /* AVSynchronizer.h */,
+				C31A66212394B23900DA1A8F /* AVSynchronizer.m */,
 				C31A65E02393FF4D00DA1A8F /* Decoder */,
 			);
 			path = Sync;
@@ -623,6 +639,10 @@
 		C35EEF7F2393F6C5008475B3 /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				C31A66262394BDDA00DA1A8F /* ELVideoViewPlayerController.h */,
+				C31A66272394BDDA00DA1A8F /* ELVideoViewPlayerController.m */,
+				C31A66282394BDDA00DA1A8F /* LoadingView.h */,
+				C31A66292394BDDA00DA1A8F /* LoadingView.m */,
 				C31A65D22393FE8700DA1A8F /* VideoPlayer */,
 				C31A653C2393FC5D00DA1A8F /* FFmpeg-iOS */,
 				C31A65C52393FCA100DA1A8F /* resource */,
@@ -788,11 +808,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31A66252394BBEA00DA1A8F /* SCVideoPlayerViewController.m in Sources */,
+				C31A66222394B23900DA1A8F /* AVSynchronizer.m in Sources */,
 				C31A65FF23940C2900DA1A8F /* SCVideoOutput.m in Sources */,
 				C31A65E72393FFB200DA1A8F /* SCAudioOutput.m in Sources */,
 				C35EEF852393F6C6008475B3 /* ViewController.m in Sources */,
 				C31A65F223940B9900DA1A8F /* ContrastEnhancerFilter.m in Sources */,
 				C31A660B2394148700DA1A8F /* VideoToolboxDecoder.m in Sources */,
+				C31A662B2394BDDA00DA1A8F /* LoadingView.m in Sources */,
 				C31A65E92393FFB200DA1A8F /* AVAudioSession+RouteUtils.m in Sources */,
 				C31A65EF23940B7E00DA1A8F /* BaseEffectFilter.m in Sources */,
 				C35EEF902393F6C7008475B3 /* main.m in Sources */,
@@ -802,6 +825,7 @@
 				C31A65D12393FE2F00DA1A8F /* CommonUtil.m in Sources */,
 				C31A65F523940BBF00DA1A8F /* DirectPassRenderer.m in Sources */,
 				C35EEF822393F6C6008475B3 /* AppDelegate.m in Sources */,
+				C31A662A2394BDDA00DA1A8F /* ELVideoViewPlayerController.m in Sources */,
 				C31A660A2394148700DA1A8F /* VideoDecoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
