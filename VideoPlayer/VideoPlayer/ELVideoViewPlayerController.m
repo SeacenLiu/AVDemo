@@ -41,7 +41,13 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    // TODO: - 播放器开启操作
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
+    // 视图消失前移除的逻辑
     [_playerViewController stop];
     [_playerViewController.view removeFromSuperview];
     [_playerViewController removeFromParentViewController];

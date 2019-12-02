@@ -25,19 +25,19 @@
                                  contentFrame:(CGRect)frame
                                  usingHWCodec:(BOOL) usingHWCodec
                           playerStateDelegate:(id<PlayerStateDelegate>) playerStateDelegate
-                                   parameters: (NSDictionary *)parameters
-{
+                                   parameters: (NSDictionary *)parameters {
     return [[SCVideoPlayerViewController alloc] initWithContentPath:path
-                                                     contentFrame:frame usingHWCodec:usingHWCodec
-                                              playerStateDelegate:playerStateDelegate
-                                                       parameters: parameters];
+                                                       contentFrame:frame
+                                                       usingHWCodec:usingHWCodec
+                                                playerStateDelegate:playerStateDelegate
+                                                         parameters: parameters];
 }
 
 + (instancetype)viewControllerWithContentPath:(NSString *)path
                                  contentFrame:(CGRect)frame
                                  usingHWCodec:(BOOL) usingHWCodec
-                          playerStateDelegate:(id<PlayerStateDelegate>) playerStateDelegate
-                                   parameters: (NSDictionary *)parameters
+                          playerStateDelegate:(id<PlayerStateDelegate>)playerStateDelegate
+                                   parameters:(NSDictionary *)parameters
                   outputEAGLContextShareGroup:(EAGLSharegroup *)sharegroup {
     return [[SCVideoPlayerViewController alloc] initWithContentPath:path
                                                      contentFrame:frame usingHWCodec:usingHWCodec
@@ -67,6 +67,7 @@
          outputEAGLContextShareGroup:nil];
 }
 
+#pragma mark - 核心初始化方法
 - (instancetype)initWithContentPath:(NSString *)path
                        contentFrame:(CGRect)frame
                        usingHWCodec:(BOOL) usingHWCodec
@@ -89,43 +90,55 @@
 }
 
 - (void)start {
+    // 初始化同步器
     _synchronizer = [[AVSynchronizer alloc] initWithPlayerStateDelegate:_playerStateDelegate];
     __weak SCVideoPlayerViewController *weakSelf = self;
     BOOL isIOS8OrUpper = ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0);
     dispatch_async(dispatch_get_global_queue(isIOS8OrUpper ? QOS_CLASS_USER_INTERACTIVE:DISPATCH_QUEUE_PRIORITY_HIGH, 0) , ^{
         __strong SCVideoPlayerViewController *strongSelf = weakSelf;
-        if (strongSelf) {
-            NSError *error = nil;
-            OpenState state = OPEN_FAILED;
-            if([_parameters count] > 0){
-                state = [strongSelf->_synchronizer openFile:_videoFilePath usingHWCodec:_usingHWCodec parameters:_parameters error:&error];
-            } else {
-                state = [strongSelf->_synchronizer openFile:_videoFilePath usingHWCodec:_usingHWCodec error:&error];
+        if (!strongSelf)
+            return;
+        NSError *error = nil;
+        OpenState state = OPEN_FAILED;
+        // 使用同步器打开视频文件路径
+        if([strongSelf->_parameters count] > 0){
+            state = [strongSelf->_synchronizer openFile:strongSelf->_videoFilePath
+                                           usingHWCodec:strongSelf->_usingHWCodec
+                                             parameters:strongSelf->_parameters
+                                                  error:&error];
+        } else {
+            state = [strongSelf->_synchronizer openFile:strongSelf->_videoFilePath
+                                           usingHWCodec:strongSelf->_usingHWCodec
+                                                  error:&error];
+        }
+        // 按照同步器情况重新设置 _usingHWCode
+        strongSelf->_usingHWCodec = [strongSelf->_synchronizer usingHWCodec];
+        if (OPEN_SUCCESS == state) { // 同步器启动成功的情况
+            // 启动 VideoOutput
+            strongSelf->_videoOutput = [strongSelf createVideoOutputInstance];
+            strongSelf->_videoOutput.contentMode = UIViewContentModeScaleAspectFill;
+            strongSelf->_videoOutput.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.view.backgroundColor = [UIColor clearColor];
+                [self.view insertSubview:strongSelf->_videoOutput atIndex:0];
+            });
+            
+            // 启动 AudioOutput
+            strongSelf->_audioOutput = [strongSelf createAudioOutputInstance];
+            [strongSelf->_audioOutput play];
+            
+            // 转态修改
+            strongSelf->_isPlaying = YES;
+            
+            // 打开成功回调
+            if (strongSelf->_playerStateDelegate &&
+               [strongSelf->_playerStateDelegate respondsToSelector:@selector(openSucceed)]) {
+                [strongSelf->_playerStateDelegate openSucceed];
             }
-            _usingHWCodec = [strongSelf->_synchronizer usingHWCodec];
-            if(OPEN_SUCCESS == state){
-                //启动AudioOutput与VideoOutput
-                _videoOutput = [strongSelf createVideoOutputInstance];
-                _videoOutput.contentMode = UIViewContentModeScaleAspectFill;
-                _videoOutput.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.view.backgroundColor = [UIColor clearColor];
-                    [self.view insertSubview:_videoOutput atIndex:0];
-                });
-                NSInteger audioChannels = [_synchronizer getAudioChannels];
-                NSInteger audioSampleRate = [_synchronizer getAudioSampleRate];
-                NSInteger bytesPerSample = 2;
-                _audioOutput = [[SCAudioOutput alloc] initWithChannels:audioChannels sampleRate:audioSampleRate bytesPerSample:bytesPerSample filleDataDelegate:self];
-                [_audioOutput play];
-                _isPlaying = YES;
-                
-                if(_playerStateDelegate && [_playerStateDelegate respondsToSelector:@selector(openSucceed)]){
-                    [_playerStateDelegate openSucceed];
-                }
-            } else if(OPEN_FAILED == state){
-                if(_playerStateDelegate && [_playerStateDelegate respondsToSelector:@selector(connectFailed)]){
-                    [_playerStateDelegate connectFailed];
-                }
+        } else if (OPEN_FAILED == state) { // 同步器启动失败情况
+            // 链接失败回调
+            if (strongSelf->_playerStateDelegate && [strongSelf->_playerStateDelegate respondsToSelector:@selector(connectFailed)]) {
+                [strongSelf->_playerStateDelegate connectFailed];
             }
         }
     });
@@ -146,6 +159,20 @@
     return _videoOutput;
 }
 
+- (SCAudioOutput*)createAudioOutputInstance {
+    NSInteger audioChannels = [_synchronizer getAudioChannels];
+    NSInteger audioSampleRate = [_synchronizer getAudioSampleRate];
+    NSInteger bytesPerSample = 2;
+    return [[SCAudioOutput alloc] initWithChannels:audioChannels
+                                        sampleRate:audioSampleRate
+                                    bytesPerSample:bytesPerSample
+                                 filleDataDelegate:self];
+}
+
+- (SCAudioOutput*)getAudioOutputInstance {
+    return _audioOutput;
+}
+
 - (void)loadView {
     self.view = [[UIView alloc] initWithFrame:_contentFrame];
     self.view.backgroundColor = [UIColor clearColor];
@@ -160,10 +187,11 @@
     [super didReceiveMemoryWarning];
 }
 
+// 音频渲染回调中渲染画面，达成画面对齐音频
 - (void)play {
     if (_isPlaying)
         return;
-    if(_audioOutput){
+    if (_audioOutput) {
         [_audioOutput play];
     }
 }
@@ -171,25 +199,25 @@
 - (void)pause {
     if (!_isPlaying)
         return;
-    if(_audioOutput){
+    if (_audioOutput) {
         [_audioOutput stop];
     }
 }
 
 - (void)stop {
-    if(_audioOutput){
+    if (_audioOutput) {
         [_audioOutput stop];
         _audioOutput = nil;
     }
-    if(_synchronizer){
-        if([_synchronizer isOpenInputSuccess]){
+    if (_synchronizer) {
+        if ([_synchronizer isOpenInputSuccess]) {
             [_synchronizer closeFile];
             _synchronizer = nil;
         } else {
             [_synchronizer interrupt];
         }
     }
-    if(_videoOutput){
+    if (_videoOutput) {
         [_videoOutput destroy];
         [_videoOutput removeFromSuperview];
         _videoOutput = nil;
@@ -212,9 +240,11 @@
     return image;
 }
 
+#pragma mark - 音视频渲染核心方法
 - (NSInteger)fillAudioData:(SInt16*)sampleBuffer numFrames:(NSInteger)frameNum numChannels:(NSInteger)channels {
     if(_synchronizer && ![_synchronizer isPlayCompleted]){
         [_synchronizer audioCallbackFillData:sampleBuffer numFrames:(UInt32)frameNum numChannels:(UInt32)channels];
+        // 画面对齐音频，渲染当前音频的画面
         VideoFrame* videoFrame = [_synchronizer getCorrectVideoFrame];
         if(videoFrame){
             [_videoOutput presentVideoFrame:videoFrame];

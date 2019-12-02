@@ -20,14 +20,16 @@ typedef enum {
     iOSCVVideoFrameType,
 } FrameType;
 
+// 埋点对象
 @interface BuriedPoint : NSObject
-@property (readwrite, nonatomic) long long beginOpen;              // 开始试图去打开一个直播流的绝对时间
-@property (readwrite, nonatomic) float successOpen;                // 成功打开流花费时间
-@property (readwrite, nonatomic) float firstScreenTimeMills;       // 首屏时间
-@property (readwrite, nonatomic) float failOpen;                   // 流打开失败花费时间
-@property (readwrite, nonatomic) float failOpenType;               // 流打开失败类型
-@property (readwrite, nonatomic) int retryTimes;                   // 打开流重试次数
-@property (readwrite, nonatomic) float duration;                   // 拉流时长
+
+@property (readwrite, nonatomic) long long beginOpen;                 // 开始试图去打开一个直播流的绝对时间
+@property (readwrite, nonatomic) float successOpen;                   // 成功打开流花费时间
+@property (readwrite, nonatomic) float firstScreenTimeMills;          // 首屏时间
+@property (readwrite, nonatomic) float failOpen;                      // 流打开失败花费时间
+@property (readwrite, nonatomic) float failOpenType;                  // 流打开失败类型
+@property (readwrite, nonatomic) int retryTimes;                      // 打开流重试次数
+@property (readwrite, nonatomic) float duration;                      // 拉流时长
 @property (readwrite, nonatomic) NSMutableArray* bufferStatusRecords; // 拉流状态
 
 

@@ -60,4 +60,7 @@
 - (SCVideoOutput*)createVideoOutputInstance;
 - (SCVideoOutput*)getVideoOutputInstance;
 
+- (SCAudioOutput*)createAudioOutputInstance;
+- (SCAudioOutput*)getAudioOutputInstance;
+
 @end
