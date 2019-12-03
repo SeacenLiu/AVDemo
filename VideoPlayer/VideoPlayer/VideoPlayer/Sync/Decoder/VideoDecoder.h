@@ -15,14 +15,13 @@
 #include "libavutil/pixdesc.h"
 
 typedef enum {
-    AudioFrameType,
-    VideoFrameType,
-    iOSCVVideoFrameType,
+    AudioFrameType,        // 音频帧
+    VideoFrameType,        // 视频帧
+    iOSCVVideoFrameType,   // CVImageBufferRef 画面帧
 } FrameType;
 
 // 埋点对象
 @interface BuriedPoint : NSObject
-
 @property (readwrite, nonatomic) long long beginOpen;                 // 开始试图去打开一个直播流的绝对时间
 @property (readwrite, nonatomic) float successOpen;                   // 成功打开流花费时间
 @property (readwrite, nonatomic) float firstScreenTimeMills;          // 首屏时间
@@ -31,28 +30,26 @@ typedef enum {
 @property (readwrite, nonatomic) int retryTimes;                      // 打开流重试次数
 @property (readwrite, nonatomic) float duration;                      // 拉流时长
 @property (readwrite, nonatomic) NSMutableArray* bufferStatusRecords; // 拉流状态
-
-
 @end
 
 @interface Frame : NSObject
-@property (readwrite, nonatomic) FrameType type;
-@property (readwrite, nonatomic) CGFloat position;
-@property (readwrite, nonatomic) CGFloat duration;
+@property (readwrite, nonatomic) FrameType type;     // 类型
+@property (readwrite, nonatomic) CGFloat position;   // 当前位置
+@property (readwrite, nonatomic) CGFloat duration;   // 当前时长
 @end
 
 @interface AudioFrame : Frame
-@property (readwrite, nonatomic, strong) NSData *samples;
+@property (readwrite, nonatomic, strong) NSData *samples;  // 音频数据
 @end
 
 @interface VideoFrame : Frame
-@property (readwrite, nonatomic) NSUInteger width;
-@property (readwrite, nonatomic) NSUInteger height;
-@property (readwrite, nonatomic) NSUInteger linesize;
-@property (readwrite, nonatomic, strong) NSData *luma;
-@property (readwrite, nonatomic, strong) NSData *chromaB;
-@property (readwrite, nonatomic, strong) NSData *chromaR;
-@property (readwrite, nonatomic, strong) id imageBuffer;
+@property (readwrite, nonatomic) NSUInteger width;          // 视频宽度
+@property (readwrite, nonatomic) NSUInteger height;         // 视频高度
+@property (readwrite, nonatomic) NSUInteger linesize;       // 每一行的字节数（可能比width大）
+@property (readwrite, nonatomic, strong) NSData *luma;      //
+@property (readwrite, nonatomic, strong) NSData *chromaB;   //
+@property (readwrite, nonatomic, strong) NSData *chromaR;   //
+@property (readwrite, nonatomic, strong) id imageBuffer;    // 图像缓冲区
 @end
 
 #ifndef SUBSCRIBE_VIDEO_DATA_TIME_OUT
@@ -95,36 +92,42 @@ typedef enum {
     CGFloat                     _audioTimeBase;
 }
 
-- (BOOL) openFile: (NSString *) path parameter:(NSDictionary*) parameters error: (NSError **) perror;
+- (BOOL)openFile:(NSString *)path
+       parameter:(NSDictionary*)parameters
+           error:(NSError **)perror;
 
-- (NSArray *) decodeFrames: (CGFloat) minDuration decodeVideoErrorState:(int *)decodeVideoErrorState;
+- (NSArray *)decodeFrames:(CGFloat)minDuration
+    decodeVideoErrorState:(int *)decodeVideoErrorState;
 
 /** 子类重写这两个方法 **/
-- (BOOL) openVideoStream;
-- (void) closeVideoStream;
+- (BOOL)openVideoStream;
+- (void)closeVideoStream;
 
-- (VideoFrame*) decodeVideo:(AVPacket) packet packetSize:(int) pktSize decodeVideoErrorState:(int *)decodeVideoErrorState;
+- (VideoFrame*)decodeVideo:(AVPacket)packet
+                packetSize:(int)pktSize
+     decodeVideoErrorState:(int *)decodeVideoErrorState;
     
-- (void) closeFile;
+- (void)closeFile;
 
-- (void) interrupt;
+- (void)interrupt;
 
-- (BOOL) isOpenInputSuccess;
+- (BOOL)isOpenInputSuccess;
 
-- (void) triggerFirstScreen;
-- (void) addBufferStatusRecord:(NSString*) statusFlag;
+- (void)triggerFirstScreen;
+- (void)addBufferStatusRecord:(NSString*)statusFlag;
 
-- (BuriedPoint*) getBuriedPoint;
+- (BuriedPoint*)getBuriedPoint;
 
-- (BOOL) detectInterrupted;
-- (BOOL) isEOF;
-- (BOOL) isSubscribed;
-- (NSUInteger) frameWidth;
-- (NSUInteger) frameHeight;
-- (CGFloat) sampleRate;
-- (NSUInteger) channels;
-- (BOOL) validVideo;
-- (BOOL) validAudio;
-- (CGFloat) getVideoFPS;
-- (CGFloat) getDuration;
+- (BOOL)detectInterrupted;
+- (BOOL)isEOF;
+- (BOOL)isSubscribed;
+- (NSUInteger)frameWidth;
+- (NSUInteger)frameHeight;
+- (CGFloat)sampleRate;
+- (NSUInteger)channels;
+- (BOOL)validVideo;
+- (BOOL)validAudio;
+- (CGFloat)getVideoFPS;
+- (CGFloat)getDuration;
+
 @end

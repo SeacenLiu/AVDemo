@@ -594,8 +594,8 @@
 		C31A66062394148700DA1A8F /* hw_decoder */ = {
 			isa = PBXGroup;
 			children = (
-				C31A66072394148700DA1A8F /* VideoToolboxDecoder.m */,
 				C31A66082394148700DA1A8F /* VideoToolboxDecoder.h */,
+				C31A66072394148700DA1A8F /* VideoToolboxDecoder.m */,
 			);
 			path = hw_decoder;
 			sourceTree = "<group>";

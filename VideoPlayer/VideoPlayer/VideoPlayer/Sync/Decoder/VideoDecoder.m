@@ -9,7 +9,6 @@
 #import "VideoDecoder.h"
 #import <Accelerate/Accelerate.h>
 
-
 static NSData * copyFrameData(UInt8 *src, int linesize, int width, int height)
 {
     width = MIN(linesize, width);
@@ -120,23 +119,22 @@ static int interrupt_callback(void *ctx)
     return r;
 }
 
-- (void) interrupt
-{
+- (void)interrupt {
     _subscribeTimeOutTimeInSecs = -1;
     _interrupted = YES;
     _isSubscribe = NO;
 }
 
-- (BOOL) detectInterrupted;
-{
+- (BOOL)detectInterrupted {
     if ([[NSDate date] timeIntervalSince1970] - _readLastestFrameTime > _subscribeTimeOutTimeInSecs) {
         return YES;
     }
     return _interrupted;
 }
 
-- (BOOL) openFile: (NSString *) path parameter:(NSDictionary*) parameters error: (NSError **) perror
-{
+- (BOOL)openFile:(NSString *)path
+       parameter:(NSDictionary*)parameters
+           error:(NSError **)perror {
     BOOL ret = YES;
     if (nil == path) {
         return NO;
@@ -194,13 +192,11 @@ static int interrupt_callback(void *ctx)
     return ret;
 }
 
-- (BOOL) isOpenInputSuccess
-{
+- (BOOL)isOpenInputSuccess {
     return _isOpenInputSuccess;
 }
 
-- (BOOL) openVideoStream;
-{
+- (BOOL)openVideoStream {
     _videoStreamIndex = -1;
     _videoStreams = collectStreams(_formatCtx, AVMEDIA_TYPE_VIDEO);
     for (NSNumber *n in _videoStreams) {
@@ -234,8 +230,7 @@ static int interrupt_callback(void *ctx)
     return YES;
 }
 
-- (BOOL) openAudioStream;
-{
+- (BOOL)openAudioStream {
     _audioStreamIndex = -1;
     _audioStreams = collectStreams(_formatCtx, AVMEDIA_TYPE_AUDIO);
     for (NSNumber *n in _audioStreams) {
@@ -300,16 +295,15 @@ static int interrupt_callback(void *ctx)
 }
 
 
-- (BOOL) audioCodecIsSupported:(AVCodecContext *) audioCodecCtx;
-{
+- (BOOL)audioCodecIsSupported:(AVCodecContext *)audioCodecCtx {
     if (audioCodecCtx->sample_fmt == AV_SAMPLE_FMT_S16) {
         return true;
     }
     return false;
 }
 
-- (int) openInput: (NSString*) path parameter:(NSDictionary*) parameters;
-{
+- (int)openInput:(NSString*)path
+       parameter:(NSDictionary*)parameters {
     AVFormatContext *formatCtx = avformat_alloc_context();
     AVIOInterruptCB int_cb  = {interrupt_callback, (__bridge void *)(self)};
     formatCtx->interrupt_callback = int_cb;
@@ -345,8 +339,9 @@ static int interrupt_callback(void *ctx)
     return 1;
 }
 
-- (int) openFormatInput:(AVFormatContext**) formatCtx path:(NSString*) path parameter:(NSDictionary*) parameters
-{
+- (int)openFormatInput:(AVFormatContext**)formatCtx
+                  path:(NSString*)path
+             parameter:(NSDictionary*)parameters {
     const char* videoSourceURI = [path cStringUsingEncoding: NSUTF8StringEncoding];
     AVDictionary *options = NULL;
     NSString* rtmpTcurl = parameters[RTMP_TCURL_KEY];
@@ -357,8 +352,8 @@ static int interrupt_callback(void *ctx)
     return avformat_open_input(formatCtx, videoSourceURI, NULL, &options);
 }
 
-- (void) initAnalyzeDurationAndProbesize:(AVFormatContext *)formatCtx parameter:(NSDictionary*) parameters
-{
+- (void)initAnalyzeDurationAndProbesize:(AVFormatContext *)formatCtx
+                              parameter:(NSDictionary*)parameters {
     float probeSize = [parameters[PROBE_SIZE] floatValue];
     formatCtx->probesize = probeSize ?: 50 * 1024;
     NSArray* durations = parameters[MAX_ANALYZE_DURATION_ARRAY];
@@ -375,14 +370,14 @@ static int interrupt_callback(void *ctx)
     }
 }
 
-- (BOOL) isNeedRetry
-{
+- (BOOL)isNeedRetry {
     _connectionRetry++;
     return _connectionRetry <= NET_WORK_STREAM_RETRY_TIME;
 }
 
-- (VideoFrame*) decodeVideo:(AVPacket) packet packetSize:(int) pktSize decodeVideoErrorState:(int *)decodeVideoErrorState;
-{
+- (VideoFrame*)decodeVideo:(AVPacket)packet
+                packetSize:(int)pktSize
+     decodeVideoErrorState:(int *)decodeVideoErrorState {
     VideoFrame *frame = nil;
     while (pktSize > 0) {
         int gotframe = 0;
@@ -404,8 +399,8 @@ static int interrupt_callback(void *ctx)
     return frame;
 }
 
-- (NSArray *) decodeFrames: (CGFloat) minDuration decodeVideoErrorState:(int *)decodeVideoErrorState
-{
+- (NSArray *)decodeFrames:(CGFloat)minDuration
+    decodeVideoErrorState:(int *)decodeVideoErrorState {
     if (_videoStreamIndex == -1 && _audioStreamIndex == -1)
         return nil;
     NSMutableArray *result = [NSMutableArray array];
@@ -468,13 +463,11 @@ static int interrupt_callback(void *ctx)
     return result;
 }
 
-- (BuriedPoint*) getBuriedPoint;
-{
+- (BuriedPoint*)getBuriedPoint {
     return _buriedPoint;
 }
 
-- (VideoFrame *) handleVideoFrame
-{
+- (VideoFrame *)handleVideoFrame {
     if (!_videoFrame->data[0])
         return nil;
     VideoFrame *frame = [[VideoFrame alloc] init];
@@ -556,8 +549,7 @@ static int interrupt_callback(void *ctx)
     return frame;
 }
 
-- (AudioFrame *) handleAudioFrame
-{
+- (AudioFrame *)handleAudioFrame {
     if (!_audioFrame->data[0])
         return nil;
     
@@ -604,15 +596,13 @@ static int interrupt_callback(void *ctx)
     return frame;
 }
 
-- (void) triggerFirstScreen
-{
+- (void)triggerFirstScreen {
     if (_buriedPoint.failOpenType == 1) {
         _buriedPoint.firstScreenTimeMills = ([[NSDate date] timeIntervalSince1970] * 1000 - _buriedPoint.beginOpen) / 1000.0f;
     }
 }
 
-- (void) addBufferStatusRecord:(NSString*) statusFlag
-{
+- (void)addBufferStatusRecord:(NSString*)statusFlag {
     if ([@"F" isEqualToString:statusFlag] && [[_buriedPoint.bufferStatusRecords lastObject] hasPrefix:@"F_"]) {
         return;
     }
@@ -620,8 +610,7 @@ static int interrupt_callback(void *ctx)
     [_buriedPoint.bufferStatusRecords addObject:[NSString stringWithFormat:@"%@_%.3f", statusFlag, timeInterval]];
 }
 
-- (void) closeFile;
-{
+- (void)closeFile {
     NSLog(@"Enter closeFile...");
     if (_buriedPoint.failOpenType == 1) {
         _buriedPoint.duration = ([[NSDate date] timeIntervalSince1970] * 1000 - _buriedPoint.beginOpen) / 1000.0f;
@@ -644,8 +633,7 @@ static int interrupt_callback(void *ctx)
     NSLog(@"Decoder decoder totalVideoFramecount is %d decodeFrameAVGTimeMills is %.3f", totalVideoFramecount, decodeFrameAVGTimeMills);
 }
 
-- (void) closeAudioStream;
-{
+- (void)closeAudioStream {
     _audioStreamIndex = -1;
     
     if (_swrBuffer) {
@@ -670,8 +658,7 @@ static int interrupt_callback(void *ctx)
     }
 }
 
-- (void) closeVideoStream;
-{
+- (void)closeVideoStream {
     _videoStreamIndex = -1;
     
     [self closeScaler];
@@ -688,8 +675,7 @@ static int interrupt_callback(void *ctx)
 }
 
 
-- (BOOL) setupScaler
-{
+- (BOOL)setupScaler {
     [self closeScaler];
     _pictureValid = avpicture_alloc(&_picture,
                                     AV_PIX_FMT_YUV420P,
@@ -709,8 +695,7 @@ static int interrupt_callback(void *ctx)
     return _swsContext != NULL;
 }
 
-- (void) closeScaler
-{
+- (void)closeScaler {
     if (_swsContext) {
         sws_freeContext(_swsContext);
         _swsContext = NULL;
@@ -722,52 +707,42 @@ static int interrupt_callback(void *ctx)
     }
 }
 
-- (BOOL) isEOF;
-{
+- (BOOL)isEOF {
     return _isEOF;
 }
 
-- (BOOL) isSubscribed;
-{
+- (BOOL)isSubscribed {
     return _isSubscribe;
 }
 
-- (NSUInteger) frameWidth;
-{
+- (NSUInteger)frameWidth {
     return _videoCodecCtx ? _videoCodecCtx->width : 0;
 }
 
-- (NSUInteger) frameHeight;
-{
+- (NSUInteger)frameHeight {
     return _videoCodecCtx ? _videoCodecCtx->height : 0;
 }
 
-- (CGFloat) sampleRate;
-{
+- (CGFloat)sampleRate {
     return _audioCodecCtx ? _audioCodecCtx->sample_rate : 0;
 }
 
-- (NSUInteger) channels;
-{
+- (NSUInteger)channels {
     return _audioCodecCtx ? _audioCodecCtx->channels : 0;
 }
 
-- (BOOL) validVideo;
-{
+- (BOOL)validVideo {
     return _videoStreamIndex != -1;
 }
 
-- (BOOL) validAudio;
-{
+- (BOOL)validAudio {
     return _audioStreamIndex != -1;
 }
 
-- (CGFloat) getVideoFPS;
-{
+- (CGFloat)getVideoFPS {
     return _fps;
 }
-- (CGFloat) getDuration;
-{
+- (CGFloat)getDuration {
     if(_formatCtx){
         if(_formatCtx->duration == AV_NOPTS_VALUE){
             return -1;
@@ -777,8 +752,7 @@ static int interrupt_callback(void *ctx)
     return -1;
 }
 
-- (void) dealloc;
-{
+- (void)dealloc {
     NSLog(@"VideoDecoder Dealloc...");
 }
 @end

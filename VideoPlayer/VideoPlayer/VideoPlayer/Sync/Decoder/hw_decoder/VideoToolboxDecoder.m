@@ -27,15 +27,16 @@
     return self;
 }
 
-- (BOOL) openVideoStream;
+- (BOOL)openVideoStream;
 {
-    if([super openVideoStream]){
+    if ([super openVideoStream]) {
 //        double startBuildVTInstanceTimeMills = CFAbsoluteTimeGetCurrent() * 1000;
         uint8_t* bufSPS = 0;
         uint8_t* bufPPS = 0;
         int sizeSPS = 0;
         int sizePPS = 0;
-        [self parseH264SequenceHeader:(uint8_t*) _videoCodecCtx->extradata bufferSize:(uint32_t) _videoCodecCtx->extradata_size
+        [self parseH264SequenceHeader:(uint8_t*) _videoCodecCtx->extradata
+                           bufferSize:(uint32_t) _videoCodecCtx->extradata_size
                                bufSPS:&bufSPS sizeSPS:&sizeSPS
                                bufPPS:&bufPPS sizePPS:&sizePPS];
         uint8_t*  parameterSetPointers[2] = {bufSPS, bufPPS};
@@ -55,8 +56,9 @@
     return NO;
 }
 
-- (VideoFrame*) decodeVideo:(AVPacket) packet packetSize:(int) pktSize decodeVideoErrorState:(int *)decodeVideoErrorState;
-{
+- (VideoFrame*)decodeVideo:(AVPacket)packet
+                packetSize:(int)pktSize
+     decodeVideoErrorState:(int *)decodeVideoErrorState {
     uint8_t* data = packet.data;
     int blockLength = packet.size;
     OSStatus status;
@@ -148,11 +150,9 @@
     return _videoFrame;
 }
 
--(void) parseH264SequenceHeader:(uint8_t*) in_pBuffer bufferSize:(uint32_t) bufferSize
+- (void)parseH264SequenceHeader:(uint8_t*) in_pBuffer bufferSize:(uint32_t) bufferSize
                          bufSPS:(uint8_t**) bufSPS sizeSPS:(int*) sizeSPS
-                         bufPPS:(uint8_t**) bufPPS sizePPS:(int*) sizePPS;
-{
-    
+                         bufPPS:(uint8_t**) bufPPS sizePPS:(int*) sizePPS {
     int spsSize = (in_pBuffer[6] << 8) + in_pBuffer[7];
     *bufSPS = &in_pBuffer[8];
     int ppsSize = (in_pBuffer[8 + spsSize + 1] << 8) + in_pBuffer[8 + spsSize + 2];
@@ -161,8 +161,7 @@
     *sizePPS = ppsSize;
 }
 
--(void) createDecompSession
-{
+- (void)createDecompSession {
     _decompressionSession = NULL;
     VTDecompressionOutputCallbackRecord callBackRecord;
     callBackRecord.decompressionOutputCallback = decompressionSessionDecodeFrameCallback;
@@ -202,8 +201,9 @@ void decompressionSessionDecodeFrameCallback(void *decompressionOutputRefCon,
     dispatch_semaphore_signal(weakSelf.decoderSemaphore);
 }
 
-- (void) getDecodeImageData:(CVImageBufferRef) imageBuffer pts:(CMTime) presentationTimeStamp duration:(CMTime) presentationDuration;
-{
+- (void)getDecodeImageData:(CVImageBufferRef)imageBuffer
+                       pts:(CMTime)presentationTimeStamp
+                  duration:(CMTime)presentationDuration {
     NSUInteger frameWidth = (NSUInteger)CVPixelBufferGetWidth(imageBuffer);
     NSUInteger frameHeight = (NSUInteger)CVPixelBufferGetHeight(imageBuffer);
     _videoFrame = [[VideoFrame alloc] init];
@@ -226,8 +226,7 @@ void decompressionSessionDecodeFrameCallback(void *decompressionOutputRefCon,
 //    }
 }
 
-- (NSMutableData*) buildYUVFromImageBuffer:(CVImageBufferRef) imageBuffer
-{
+- (NSMutableData*)buildYUVFromImageBuffer:(CVImageBufferRef)imageBuffer {
     NSMutableData* mutableData = [[NSMutableData alloc] init];
     NSUInteger frameWidth = (NSUInteger)CVPixelBufferGetWidth(imageBuffer);
     NSUInteger frameHeight = (NSUInteger)CVPixelBufferGetHeight(imageBuffer);
@@ -287,8 +286,7 @@ void decompressionSessionDecodeFrameCallback(void *decompressionOutputRefCon,
     return mutableData;
 }
 
-- (void) closeVideoStream;
-{
+- (void)closeVideoStream {
     [super closeVideoStream];
     if(_formatDesc){
         CFRelease(_formatDesc);
