@@ -17,12 +17,15 @@
 * 4: 激活音频会话
 *
 * * 音频单元配置
-* 1:通过AudioComponentDescription创建AudioUnit实例
-* 2:通过AudioStreamBasicDescription配置AudioUnit属性
-* 3:连接AudioUnit中的结点或设置RenderCallback
-* 4:初始化AudioUnit
-* 5:启动AudioOutput
+* 1: 通过AudioComponentDescription创建AudioUnit实例
+* 2: 通过AudioStreamBasicDescription配置AudioUnit属性
+* 3: 连接AudioUnit中的结点或设置RenderCallback
+* 4: 初始化AudioUnit
+* 5: 启动AudioOutput
 *
+* * 音频图结构
+* _ioNode
+* _convertNode
 **/
 
 #import "SCAudioOutput.h"
@@ -61,7 +64,7 @@ static void CheckStatus(OSStatus status, NSString *message, BOOL fatal);
 @property(nonatomic, assign) AudioUnit          convertUnit;
 
 // 填充音频数据代理
-@property (readwrite, copy) id<SCFillDataDelegate> fillAudioDataDelegate;
+@property (readwrite, weak) id<SCFillDataDelegate> fillAudioDataDelegate;
 
 @end
 
@@ -84,6 +87,7 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
         // 添加打断处理
         [self addAudioSessionInterruptedObserver];
         // 初始化变量
+        // 8192 个长度为2个字节的数组(2^13 = 8192), SInt16(signed short)
         _outData = (SInt16 *)calloc(8192, sizeof(SInt16));
         _fillAudioDataDelegate = fillAudioDataDelegate;
         _sampleRate = sampleRate;
@@ -122,7 +126,9 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
     // 6. 连接音频结点
     [self makeNodeConnections];
     // 7. 打印当前音频图
+    NSLog(@"CAShow: ------");
     CAShow(_auGraph);
+    NSLog(@"CAShow: ------");
     // 8. 实例化音频图
     status = AUGraphInitialize(_auGraph);
     CheckStatus(status, @"Could not initialize AUGraph", YES);
@@ -205,7 +211,7 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
     // 连接输入结点和转换器结点
     status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _ioNode, 0);
     CheckStatus(status, @"Could not connect I/O node input to mixer node input", YES);
-    // 创建渲染回调
+    // *** 创建渲染回调 ***
     AURenderCallbackStruct callbackStruct;
     callbackStruct.inputProc = &InputRenderCallback; // 函数入口
     callbackStruct.inputProcRefCon = (__bridge void *)self; // 参数传递
@@ -280,10 +286,10 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
             forElement:(UInt32)element
           numberFrames:(UInt32)numFrames
                  flags:(AudioUnitRenderActionFlags *)flags {
-    for (int iBuffer=0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
+    for (int iBuffer = 0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
         memset(ioData->mBuffers[iBuffer].mData, 0, ioData->mBuffers[iBuffer].mDataByteSize);
     }
-    if(_fillAudioDataDelegate) {
+    if (_fillAudioDataDelegate) {
         [_fillAudioDataDelegate fillAudioData:_outData numFrames:numFrames numChannels:_channels];
         for (int iBuffer = 0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
             memcpy((SInt16 *)ioData->mBuffers[iBuffer].mData, _outData, ioData->mBuffers[iBuffer].mDataByteSize);

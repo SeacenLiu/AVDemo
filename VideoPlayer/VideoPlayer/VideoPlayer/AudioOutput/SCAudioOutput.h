@@ -15,22 +15,27 @@
 /// @param frameNum 帧数
 /// @param channels 声道数
 - (NSInteger)fillAudioData:(SInt16*)sampleBuffer
-                  numFrames:(NSInteger)frameNum
-                numChannels:(NSInteger)channels;
+                 numFrames:(NSInteger)frameNum
+               numChannels:(NSInteger)channels;
 
 @end
 
+/**
+ * 音频输出模块
+ * 职责:
+ * 1. 在单独线程中进行音频渲染代理回调
+ */
 @interface SCAudioOutput : NSObject
 
-@property (nonatomic, assign) Float64 sampleRate;
-@property (nonatomic, assign) Float64 channels;
+@property (nonatomic, assign) Float64 sampleRate;    // 采集率
+@property (nonatomic, assign) Float64 channels;      // 声道数
 
 - (instancetype)initWithChannels:(NSInteger)channels
                       sampleRate:(NSInteger)sampleRate
-                  bytesPerSample:(NSInteger) bytePerSample
-               filleDataDelegate:(id<SCFillDataDelegate>) fillAudioDataDelegate;
+                  bytesPerSample:(NSInteger)bytePerSample
+               filleDataDelegate:(id<SCFillDataDelegate>)fillAudioDataDelegate;
 
-- (BOOL) play;
-- (BOOL) stop;
+- (BOOL)play;
+- (BOOL)stop;
 
 @end
