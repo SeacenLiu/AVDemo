@@ -36,14 +36,65 @@ const uint32_t CONST_BUFFER_SIZE = 0x10000;
 }
 
 - (void)play {
-    [self initPlayer];
+    // 按照状态进行播放器准备
+    [self preparePlayer];
+    
     // 调用 AudioOutputUnitStart 开始
     // AudioUnit 会调用之前设置的 PlayCallback，
     // 在回调函数中把音频数据赋值给 AudioBufferList
-    AudioOutputUnitStart(_audioUnit);
+    OSStatus status = AudioOutputUnitStart(_audioUnit);
+    if (status == noErr) {
+        _status = SCPlayerStatusPlay;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(onPlayerRefreshStatus:status:)]) {
+            [self.delegate onPlayerRefreshStatus:self status:SCPlayerStatusPlay];
+        }
+    } else {
+        NSLog(@"播放失败, %d", status);
+    }
 }
 
-- (void)initPlayer {
+- (void)stop {
+    OSStatus status = AudioOutputUnitStop(_audioUnit);
+    if (status == noErr) {
+        _status = SCPlayerStatusStop;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(onPlayerRefreshStatus:status:)]) {
+            [self.delegate onPlayerRefreshStatus:self status:SCPlayerStatusStop];
+        }
+    } else {
+        NSLog(@"暂停失败, %d", status);
+        return;
+    }
+}
+
+- (void)end {
+    OSStatus status = AudioOutputUnitStop(_audioUnit);
+    if (status == noErr) {
+        _status = SCPlayerStatusEnd;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(onPlayerRefreshStatus:status:)]) {
+            [self.delegate onPlayerRefreshStatus:self status:SCPlayerStatusEnd];
+        }
+        if (_buffList != NULL) {
+            if (_buffList->mBuffers[0].mData) {
+                free(_buffList->mBuffers[0].mData);
+                _buffList->mBuffers[0].mData = NULL;
+            }
+            free(_buffList);
+            _buffList = NULL;
+        }
+        [_inputSteam close];
+    } else {
+        NSLog(@"暂停失败, %d", status);
+        return;
+    }
+}
+
+- (void)preparePlayer {
+    // 播放过程中不需要进行重新准备
+    if (_status == SCPlayerStatusPlay ||
+        _status == SCPlayerStatusStop) {
+        return;
+    }
+    // 从文件中读取输入流
     _inputSteam = [NSInputStream inputStreamWithURL:_fileURL];
     if (!_inputSteam) {
         NSLog(@"打开文件失败 %@", _fileURL);
@@ -163,38 +214,22 @@ static OSStatus PlayCallback(void *inRefCon,
                              AudioBufferList *ioData) {
     SCPlayer *player = (__bridge SCPlayer *)inRefCon;
     
-    // 在这里向 ioData 中导入音频数据
+    // 从流中读取固定长度的数据，并导入到 ioData 的指定缓冲区中
     ioData->mBuffers[0].mDataByteSize =
     (UInt32)[player->_inputSteam read:ioData->mBuffers[0].mData
                             maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];;
-    NSLog(@"out size: %d", ioData->mBuffers[0].mDataByteSize);
+    NSLog(@"读入的数据大小(out size): %d", ioData->mBuffers[0].mDataByteSize);
+    
+    player->_buffList = ioData;
 
     // 读不出数据说明已经播放完毕
-    if (ioData->mBuffers[0].mDataByteSize <= 0) {
+    if (ioData->mBuffers[0].mDataByteSize <= 0 ||
+        !(player->_inputSteam.hasBytesAvailable)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [player stop];
         });
     }
     return noErr;
-}
-
-- (void)stop {
-    AudioOutputUnitStop(_audioUnit);
-    if (_buffList != NULL) {
-        if (_buffList->mBuffers[0].mData) {
-            free(_buffList->mBuffers[0].mData);
-            _buffList->mBuffers[0].mData = NULL;
-        }
-        free(_buffList);
-        _buffList = NULL;
-    }
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(onPlayToEnd:)]) {
-        __strong typeof (SCPlayer) *player = self;
-        [self.delegate onPlayToEnd:player];
-    }
-    
-    [_inputSteam close];
 }
 
 - (void)dealloc {

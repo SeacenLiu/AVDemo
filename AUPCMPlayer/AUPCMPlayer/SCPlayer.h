@@ -8,22 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSUInteger {
+    SCPlayerStatusUnknow,
+    SCPlayerStatusPlay,
+    SCPlayerStatusStop,
+    SCPlayerStatusEnd,
+} SCPlayerStatus;
+
 @class SCPlayer;
 @protocol SCPlayerDelegate <NSObject>
 
-// 播放结束回调
-- (void)onPlayToEnd:(SCPlayer *)player;
+- (void)onPlayerRefreshStatus:(SCPlayer *)player status:(SCPlayerStatus)status;
 
 @end
 
 @interface SCPlayer : NSObject
 
 @property (nonatomic, weak) id<SCPlayerDelegate> delegate;
+@property (nonatomic, assign) SCPlayerStatus status;
 
 - (instancetype)initWithFileURL:(NSURL *)fileURL;
 
 - (void)play;
-
-- (double)getCurrentTime;
+- (void)stop;
+- (void)end;
 
 @end
