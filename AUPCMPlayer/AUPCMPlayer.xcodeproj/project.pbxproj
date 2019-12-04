@@ -15,6 +15,8 @@
 		C31A66482396702B00DA1A8F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66472396702B00DA1A8F /* main.m */; };
 		C31A66522396702B00DA1A8F /* AUPCMPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A66512396702B00DA1A8F /* AUPCMPlayerTests.m */; };
 		C31A665D2396702B00DA1A8F /* AUPCMPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A665C2396702B00DA1A8F /* AUPCMPlayerUITests.m */; };
+		C31A666C2396D4FB00DA1A8F /* SCPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = C31A666B2396D4FB00DA1A8F /* SCPlayer.m */; };
+		C31A66742397C5E500DA1A8F /* test.pcm in Resources */ = {isa = PBXBuildFile; fileRef = C31A66732397C5E500DA1A8F /* test.pcm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,9 @@
 		C31A66582396702B00DA1A8F /* AUPCMPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AUPCMPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C31A665C2396702B00DA1A8F /* AUPCMPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUPCMPlayerUITests.m; sourceTree = "<group>"; };
 		C31A665E2396702B00DA1A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C31A666A2396D4FB00DA1A8F /* SCPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCPlayer.h; sourceTree = "<group>"; };
+		C31A666B2396D4FB00DA1A8F /* SCPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCPlayer.m; sourceTree = "<group>"; };
+		C31A66732397C5E500DA1A8F /* test.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.pcm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +106,9 @@
 		C31A66372396702800DA1A8F /* AUPCMPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				C31A666A2396D4FB00DA1A8F /* SCPlayer.h */,
+				C31A666B2396D4FB00DA1A8F /* SCPlayer.m */,
+				C31A66732397C5E500DA1A8F /* test.pcm */,
 				C31A66382396702800DA1A8F /* AppDelegate.h */,
 				C31A66392396702800DA1A8F /* AppDelegate.m */,
 				C31A663B2396702800DA1A8F /* ViewController.h */,
@@ -235,6 +243,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31A66742397C5E500DA1A8F /* test.pcm in Resources */,
 				C31A66452396702A00DA1A8F /* LaunchScreen.storyboard in Resources */,
 				C31A66422396702A00DA1A8F /* Assets.xcassets in Resources */,
 				C31A66402396702800DA1A8F /* Main.storyboard in Resources */,
@@ -262,6 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31A666C2396D4FB00DA1A8F /* SCPlayer.m in Sources */,
 				C31A663D2396702800DA1A8F /* ViewController.m in Sources */,
 				C31A66482396702B00DA1A8F /* main.m in Sources */,
 				C31A663A2396702800DA1A8F /* AppDelegate.m in Sources */,
