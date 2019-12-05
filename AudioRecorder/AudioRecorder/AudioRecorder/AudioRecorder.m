@@ -67,6 +67,7 @@ static const AudioUnitElement outputElement = 0;
 - (void)stop {
     OSStatus status = AUGraphStop(_auGraph);
     CheckStatus(status, @"停止音频图失败", YES);
+    // 关闭文件和释放对象
     ExtAudioFileDispose(finalAudioFile);
 }
 
@@ -264,7 +265,7 @@ static const AudioUnitElement outputElement = 0;
                                      _convertNode, outputElement,
                                      _mixerNode, outputElement);
     CheckStatus(status, @"连接 Convert 的输出到 Mixer 的输入失败", YES);
-    // _mixerNode(OutputElement)->_ioNode(OutputElement) 是默认连接的
+    // _mixerNode(OutputElement)->_ioNode(OutputElement) 是后续通过RenderCallBack获取的
 }
 
 - (void)setupRenderCallback {
@@ -305,8 +306,17 @@ static OSStatus RenderCallback(void *inRefCon,
                                AudioBufferList *ioData) {
     OSStatus result = noErr;
     __unsafe_unretained AudioRecorder *recorder = (__bridge AudioRecorder *)inRefCon;
-    AudioUnitRender(recorder->_mixerUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
-    result = ExtAudioFileWriteAsync(recorder->finalAudioFile, inNumberFrames, ioData);
+    // 将 Mixer 输出的音频数据渲染到 ioData，即连接了 Mixer 与 RemoteIO(OutputElement)
+    AudioUnitRender(recorder->_mixerUnit,
+                    ioActionFlags,
+                    inTimeStamp,
+                    outputElement,
+                    inNumberFrames,
+                    ioData);
+    // 异步向文件中写入数据
+    result = ExtAudioFileWriteAsync(recorder->finalAudioFile,
+                                    inNumberFrames,
+                                    ioData);
     return result;
 }
 
@@ -338,7 +348,7 @@ static OSStatus RenderCallback(void *inRefCon,
                                                             kCFURLPOSIXPathStyle,
                                                             false);
     
-    // 将音频编码为 .m4a(.caf) 格式
+    // 指定文件格式 (.m4a .caf)
     result = ExtAudioFileCreateWithURL(destinationURL,
                                        kAudioFileCAFType,
                                        &destinationFormat,
