@@ -15,6 +15,12 @@
 static const AudioUnitElement inputElement = 1;
 static const AudioUnitElement outputElement = 0;
 
+/** AUGraph 音频流流程（以此为准）
+ * 🎙 -> RemoteIO(InputElement) -[stereoStreamFormat]->
+ * AudioConverter -[clientFormat32float]-> MixerUnit(Bus0)
+ * -[clientFormat32float]-> RemoteIO(OutputElement) -> 🔈
+ */
+
 @interface AudioRecorder ()
 @property (nonatomic, copy)   NSString*          filePath;
 @property (nonatomic, assign) Float64            sampleRate;
@@ -173,12 +179,6 @@ static const AudioUnitElement outputElement = 0;
                          inputElement,
                          &stereoStreamFormat,
                          sizeof(stereoStreamFormat));
-    AudioUnitSetProperty(_ioUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Input,
-                         outputElement,
-                         &clientFormat32float,
-                         sizeof(clientFormat32float));
     // Convert 流格式
     AudioUnitSetProperty(_convertUnit,
                          kAudioUnitProperty_StreamFormat,
@@ -199,8 +199,14 @@ static const AudioUnitElement outputElement = 0;
                          outputElement,
                          &clientFormat32float,
                          sizeof(clientFormat32float));
+    // RemoteIO 流格式
+    AudioUnitSetProperty(_ioUnit,
+                         kAudioUnitProperty_StreamFormat,
+                         kAudioUnitScope_Input,
+                         outputElement,
+                         &clientFormat32float,
+                         sizeof(clientFormat32float));
     /**
-     * RemoteIO(InputElement)->Convert(OutputElement)->Mixer(OutputElement)
      *
      * RemoteIO(InputElement) -stereoStreamFormat->
      *
@@ -209,7 +215,7 @@ static const AudioUnitElement outputElement = 0;
      *
      * -clientFormat32float-> Mixer(OutputElement)
      *
-     * ?-clientFormat32float-> _RemoteIO(OutputElement)?
+     * -clientFormat32float-> _RemoteIO(OutputElement)
      */
 }
 
@@ -244,15 +250,21 @@ static const AudioUnitElement outputElement = 0;
 
 - (void)makeNodeConnections {
     /**
-     * _ioNode(InputElement)->_convertNode(OutputElement)->_mixerNode(OutputElement)
+     * _ioNode(InputElement)->_convertNode(OutputElement)->
+     * _mixerNode(OutputElement)->_ioNode(OutputElement)
      */
     OSStatus status = noErr;
-    // 连接 RemoteIO 的输出端到 Convert 的输入端
-    status = AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _convertNode, 0);
-    CheckStatus(status, @"连接 RemoteIO 的输出端到 Convert 的输入端失败", YES);
-    //  连接 Convert 的输出端到 Mixer 的输入端
-    status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _mixerNode, 0);
-    CheckStatus(status, @"连接 Convert 的输出端到 Mixer 的输入端失败", YES);
+    // 连接 RemoteIO 的输入端到 Convert 的输出端
+    status = AUGraphConnectNodeInput(_auGraph,
+                                     _ioNode, inputElement,
+                                     _convertNode, outputElement);
+    CheckStatus(status, @"连接 RemoteIO 的输出到 Convert 的输入失败", YES);
+    //  连接 Convert 的输出端到 Mixer 的输出端
+    status = AUGraphConnectNodeInput(_auGraph,
+                                     _convertNode, outputElement,
+                                     _mixerNode, outputElement);
+    CheckStatus(status, @"连接 Convert 的输出到 Mixer 的输入失败", YES);
+    // _mixerNode(OutputElement)->_ioNode(OutputElement) 是默认连接的
 }
 
 - (void)setupRenderCallback {
@@ -260,8 +272,11 @@ static const AudioUnitElement outputElement = 0;
     AURenderCallbackStruct finalRenderProc;
     finalRenderProc.inputProc = &RenderCallback;
     finalRenderProc.inputProcRefCon = (__bridge void *)self;
-    status = AUGraphSetNodeInputCallback(_auGraph, _ioNode, 0, &finalRenderProc);
-    CheckStatus(status, @"设置 RemoteIO 输入回调", YES);
+    status = AUGraphSetNodeInputCallback(_auGraph,
+                                         _ioNode,
+                                         outputElement,
+                                         &finalRenderProc);
+    CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
 }
 
 - (void)destroyAudioUnitGraph {
@@ -297,9 +312,9 @@ static OSStatus RenderCallback(void *inRefCon,
 
 #pragma mark - prepare
 - (void)prepareFinalWriteFile {
+    // 目标音频流
     AudioStreamBasicDescription destinationFormat;
     memset(&destinationFormat, 0, sizeof(destinationFormat));
-    
     destinationFormat.mFormatID = kAudioFormatLinearPCM;
     destinationFormat.mSampleRate = _sampleRate;
     // if we want pcm, default to signed 16-bit little-endian
@@ -310,52 +325,64 @@ static OSStatus RenderCallback(void *inRefCon,
     destinationFormat.mFramesPerPacket = 1;
     
     UInt32 size = sizeof(destinationFormat);
-    OSStatus result = AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &destinationFormat);
+    OSStatus result = AudioFormatGetProperty(kAudioFormatProperty_FormatInfo,
+                                             0,
+                                             NULL,
+                                             &size,
+                                             &destinationFormat);
+    if (result)
+        printf("AudioFormatGetProperty %d \n", (int)result);
     
-    if(result) printf("AudioFormatGetProperty %d \n", (int)result);
     CFURLRef destinationURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
                                                             (CFStringRef)_filePath,
                                                             kCFURLPOSIXPathStyle,
                                                             false);
     
-    // specify codec Saving the output in .m4a format
+    // 将音频编码为 .m4a(.caf) 格式
     result = ExtAudioFileCreateWithURL(destinationURL,
                                        kAudioFileCAFType,
                                        &destinationFormat,
                                        NULL,
                                        kAudioFileFlags_EraseFile,
                                        &finalAudioFile);
-    if(result) printf("ExtAudioFileCreateWithURL %d \n", (int)result);
+    if (result)
+        printf("ExtAudioFileCreateWithURL %d \n", (int)result);
     CFRelease(destinationURL);
     
-    // This is a very important part and easiest way to set the ASBD for the File with correct format.
+    // 获取 Mixer 输出端输出域的流格式
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
-    // get the audio data format from the Output Unit
     CheckStatus(AudioUnitGetProperty(_mixerUnit,
                                      kAudioUnitProperty_StreamFormat,
                                      kAudioUnitScope_Output,
-                                     0,
+                                     outputElement,
                                      &clientFormat,
-                                     &fSize),@"AudioUnitGetProperty on failed", YES);
-    
-    // set the audio data format of mixer Unit
+                                     &fSize),
+                @"AudioUnitGetProperty on failed",
+                YES);
+    // 为文件设置指定流格式
     CheckStatus(ExtAudioFileSetProperty(finalAudioFile,
                                         kExtAudioFileProperty_ClientDataFormat,
                                         sizeof(clientFormat),
                                         &clientFormat),
-                @"ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat failed", YES);
+                @"ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat failed",
+                YES);
     
-    
-    // specify codec
+    // 编码设置
     UInt32 codec = kAppleHardwareAudioCodecManufacturer;
     CheckStatus(ExtAudioFileSetProperty(finalAudioFile,
                                         kExtAudioFileProperty_CodecManufacturer,
                                         sizeof(codec),
-                                        &codec),@"ExtAudioFileSetProperty on extAudioFile Faild", YES);
+                                        &codec),
+                @"ExtAudioFileSetProperty on extAudioFile Faild",
+                YES);
     
-    CheckStatus(ExtAudioFileWriteAsync(finalAudioFile, 0, NULL),@"ExtAudioFileWriteAsync Failed", YES);
+    CheckStatus(ExtAudioFileWriteAsync(finalAudioFile,
+                                       0,
+                                       NULL),
+                @"ExtAudioFileWriteAsync Failed",
+                YES);
 }
 
 @end
