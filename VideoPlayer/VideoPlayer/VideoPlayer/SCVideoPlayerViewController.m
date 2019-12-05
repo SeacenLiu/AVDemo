@@ -9,8 +9,8 @@
 #import "SCVideoPlayerViewController.h"
 
 @interface SCVideoPlayerViewController () <SCFillDataDelegate> {
-    SCVideoOutput*                                    _videoOutput;
-    SCAudioOutput*                                    _audioOutput;
+    SCVideoOutput*                                  _videoOutput;   // 视频输出模块
+    SCAudioOutput*                                  _audioOutput;   // 音频输出模块
     NSDictionary*                                   _parameters;
     CGRect                                          _contentFrame;
     
@@ -241,6 +241,7 @@
 }
 
 #pragma mark - 音视频渲染核心方法
+// [_audioOutput play]; 之后播放音频会调用该方法，在这里面再从同步模块中读取音频数据和视频数据
 - (NSInteger)fillAudioData:(SInt16*)sampleBuffer numFrames:(NSInteger)frameNum numChannels:(NSInteger)channels {
     if(_synchronizer && ![_synchronizer isPlayCompleted]){
         [_synchronizer audioCallbackFillData:sampleBuffer numFrames:(UInt32)frameNum numChannels:(UInt32)channels];

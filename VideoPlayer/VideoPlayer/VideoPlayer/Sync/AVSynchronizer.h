@@ -43,6 +43,12 @@ typedef enum OpenState{
 @end
 
 @class VideoFrame;
+/** 音视频同步模块
+ * 1. 组合输入模块(解码模块)、音频队列和视频队列
+ * 2. 获取音频数据和对应时间戳的视频帧
+ * 3. 维护一个解码线程
+ * 4. 根据音频数据和视频数据的数量控制解码器工作
+ */
 @interface AVSynchronizer : NSObject
 
 @property (nonatomic, weak) id<PlayerStateDelegate> playerStateDelegate;

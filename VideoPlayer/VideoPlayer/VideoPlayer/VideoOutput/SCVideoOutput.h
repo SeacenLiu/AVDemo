@@ -10,6 +10,9 @@
 #import "BaseEffectFilter.h"
 
 @class VideoFrame;
+/** 视频输出模块
+ * OpenGL ES 需要专门的渲染线程
+ */
 @interface SCVideoOutput : UIView
 
 - (instancetype)initWithFrame:(CGRect)frame textureWidth:(NSInteger)textureWidth textureHeight:(NSInteger)textureHeight usingHWCodec:(BOOL)usingHWCodec;

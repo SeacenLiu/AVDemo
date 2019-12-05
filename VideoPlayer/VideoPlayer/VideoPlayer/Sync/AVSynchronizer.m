@@ -24,6 +24,7 @@ NSString * const kMAX_BUFFERED_DURATION = @"Max_Buffered_Duration";
 
 @interface AVSynchronizer () {
     
+    // 解码器模块
     VideoDecoder*                                       _decoder;
     BOOL                                                _usingHWCodec;
     BOOL                                                isOnDecoding;
@@ -43,7 +44,9 @@ NSString * const kMAX_BUFFERED_DURATION = @"Max_Buffered_Duration";
     pthread_t                                           videoDecoderThread;
     
     //    dispatch_queue_t                                    _dispatchQueue;
+    // 视频帧队列
     NSMutableArray*                                     _videoFrames;
+    // 音频帧队列
     NSMutableArray*                                     _audioFrames;
     
     /** 分别是当外界需要音频数据和视频数据的时候, 全局变量缓存数据 **/

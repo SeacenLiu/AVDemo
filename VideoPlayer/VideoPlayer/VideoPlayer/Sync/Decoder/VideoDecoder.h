@@ -34,8 +34,8 @@ typedef enum {
 
 @interface Frame : NSObject
 @property (readwrite, nonatomic) FrameType type;     // 类型
-@property (readwrite, nonatomic) CGFloat position;   // 当前位置
-@property (readwrite, nonatomic) CGFloat duration;   // 当前时长
+@property (readwrite, nonatomic) CGFloat position;   // 当前位置（时间戳）
+@property (readwrite, nonatomic) CGFloat duration;   // 当前时长（时间戳）
 @end
 
 @interface AudioFrame : Frame
@@ -46,6 +46,7 @@ typedef enum {
 @property (readwrite, nonatomic) NSUInteger width;          // 视频宽度
 @property (readwrite, nonatomic) NSUInteger height;         // 视频高度
 @property (readwrite, nonatomic) NSUInteger linesize;       // 每一行的字节数（可能比width大）
+// 视频画面数据
 @property (readwrite, nonatomic, strong) NSData *luma;      //
 @property (readwrite, nonatomic, strong) NSData *chromaB;   //
 @property (readwrite, nonatomic, strong) NSData *chromaR;   //
@@ -82,8 +83,8 @@ typedef enum {
     int                         totalVideoFramecount;
     long long                   decodeVideoFrameWasteTimeMills;
     
-    NSArray*                    _videoStreams;
-    NSArray*                    _audioStreams;
+    NSArray*                    _videoStreams;        // 视频流
+    NSArray*                    _audioStreams;        // 音频流
     NSInteger                   _videoStreamIndex;
     NSInteger                   _audioStreamIndex;
     AVCodecContext*             _videoCodecCtx;

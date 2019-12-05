@@ -13,7 +13,7 @@
 
 @interface SCVideoPlayerViewController : UIViewController
 
-@property(nonatomic, retain) AVSynchronizer*                synchronizer;
+@property(nonatomic, retain) AVSynchronizer*                synchronizer;  // 同步器
 @property(nonatomic, retain) NSString*                      videoFilePath;
 @property(nonatomic, assign) BOOL                           usingHWCodec;
 @property(nonatomic, weak) id<PlayerStateDelegate>          playerStateDelegate;
