@@ -24,8 +24,9 @@
 * 5: 启动AudioOutput
 *
 * * 音频图结构
-* _ioNode
-* _convertNode
+*   InputRenderCallback->(clientFormat16int)->convertNodoOutputElement->(streamFormat)
+*   ->"AUGraphConnectNodeInput"->
+*   ioNodeInputElement->(streamFormat)->ioNodeOutputElement->扬声器/耳机播放
 **/
 
 #import "SCAudioOutput.h"
@@ -183,9 +184,13 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
     streamFormat.mBytesPerFrame          = bytesPerSample;
     streamFormat.mChannelsPerFrame       = _channels;
     streamFormat.mBitsPerChannel         = 8 * bytesPerSample;
-    // 1-2: 设置I/O单元在inputElement的输出流格式？
-    status = AudioUnitSetProperty(_ioUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, inputElement,
-    &streamFormat, sizeof(streamFormat));
+    // 1-2: 设置I/O单元在inputElement的输出流端的输入域流格式
+    status = AudioUnitSetProperty(_ioUnit,
+                                  kAudioUnitProperty_StreamFormat,
+                                  kAudioUnitScope_Output,
+                                  inputElement,
+                                  &streamFormat,
+                                  sizeof(streamFormat));
     // 2. 设置转换器单元属性
     // 2-1: 定义客户端流格式
     AudioStreamBasicDescription clientFormat16int;
@@ -199,25 +204,43 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
     clientFormat16int.mBytesPerFrame     = bytesPerSample * _channels;
     clientFormat16int.mChannelsPerFrame  = _channels;
     clientFormat16int.mBitsPerChannel    = 8 * bytesPerSample;
-    // 2-2: 设置转换器单元的输入和输出?
-    status = AudioUnitSetProperty(_convertUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, outputElement, &streamFormat, sizeof(streamFormat));
+    // 2-2: 设置转换器单元的输出端输出域的流格式
+    status = AudioUnitSetProperty(_convertUnit,
+                                  kAudioUnitProperty_StreamFormat,
+                                  kAudioUnitScope_Output,
+                                  outputElement,
+                                  &streamFormat,
+                                  sizeof(streamFormat));
     CheckStatus(status, @"augraph recorder normal unit set client format error", YES);
-    status = AudioUnitSetProperty(_convertUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, outputElement, &clientFormat16int, sizeof(clientFormat16int));
+    // 2-3: 设置转换器单元的输出端输入域的流格式
+    status = AudioUnitSetProperty(_convertUnit,
+                                  kAudioUnitProperty_StreamFormat,
+                                  kAudioUnitScope_Input,
+                                  outputElement,
+                                  &clientFormat16int,
+                                  sizeof(clientFormat16int));
     CheckStatus(status, @"augraph recorder normal unit set client format error", YES);
+    // 转换器: 输入端输入域->输入端输出域->输出端输入域(clientFormat16int)->输出端输出域(streamFormat)
+    // IO单元: 麦克风->输入端输入域->输入端输出域(streamFormat)->应用->输出端输入域->输出端输出域
 }
 
 - (void)makeNodeConnections {
     OSStatus status = noErr;
     // 连接输入结点和转换器结点
+    // 将 _convertNode 输出端链接在 _ioNode 的输入端
     status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _ioNode, 0);
-    CheckStatus(status, @"Could not connect I/O node input to mixer node input", YES);
+    CheckStatus(status, @"Could not connect I/O node input to mixer node output", YES);
     // *** 创建渲染回调 ***
     AURenderCallbackStruct callbackStruct;
     callbackStruct.inputProc = &InputRenderCallback; // 函数入口
     callbackStruct.inputProcRefCon = (__bridge void *)self; // 参数传递
-    // 设置转换器单元的渲染回调
-    status = AudioUnitSetProperty(_convertUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0,
-                                  &callbackStruct, sizeof(callbackStruct));
+    // 设置转换器单元的渲染回调(输出端输入域)
+    status = AudioUnitSetProperty(_convertUnit,
+                                  kAudioUnitProperty_SetRenderCallback,
+                                  kAudioUnitScope_Input,
+                                  outputElement,
+                                  &callbackStruct,
+                                  sizeof(callbackStruct));
     CheckStatus(status, @"Could not set render callback on mixer input scope, element 1", YES);
 }
 
@@ -292,6 +315,7 @@ const float SMAudioIOBufferDurationSmall = 0.0058f;
     if (_fillAudioDataDelegate) {
         [_fillAudioDataDelegate fillAudioData:_outData numFrames:numFrames numChannels:_channels];
         for (int iBuffer = 0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
+            // 将 _outData 拷贝到 ioData->mBuffers[iBuffer].mData 中
             memcpy((SInt16 *)ioData->mBuffers[iBuffer].mData, _outData, ioData->mBuffers[iBuffer].mDataByteSize);
         }
     }

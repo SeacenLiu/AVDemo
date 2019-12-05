@@ -11,9 +11,11 @@
 @protocol SCFillDataDelegate <NSObject>
 
 /// 填充音频数据
+/// @discuss 需要通过该代理方法设置sampleBuffer，用于音频频渲染，注意该方法并不在主线程中调用
 /// @param sampleBuffer 音频数据
 /// @param frameNum 帧数
 /// @param channels 声道数
+/// @return 暂定1为成功，0为失败
 - (NSInteger)fillAudioData:(SInt16*)sampleBuffer
                  numFrames:(NSInteger)frameNum
                numChannels:(NSInteger)channels;
