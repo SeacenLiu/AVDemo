@@ -78,9 +78,9 @@ typedef enum {
     AVFormatContext*            _formatCtx;
     BOOL                        _isOpenInputSuccess;
     
-    BuriedPoint*                _buriedPoint;
+    BuriedPoint*                _buriedPoint;         // 埋点对象
     
-    int                         totalVideoFramecount;
+    int                         totalVideoFramecount; // 视频总帧数
     long long                   decodeVideoFrameWasteTimeMills;
     
     NSArray*                    _videoStreams;        // 视频流
@@ -93,10 +93,14 @@ typedef enum {
     CGFloat                     _audioTimeBase;
 }
 
+// 打开音视频文件
+// - 主要负责建立与媒体资源的连接通道
+// - 读取资源中流的格式信息
 - (BOOL)openFile:(NSString *)path
        parameter:(NSDictionary*)parameters
            error:(NSError **)perror;
 
+// 解码方法
 - (NSArray *)decodeFrames:(CGFloat)minDuration
     decodeVideoErrorState:(int *)decodeVideoErrorState;
 

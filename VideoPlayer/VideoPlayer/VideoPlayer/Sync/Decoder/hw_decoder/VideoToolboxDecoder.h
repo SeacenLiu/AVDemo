@@ -12,7 +12,7 @@
 
 @protocol H264DecoderDelegate <NSObject>
 @optional
--(void) getDecodeImageData:(CVImageBufferRef) imageBuffer;
+- (void) getDecodeImageData:(CVImageBufferRef) imageBuffer;
 @end
 
 @interface VideoToolboxDecoder : VideoDecoder
