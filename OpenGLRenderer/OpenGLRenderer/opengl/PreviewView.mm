@@ -61,8 +61,9 @@
                                         nil];
         
         // 使用GCD队列，用于为OpenGL渲染开辟线程
-        _contextQueue = dispatch_queue_create("com.seacen.video_player.videoRenderQueue", NULL);
-        // --- 串行队列同步执行 ---
+        _contextQueue = dispatch_queue_create("com.seacen.video_player.openGLRenderQueue", NULL);
+        // --- 串行队列同步执行 --
+        // 初始化操作
         dispatch_sync(_contextQueue, ^{
             // EAGL 与 OpenGL ES 建立连接（构建 EAGL 的上下文）
             _context = [self buildEAGLContext];
@@ -77,6 +78,7 @@
             
             // 获取图片的展示信息
             _frame = [self getRGBAFrame:filePath];
+            
             // 初始化渲染器（将图片像素拷贝到OpenGL的纹理上进行展示）
             _frameCopier = [[RGBAFrameCopier alloc] init];
             // 渲染器准备工作
@@ -98,37 +100,40 @@
     }
     // --- 串行队列异步执行 ---
     dispatch_async(_contextQueue, ^{
-        if(_frame) {
-            // 判断是否需要渲染
-            [self.shouldEnableOpenGLLock lock];
-            if (!self.readyToRender || !self.shouldEnableOpenGL) {
-                glFinish();
-                [self.shouldEnableOpenGLLock unlock];
-                return;
-            }
-            [self.shouldEnableOpenGLLock unlock];
-            
-            // *** 绑定部分 ***
-            // 绑定当前上下文环境
-            [EAGLContext setCurrentContext:_context];
-            // 绑定帧缓冲区
-            glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
-            // 绑定渲染缓冲区
-            glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
-            
-            // *** 绘制部分 ***
-            // 规定窗口大小
-            glViewport(0, _backingHeight - _backingWidth - 75, _backingWidth, _backingWidth);
-            // 帧渲染
-            [_frameCopier renderFrame:_frame->pixels];
-            // 展示渲染缓冲区
-            [_context presentRenderbuffer:GL_RENDERBUFFER];
-        }
+        [self coreRender];
     });
 }
 
-- (RGBAFrame*) getRGBAFrame:(NSString*) pngFilePath;
-{
+- (void)coreRender {
+    if (_frame) {
+        // 判断是否需要渲染
+        [self.shouldEnableOpenGLLock lock];
+        if (!self.readyToRender || !self.shouldEnableOpenGL) {
+            glFinish();
+            [self.shouldEnableOpenGLLock unlock];
+            return;
+        }
+        [self.shouldEnableOpenGLLock unlock];
+        
+        // *** 绑定部分 ***
+        // 绑定当前上下文环境
+        [EAGLContext setCurrentContext:_context];
+        // 绑定帧缓冲区
+        glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
+        // 绑定渲染缓冲区
+        glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+        
+        // *** 绘制部分 ***
+        // 规定窗口大小
+        glViewport(0, _backingHeight - _backingWidth - 75, _backingWidth, _backingWidth);
+        // 帧渲染
+        [_frameCopier renderFrame:_frame->pixels];
+        // 展示渲染缓冲区
+        [_context presentRenderbuffer:GL_RENDERBUFFER];
+    }
+}
+
+- (RGBAFrame*)getRGBAFrame:(NSString*)pngFilePath {
     PngPicDecoder* decoder = new PngPicDecoder();
     char* pngPath = (char*)[pngFilePath cStringUsingEncoding:NSUTF8StringEncoding];
     decoder->openFile(pngPath);
@@ -148,20 +153,18 @@
     return frame;
 }
 
-- (EAGLContext*)buildEAGLContext
-{
+- (EAGLContext*)buildEAGLContext {
     return [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 }
 
-- (BOOL)createDisplayFramebuffer;
-{
+- (BOOL)createDisplayFramebuffer {
     BOOL ret = TRUE;
     // 创建帧缓冲区
     glGenFramebuffers(1, &_displayFramebuffer);
-    // 创建绘制缓冲区
-    glGenRenderbuffers(1, &_renderbuffer);
     // 绑定帧缓冲区到渲染管线
     glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
+    // 创建绘制缓冲区
+    glGenRenderbuffers(1, &_renderbuffer);
     // 绑定绘制缓冲区到渲染管线
     glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
     // 为绘制缓冲区分配存储区，此处将 CAEAGLLayer 的绘制存储区作为绘制缓冲区的存储区
@@ -188,11 +191,10 @@
     return ret;
 }
 
-- (void)destroy;
-{
+- (void)destroy {
     _stopping = true;
     dispatch_sync(_contextQueue, ^{
-        if(_frameCopier) {
+        if (_frameCopier) {
             [_frameCopier releaseRender];
         }
         if (_displayFramebuffer) {
@@ -209,8 +211,7 @@
     });
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_contextQueue) {
         _contextQueue = nil;

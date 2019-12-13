@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		14414FEC238F7E47003EE5F2 /* PreviewView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14414FEB238F7E47003EE5F2 /* PreviewView.mm */; };
+		146444C823A3B33200C54EBC /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 146444C623A3B33200C54EBC /* CommonUtil.m */; };
 		14A0A6D6237EA7DF00CE32A7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A6D5237EA7DF00CE32A7 /* AppDelegate.m */; };
 		14A0A6DC237EA7DF00CE32A7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A6DB237EA7DF00CE32A7 /* ViewController.m */; };
 		14A0A6DF237EA7DF00CE32A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A6DD237EA7DF00CE32A7 /* Main.storyboard */; };
@@ -53,7 +54,6 @@
 		14A0A75A237EA96F00CE32A7 /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A736237EA96F00CE32A7 /* pngset.c */; };
 		14A0A75B237EA96F00CE32A7 /* png.5 in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A737237EA96F00CE32A7 /* png.5 */; };
 		14A0A75E237EAB3B00CE32A7 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 14A0A75D237EAB3B00CE32A7 /* 1.png */; };
-		14A0A762237EAB7800CE32A7 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A761237EAB7800CE32A7 /* CommonUtil.m */; };
 		14A0A796237ED2F200CE32A7 /* rgba_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A794237ED2F100CE32A7 /* rgba_frame.cpp */; };
 		14A0A799237ED32F00CE32A7 /* RGBAFrameCopier.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14A0A798237ED32F00CE32A7 /* RGBAFrameCopier.mm */; };
 		C35EEE912390237B008475B3 /* PngPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35EEE902390237B008475B3 /* PngPreviewController.m */; };
@@ -79,6 +79,8 @@
 /* Begin PBXFileReference section */
 		14414FEA238F7E47003EE5F2 /* PreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreviewView.h; sourceTree = "<group>"; };
 		14414FEB238F7E47003EE5F2 /* PreviewView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PreviewView.mm; sourceTree = "<group>"; };
+		146444C623A3B33200C54EBC /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
+		146444C723A3B33200C54EBC /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
 		14A0A6D1237EA7DF00CE32A7 /* OpenGLRenderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGLRenderer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14A0A6D4237EA7DF00CE32A7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		14A0A6D5237EA7DF00CE32A7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -141,8 +143,6 @@
 		14A0A736237EA96F00CE32A7 /* pngset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngset.c; sourceTree = "<group>"; };
 		14A0A737237EA96F00CE32A7 /* png.5 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = png.5; sourceTree = "<group>"; };
 		14A0A75D237EAB3B00CE32A7 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
-		14A0A760237EAB7800CE32A7 /* CommonUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
-		14A0A761237EAB7800CE32A7 /* CommonUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
 		14A0A794237ED2F100CE32A7 /* rgba_frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rgba_frame.cpp; sourceTree = "<group>"; };
 		14A0A795237ED2F100CE32A7 /* rgba_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rgba_frame.h; sourceTree = "<group>"; };
 		14A0A797237ED32E00CE32A7 /* RGBAFrameCopier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBAFrameCopier.h; sourceTree = "<group>"; };
@@ -176,6 +176,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		146444C523A3B33200C54EBC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				146444C623A3B33200C54EBC /* CommonUtil.m */,
+				146444C723A3B33200C54EBC /* CommonUtil.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		14A0A6C8237EA7DF00CE32A7 = {
 			isa = PBXGroup;
 			children = (
@@ -204,7 +213,7 @@
 				14A0A794237ED2F100CE32A7 /* rgba_frame.cpp */,
 				14A0A795237ED2F100CE32A7 /* rgba_frame.h */,
 				14A0A763237EABE400CE32A7 /* opengl */,
-				14A0A75F237EAB4600CE32A7 /* utils */,
+				146444C523A3B33200C54EBC /* Utils */,
 				14A0A75C237EAB2500CE32A7 /* resource */,
 				14A0A709237EA96F00CE32A7 /* 3rdparty */,
 				14A0A6D4237EA7DF00CE32A7 /* AppDelegate.h */,
@@ -304,15 +313,6 @@
 				14A0A75D237EAB3B00CE32A7 /* 1.png */,
 			);
 			path = resource;
-			sourceTree = "<group>";
-		};
-		14A0A75F237EAB4600CE32A7 /* utils */ = {
-			isa = PBXGroup;
-			children = (
-				14A0A760237EAB7800CE32A7 /* CommonUtil.h */,
-				14A0A761237EAB7800CE32A7 /* CommonUtil.m */,
-			);
-			path = utils;
 			sourceTree = "<group>";
 		};
 		14A0A763237EABE400CE32A7 /* opengl */ = {
@@ -479,6 +479,7 @@
 				14A0A74D237EA96F00CE32A7 /* example.c in Sources */,
 				14A0A75A237EA96F00CE32A7 /* pngset.c in Sources */,
 				14A0A755237EA96F00CE32A7 /* pngget.c in Sources */,
+				146444C823A3B33200C54EBC /* CommonUtil.m in Sources */,
 				14A0A757237EA96F00CE32A7 /* pngrtran.c in Sources */,
 				14A0A758237EA96F00CE32A7 /* pngrutil.c in Sources */,
 				14A0A756237EA96F00CE32A7 /* png.c in Sources */,
@@ -492,7 +493,6 @@
 				14A0A6DC237EA7DF00CE32A7 /* ViewController.m in Sources */,
 				14414FEC238F7E47003EE5F2 /* PreviewView.mm in Sources */,
 				14A0A6D6237EA7DF00CE32A7 /* AppDelegate.m in Sources */,
-				14A0A762237EAB7800CE32A7 /* CommonUtil.m in Sources */,
 				C35EEE912390237B008475B3 /* PngPreviewController.m in Sources */,
 				14A0A74A237EA96F00CE32A7 /* pngwutil.c in Sources */,
 				14A0A74E237EA96F00CE32A7 /* png_decoder.cpp in Sources */,

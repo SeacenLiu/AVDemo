@@ -55,8 +55,8 @@ NSString *const rgbFragmentShaderString = SHADER_STRING
     // 输入纹理
     GLuint                              _inputTexture;
 }
-- (BOOL) prepareRender:(NSInteger)textureWidth height:(NSInteger)textureHeight;
-{
+
+- (BOOL)prepareRender:(NSInteger)textureWidth height:(NSInteger)textureHeight {
     BOOL ret = NO;
     frameWidth = textureWidth;
     frameHeight = textureHeight;
@@ -86,8 +86,7 @@ NSString *const rgbFragmentShaderString = SHADER_STRING
 }
 
 #pragma mark - 创建显卡执行程序
-- (BOOL) buildProgram:(NSString*) vertexShader fragmentShader:(NSString*) fragmentShader;
-{
+- (BOOL)buildProgram:(NSString*)vertexShader fragmentShader:(NSString*)fragmentShader {
     BOOL result = NO;
     // 1: 创建程序实例（纹理过滤器）
     filterProgram = glCreateProgram();
@@ -140,8 +139,7 @@ exit:
 }
 
 #pragma mark - 绘制部分
-- (void) renderFrame:(uint8_t*) rgbaFrame;
-{
+- (void)renderFrame:(uint8_t*)rgbaFrame {
     // 使用显卡绘制程序
     glUseProgram(filterProgram);
     
@@ -184,8 +182,7 @@ exit:
 }
 
 // 绘制后的清除逻辑
-- (void) releaseRender;
-{
+- (void)releaseRender {
     if (filterProgram) {
         glDeleteProgram(filterProgram);
         filterProgram = 0;
