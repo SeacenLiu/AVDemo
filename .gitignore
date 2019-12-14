@@ -64,3 +64,4 @@ iOSInjectionProject/
 
 # FFMpeg
 VideoPlayer/VideoPlayer/FFmpeg-iOS
+FDKACCEncoder/FDKACCEncoder/FFmpeg-iOS
