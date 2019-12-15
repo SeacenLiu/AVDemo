@@ -26,7 +26,7 @@
     NSLog(@"FDK AAC Encoder Test...");
     NSString* pcmFilePath = [CommonUtil bundlePath:@"vocal.pcm"];
     NSString* aacFilePath = [CommonUtil documentsPath:@"vocal.aac"];
-    NSLog(@"%@", aacFilePath);
+    // 初始化编码器
     AudioEncoder* encoder = new AudioEncoder();
     int bitsPerSample = 16;
     const char * codec_name = [@"libfdk_aac" cStringUsingEncoding:NSUTF8StringEncoding];
@@ -39,15 +39,19 @@
                   bitsPerSample,
                   [aacFilePath cStringUsingEncoding:NSUTF8StringEncoding],
                   codec_name);
+    // 编码缓冲
     int bufferSize = 1024 * 256;
     byte* buffer = new byte[bufferSize];
+    // 文件读取
     FILE* pcmFileHandle = fopen([pcmFilePath cStringUsingEncoding:NSUTF8StringEncoding], "rb");
     if (pcmFileHandle == NULL) {
         NSLog(@"pcm 文件读取失败");
         return;
     }
+    // 根据缓冲大小循环编码
     size_t readBufferSize = 0;
     while((readBufferSize = fread(buffer, 1, bufferSize, pcmFileHandle)) > 0) {
+        // 核心编码
         encoder->encode(buffer, (int)readBufferSize);
     }
     delete[] buffer;

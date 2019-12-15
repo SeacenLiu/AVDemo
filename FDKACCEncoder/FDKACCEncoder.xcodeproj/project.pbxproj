@@ -282,6 +282,8 @@
 		1464453623A4C18B00C54EBC /* FDKACCEncoder */ = {
 			isa = PBXGroup;
 			children = (
+				1464453D23A4C18B00C54EBC /* ViewController.h */,
+				1464453E23A4C18B00C54EBC /* ViewController.mm */,
 				1464460523A4C51200C54EBC /* audio_encoder.h */,
 				1464460423A4C51200C54EBC /* audio_encoder.cpp */,
 				146446B523A54D6A00C54EBC /* FFmpeg-iOS */,
@@ -291,8 +293,6 @@
 				1464453823A4C18B00C54EBC /* AppDelegate.m */,
 				1464453A23A4C18B00C54EBC /* SceneDelegate.h */,
 				1464453B23A4C18B00C54EBC /* SceneDelegate.m */,
-				1464453D23A4C18B00C54EBC /* ViewController.h */,
-				1464453E23A4C18B00C54EBC /* ViewController.mm */,
 				1464454023A4C18B00C54EBC /* Main.storyboard */,
 				1464454323A4C18C00C54EBC /* Assets.xcassets */,
 				1464454523A4C18C00C54EBC /* LaunchScreen.storyboard */,

@@ -11,11 +11,13 @@ AudioEncoder::~AudioEncoder() {
 #pragma mark - 生成音频流
 int AudioEncoder::alloc_audio_stream(const char * codec_name) {
 	AVCodec *codec; // 编码器
-	AVSampleFormat preferedSampleFMT = AV_SAMPLE_FMT_S16;
-	int preferedChannels = audioChannels;
-	int preferedSampleRate = audioSampleRate;
+	AVSampleFormat preferedSampleFMT = AV_SAMPLE_FMT_S16; // signed 16 bits
+	int preferedChannels = audioChannels; // 声道数
+	int preferedSampleRate = audioSampleRate; // 音频采样率
+    // 创建音频流
 	audioStream = avformat_new_stream(avFormatContext, NULL);
 	audioStream->id = 1;
+    // 创建编码上下文
 	avCodecContext = audioStream->codec;
 	avCodecContext->codec_type = AVMEDIA_TYPE_AUDIO;
 	avCodecContext->sample_rate = audioSampleRate;
@@ -31,15 +33,13 @@ int AudioEncoder::alloc_audio_stream(const char * codec_name) {
 	avCodecContext->profile = FF_PROFILE_AAC_LOW;
 	LOGI("avCodecContext->channels is %d", avCodecContext->channels);
 	avCodecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-    /* find the MP3 encoder */
-//    codec = avcodec_find_encoder(AV_CODEC_ID_MP3);
+    // 根据名字获取编码器
 	codec = avcodec_find_encoder_by_name(codec_name);
 	if (!codec) {
 		LOGI("Couldn't find a valid audio codec");
 		return -1;
 	}
-	avCodecContext->codec_id = codec->id;
+	avCodecContext->codec_id = codec->id; // 设置编码上下文的编码器ID，指明使用的编码器
 
 	if (codec->sample_fmts) {
 		/* check if the prefered sample format for this codec is supported.
@@ -48,6 +48,8 @@ int AudioEncoder::alloc_audio_stream(const char * codec_name) {
 		 */
 		const enum AVSampleFormat *p = codec->sample_fmts;
 		for (; *p != -1; p++) {
+            // audioStream->codecpar->format 替代 audioStream->codec->sample_fmt
+            // format 与 sample_fmt 枚举值一一对应
 			if (*p == audioStream->codec->sample_fmt)
 				break;
 		}
@@ -58,11 +60,13 @@ int AudioEncoder::alloc_audio_stream(const char * codec_name) {
 		}
 	}
 
+    // 最优采样率设置
 	if (codec->supported_samplerates) {
-		const int *p = codec->supported_samplerates;
+		const int *p = codec->supported_samplerates; // 所有支持的采样率
 		int best = 0;
 		int best_dist = INT_MAX;
 		for (; *p; p++) {
+            // 找与音频流最接近的采样率进行设置
 			int dist = abs(audioStream->codec->sample_rate - *p);
 			if (dist < best_dist) {
 				best_dist = dist;
@@ -72,12 +76,15 @@ int AudioEncoder::alloc_audio_stream(const char * codec_name) {
 		/* best is the closest supported sample rate (same as selected if best_dist == 0) */
 		avCodecContext->sample_rate = best;
 	}
-	if ( preferedChannels != avCodecContext->channels
-			|| preferedSampleRate != avCodecContext->sample_rate
-			|| preferedSampleFMT != avCodecContext->sample_fmt) {
+    // 检查外部设置的参数是否和编码器上下文相符合
+    // 不一样的话就需要进行重采样，向编码上下文靠拢
+	if (preferedChannels != avCodecContext->channels         // 声道数
+        || preferedSampleRate != avCodecContext->sample_rate // 采样率
+        || preferedSampleFMT != avCodecContext->sample_fmt)  // 样本格式
+    {
 		LOGI("channels is {%d, %d}", preferedChannels, audioStream->codec->channels);
 		LOGI("sample_rate is {%d, %d}", preferedSampleRate, audioStream->codec->sample_rate);
-		LOGI("sample_fmt is {%d, %d}", preferedSampleFMT, audioStream->codec->sample_fmt);
+		LOGI("sample_fmt is {%d, %d}", preferedSampleFMT, audioStream->codecpar->format);
 		LOGI("AV_SAMPLE_FMT_S16P is %d AV_SAMPLE_FMT_S16 is %d AV_SAMPLE_FMT_FLTP is %d", AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_FLTP);
 		swrContext = swr_alloc_set_opts(NULL,
 						av_get_default_channel_layout(avCodecContext->channels),
@@ -194,38 +201,36 @@ int AudioEncoder::init(int bitRate,
 	this->audioChannels = channels;
 	this->audioSampleRate = sampleRate;
     
-	int ret = 0;
+    int ret = 0;
     // 注册所有编码器、解码器和比特流过滤器
-	avcodec_register_all();
+    avcodec_register_all();
     // 初始化libavformat并注册所有的muxer、demuxer和协议
-	av_register_all();
+    av_register_all();
     
     // 创建 avformat 上下文
-	avFormatContext = avformat_alloc_context();
-    // 读入指定文件的格式
-	LOGI("aacFilePath is %s ", aacFilePath);
+    avFormatContext = avformat_alloc_context();
+    // 读取文件的格式信息
     ret = avformat_alloc_output_context2(&avFormatContext, NULL, NULL, aacFilePath);
-	if (ret < 0) {
-		LOGI("avFormatContext   alloc   failed : %s", av_err2str(ret));
-		return -1;
-	}
+    if (ret < 0) {
+        LOGI("avFormatContext alloc failed : %s", av_err2str(ret));
+        return -1;
+    }
 
-	/**
+    LOGI("aacFilePath is %s ", aacFilePath);
+    /**
      * 作用：打开文件链接通道
-	 * decoding: 在 avformat_open_input() 之前调用
-	 * encoding: 在 avformat_write_header() 之前调用（主要用于AVFMT_NOFILE格式）
-	 * 如果回调用于打开文件，也应该通过使用 avio_open2()。
-	 */
+     * decoding: 在 avformat_open_input() 之前调用
+     * encoding: 在 avformat_write_header() 之前调用（主要用于AVFMT_NOFILE格式）
+     * 如果回调用于打开文件，也应该通过使用 avio_open2()。
+     */
     ret = avio_open2(&avFormatContext->pb, aacFilePath, AVIO_FLAG_WRITE, NULL, NULL);
 	if (ret < 0) {
 		LOGI("Could not avio open fail %s", av_err2str(ret));
 		return -1;
 	}
 
-    // 生成音频流
+    // 根据编码名称生成音频流
 	this->alloc_audio_stream(codec_name);
-//	this->alloc_audio_stream("libfaac");
-//	this->alloc_audio_stream("libvo_aacenc");
     
     // 打印关于输入或输出格式的详细信息，
     // 如持续时间、比特率、流、容器、程序、元数据、边数据、编解码器和时间基点。
@@ -270,12 +275,12 @@ void AudioEncoder::encode(byte* buffer, int size) {
 
 #pragma mark - 编码打包
 void AudioEncoder::encodePacket() {
-//	LOGI("begin encode packet..................");
+	LOGI("begin encode packet..................");
 	int ret, got_output;
 	AVPacket pkt;
 	av_init_packet(&pkt);
 	AVFrame* encode_frame;
-	if(swrContext) {
+	if (swrContext) {
 		swr_convert(swrContext, convert_data, avCodecContext->frame_size,
 				(const uint8_t**)input_frame->data, avCodecContext->frame_size);
 		int length = avCodecContext->frame_size * av_get_bytes_per_sample(avCodecContext->sample_fmt);
