@@ -20,6 +20,7 @@
 		1454C91E23A7A13F00393B93 /* vocal.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 1454C91D23A7A13F00393B93 /* vocal.pcm */; };
 		1454C92223A7A16A00393B93 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C92023A7A16A00393B93 /* CommonUtil.m */; };
 		1454C92523A7A19B00393B93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1454C92423A7A19B00393B93 /* AudioToolbox.framework */; };
+		1454C92823A7A21000393B93 /* AudioToolboxEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C92723A7A21000393B93 /* AudioToolboxEncoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,8 @@
 		1454C92023A7A16A00393B93 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
 		1454C92123A7A16A00393B93 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
 		1454C92423A7A19B00393B93 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		1454C92623A7A21000393B93 /* AudioToolboxEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioToolboxEncoder.h; sourceTree = "<group>"; };
+		1454C92723A7A21000393B93 /* AudioToolboxEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioToolboxEncoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,8 @@
 		1454C8E423A7A10900393B93 /* AudioToolboxEncoder */ = {
 			isa = PBXGroup;
 			children = (
+				1454C92623A7A21000393B93 /* AudioToolboxEncoder.h */,
+				1454C92723A7A21000393B93 /* AudioToolboxEncoder.m */,
 				1454C8EB23A7A10900393B93 /* ViewController.h */,
 				1454C8EC23A7A10900393B93 /* ViewController.m */,
 				1454C91F23A7A16A00393B93 /* Utils */,
@@ -311,6 +316,7 @@
 				1454C92223A7A16A00393B93 /* CommonUtil.m in Sources */,
 				1454C8ED23A7A10900393B93 /* ViewController.m in Sources */,
 				1454C8E723A7A10900393B93 /* AppDelegate.m in Sources */,
+				1454C92823A7A21000393B93 /* AudioToolboxEncoder.m in Sources */,
 				1454C8F823A7A10B00393B93 /* main.m in Sources */,
 				1454C8EA23A7A10900393B93 /* SceneDelegate.m in Sources */,
 			);
