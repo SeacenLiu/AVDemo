@@ -71,7 +71,7 @@
 - (void)outputAACPakcet:(NSData*)data
   presentationTimeMills:(int64_t)presentationTimeMills
                   error:(NSError*)error {
-    if (error == nil) {
+    if (error == nil) { // 将编码好的数据写进文件
         [_aacFileHandle writeData:data];
     } else {
         NSLog(@"Output AAC Packet return Error:%@", error);

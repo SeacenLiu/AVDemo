@@ -10,22 +10,23 @@
 
 @interface AudioToolboxEncoder()
 
-@property(nonatomic) AudioConverterRef      audioConverter;
-@property(nonatomic) uint8_t*               aacBuffer;
-@property(nonatomic) UInt32                 aacBufferSize;
-@property(nonatomic) uint8_t*               pcmBuffer;
-@property(nonatomic) size_t                 pcmBufferSize;
+@property (nonatomic) AudioConverterRef      audioConverter;
 
-@property(nonatomic) UInt32                 channels;
-@property(nonatomic) NSInteger              inputSampleRate;
+@property (nonatomic) uint8_t*               aacBuffer;
+@property (nonatomic) UInt32                 aacBufferSize;
+@property (nonatomic) uint8_t*               pcmBuffer;
+@property (nonatomic) size_t                 pcmBufferSize;
 
-@property(nonatomic) BOOL                   isCompletion;
-@property(nonatomic) BOOL                   withADTSHeader;
+@property (nonatomic) UInt32                 channels;
+@property (nonatomic) NSInteger              inputSampleRate;
 
-@property(nonatomic) int64_t                presentationTimeMills;
+@property (nonatomic) BOOL                   isCompletion;
+@property (nonatomic) BOOL                   withADTSHeader;
 
-// copy???
+@property (nonatomic) int64_t                presentationTimeMills;
+
 @property (readwrite, weak) id<AudioToolboxEncoderFillDataDelegate> fillAudioDataDelegate;
+
 @end
 
 @implementation AudioToolboxEncoder
@@ -36,6 +37,7 @@
                     withADTSHeader:(BOOL)withADTSHeader
                  filleDataDelegate:(id<AudioToolboxEncoderFillDataDelegate>) fillAudioDataDelegate {
     if(self = [super init]) {
+        // 初始化属性
         _audioConverter = NULL;
         _inputSampleRate = inputSampleRate;
         _pcmBuffer = NULL;
@@ -46,8 +48,10 @@
         _channels = channels;
         _withADTSHeader = withADTSHeader;
         _fillAudioDataDelegate = fillAudioDataDelegate;
+        // 配置编码器
         [self setupEncoderWithSampleRate:inputSampleRate channels:channels bitRate:bitRate];
-        dispatch_queue_t encoderQueue = dispatch_queue_create("AAC Encoder Queue", DISPATCH_QUEUE_SERIAL);
+        // 在指定的编码线程中进行异步解码操作
+        dispatch_queue_t encoderQueue = dispatch_queue_create("com.seacen.acc.encoder", DISPATCH_QUEUE_SERIAL);
         dispatch_async(encoderQueue, ^{
             [self encoder];
         });
@@ -55,58 +59,71 @@
     return self;
 }
 
+#pragma mark - 配置编码器
 - (void)setupEncoderWithSampleRate:(NSInteger)inputSampleRate
                           channels:(int)channels
                            bitRate:(UInt32)bitRate {
-    //构建InputABSD
+    // 构建输入流描述(InputABSD)
     AudioStreamBasicDescription inAudioStreamBasicDescription = {0};
-    UInt32 bytesPerSample = sizeof (SInt16);
-    inAudioStreamBasicDescription.mFormatID = kAudioFormatLinearPCM;
-    inAudioStreamBasicDescription.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    inAudioStreamBasicDescription.mBytesPerPacket = bytesPerSample * channels;
-    inAudioStreamBasicDescription.mBytesPerFrame = bytesPerSample * channels;
-    inAudioStreamBasicDescription.mChannelsPerFrame = channels;
-    inAudioStreamBasicDescription.mFramesPerPacket = 1;
-    inAudioStreamBasicDescription.mBitsPerChannel = 8 * channels;
-    inAudioStreamBasicDescription.mSampleRate = inputSampleRate;
-    inAudioStreamBasicDescription.mReserved = 0;
-    //构造OutputABSD
+    UInt32 bytesPerSample = sizeof (SInt16); // 样本字节数
+    inAudioStreamBasicDescription.mFormatID = kAudioFormatLinearPCM; // PCM 样本格式
+    inAudioStreamBasicDescription.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked; // SInt16 并且可组包
+    inAudioStreamBasicDescription.mBytesPerPacket = bytesPerSample * channels; // 每个包的字节数
+    inAudioStreamBasicDescription.mBytesPerFrame = bytesPerSample * channels; // 每一帧的字节数
+    inAudioStreamBasicDescription.mChannelsPerFrame = channels; // 声道数
+    inAudioStreamBasicDescription.mFramesPerPacket = 1; // 每一包的帧数
+    inAudioStreamBasicDescription.mBitsPerChannel = 8 * channels; // 每一个声道的二进制数
+    inAudioStreamBasicDescription.mSampleRate = inputSampleRate; // 输入的采样率
+    inAudioStreamBasicDescription.mReserved = 0; // 保留字段
+    // 构建输出流描述(OutputABSD)
     AudioStreamBasicDescription outAudioStreamBasicDescription = {0};
     outAudioStreamBasicDescription.mSampleRate = inAudioStreamBasicDescription.mSampleRate;
     outAudioStreamBasicDescription.mFormatID = kAudioFormatMPEG4AAC; // 设置编码格式
     outAudioStreamBasicDescription.mFormatFlags = kMPEG4Object_AAC_LC; // 无损编码 ，0表示没有
     outAudioStreamBasicDescription.mBytesPerPacket = 0;
-    outAudioStreamBasicDescription.mFramesPerPacket = 1024;
+    outAudioStreamBasicDescription.mFramesPerPacket = 1024; // ACC 编码要求的帧大小
     outAudioStreamBasicDescription.mBytesPerFrame = 0;
     outAudioStreamBasicDescription.mChannelsPerFrame = inAudioStreamBasicDescription.mChannelsPerFrame;
     outAudioStreamBasicDescription.mBitsPerChannel = 0;
     outAudioStreamBasicDescription.mReserved = 0;
-    //构造编码器类的描述
+    // 构建编码器类描述（软编带有硬件加速）
     AudioClassDescription *description = [self
                                           getAudioClassDescriptionWithType:kAudioFormatMPEG4AAC
-                                          fromManufacturer:kAppleSoftwareAudioCodecManufacturer]; //软编
-    //构建AudioConverter
-    OSStatus status = AudioConverterNewSpecific(&inAudioStreamBasicDescription, &outAudioStreamBasicDescription, 1, description, &_audioConverter);
+                                          fromManufacturer:kAppleSoftwareAudioCodecManufacturer];
+    // 构建 AudioConverter
+    OSStatus status = AudioConverterNewSpecific(&inAudioStreamBasicDescription,
+                                                &outAudioStreamBasicDescription,
+                                                1, // 实例数量
+                                                description,
+                                                &_audioConverter);
     if (status != 0) {
         NSLog(@"setup converter: %d", (int)status);
     }
+    // 设置 _audioConverter 的比特率
     UInt32 ulSize = sizeof(bitRate);
-    status = AudioConverterSetProperty(_audioConverter, kAudioConverterEncodeBitRate, ulSize, &bitRate);
+    status = AudioConverterSetProperty(_audioConverter,
+                                       kAudioConverterEncodeBitRate,
+                                       ulSize,
+                                       &bitRate);
+    // 设置 _audioConverter 最大输出包大小
     UInt32 size = sizeof(_aacBufferSize);
-    AudioConverterGetProperty(_audioConverter, kAudioConverterPropertyMaximumOutputPacketSize, &size, &_aacBufferSize);
+    AudioConverterGetProperty(_audioConverter,
+                              kAudioConverterPropertyMaximumOutputPacketSize,
+                              &size,
+                              &_aacBufferSize);
     NSLog(@"Expected BitRate is %@, Output PacketSize is %d", @(bitRate), _aacBufferSize);
-//    _aacBufferSize = 1024;
+    // 置空 _aacBuffer
     _aacBuffer = malloc(_aacBufferSize * sizeof(uint8_t));
     memset(_aacBuffer, 0, _aacBufferSize);
 }
 
+// 根据根据类型和厂商建设
 - (AudioClassDescription *)getAudioClassDescriptionWithType:(UInt32)type
                                            fromManufacturer:(UInt32)manufacturer {
-    static AudioClassDescription desc;
-    
-    UInt32 encoderSpecifier = type;
     OSStatus st;
-    
+    static AudioClassDescription desc;
+    // 获取 type 类型的 Encoders 属性大小
+    UInt32 encoderSpecifier = type;
     UInt32 size;
     st = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders,
                                     sizeof(encoderSpecifier),
@@ -116,7 +133,7 @@
         NSLog(@"error getting audio format propery info: %d", (int)(st));
         return nil;
     }
-    
+    // 查看这些编码器是否有符合厂商要求的
     unsigned int count = size / sizeof(AudioClassDescription);
     AudioClassDescription descriptions[count];
     st = AudioFormatGetProperty(kAudioFormatProperty_Encoders,
@@ -128,7 +145,6 @@
         NSLog(@"error getting audio format propery: %d", (int)(st));
         return nil;
     }
-    
     for (unsigned int i = 0; i < count; i++) {
         if ((type == descriptions[i].mSubType) &&
             (manufacturer == descriptions[i].mManufacturer)) {
@@ -140,24 +156,37 @@
     return nil;
 }
 
+#pragma mark - （*）编码方法
 - (void)encoder {
     while (!_isCompletion) {
         NSData* outputData = nil;
         if (_audioConverter) {
             NSError *error = nil;
+            // 初始化输出音频缓冲
             AudioBufferList outAudioBufferList = {0};
             outAudioBufferList.mNumberBuffers = 1;
             outAudioBufferList.mBuffers[0].mNumberChannels = _channels;
             outAudioBufferList.mBuffers[0].mDataByteSize = (int)_aacBufferSize;
             outAudioBufferList.mBuffers[0].mData = _aacBuffer;
+            // 构建音频流包描述
             AudioStreamPacketDescription *outPacketDescription = NULL;
             UInt32 ioOutputDataPacketSize = 1;
+            
+            // 重要！！！
             // Converts data supplied by an input callback function, supporting non-interleaved and packetized formats.
             // Produces a buffer list of output data from an AudioConverter. The supplied input callback function is called whenever necessary.
-            OSStatus status = AudioConverterFillComplexBuffer(_audioConverter, inInputDataProc, (__bridge void *)(self), &ioOutputDataPacketSize, &outAudioBufferList, outPacketDescription);
+            // 编码器设置数据输入回调(支持非交错和分组格式)
+            // 通过 inInputDataProc 填充数据，系统会直接向 outAudioBufferList 导入输出音频数据
+            OSStatus status = AudioConverterFillComplexBuffer(_audioConverter,
+                                                              inInputDataProc,
+                                                              (__bridge void *)(self),
+                                                              &ioOutputDataPacketSize,
+                                                              &outAudioBufferList,
+                                                              outPacketDescription);
             if (status == 0) {
-                NSData *rawAAC = [NSData dataWithBytes:outAudioBufferList.mBuffers[0].mData length:outAudioBufferList.mBuffers[0].mDataByteSize];
-                if(_withADTSHeader) {
+                NSData *rawAAC = [NSData dataWithBytes:outAudioBufferList.mBuffers[0].mData
+                                                length:outAudioBufferList.mBuffers[0].mDataByteSize];
+                if (_withADTSHeader) {
                     NSData *adtsHeader = [self adtsDataForPacketLength:rawAAC.length];
                     NSMutableData *fullData = [NSMutableData dataWithData:adtsHeader];
                     [fullData appendData:rawAAC];
@@ -169,14 +198,16 @@
                 error = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:nil];
             }
             if (_fillAudioDataDelegate  && [_fillAudioDataDelegate respondsToSelector:@selector(outputAACPakcet:presentationTimeMills:error:)]) {
-                [_fillAudioDataDelegate outputAACPakcet:outputData presentationTimeMills:_presentationTimeMills error:error];
+                [_fillAudioDataDelegate outputAACPakcet:outputData
+                                  presentationTimeMills:_presentationTimeMills
+                                                  error:error];
             }
         } else {
             NSLog(@"Audio Converter Init Failed...");
             break;
         }
     }
-    if(_fillAudioDataDelegate && [_fillAudioDataDelegate respondsToSelector:@selector(onCompletion)]) {
+    if (_fillAudioDataDelegate && [_fillAudioDataDelegate respondsToSelector:@selector(onCompletion)]) {
         [_fillAudioDataDelegate onCompletion];
     }
 }
@@ -194,6 +225,7 @@ OSStatus inInputDataProc(AudioConverterRef inAudioConverter,
     return [encoder fillAudioRawData:ioData ioNumberDataPackets:ioNumberDataPackets];
 }
 
+#pragma mark - 填充音频原数据
 - (OSStatus)fillAudioRawData:(AudioBufferList *)ioData
          ioNumberDataPackets:(UInt32 *)ioNumberDataPackets {
     UInt32 requestedPackets = *ioNumberDataPackets;
@@ -202,6 +234,7 @@ OSStatus inInputDataProc(AudioConverterRef inAudioConverter,
     if(NULL == _pcmBuffer) {
         _pcmBuffer = malloc(bufferLength);
     }
+    // 在代理中获取数据
     if(_fillAudioDataDelegate && [_fillAudioDataDelegate respondsToSelector:@selector(fillAudioData:bufferSize:)]) {
         bufferRead = [_fillAudioDataDelegate fillAudioData:_pcmBuffer bufferSize:bufferLength];
     }
@@ -211,6 +244,7 @@ OSStatus inInputDataProc(AudioConverterRef inAudioConverter,
         return -1;
     }
     _presentationTimeMills += (float)requestedPackets * 1000 / (float)_inputSampleRate;
+    // 进行 ioData 的数据填充
     ioData->mBuffers[0].mData = _pcmBuffer;
     ioData->mBuffers[0].mDataByteSize = bufferRead;
     ioData->mNumberBuffers = 1;
@@ -260,5 +294,6 @@ OSStatus inInputDataProc(AudioConverterRef inAudioConverter,
     }
     AudioConverterDispose(_audioConverter);
 }
+
 @end
 
