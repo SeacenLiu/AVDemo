@@ -2,12 +2,12 @@
 //  ViewController.m
 //  VideoToolboxEncoder
 //
-//  Created by SeacenLiu on 2019/12/18.
-//  Copyright © 2019 SeacenLiu. All rights reserved.
+//  Created by apple on 2017/2/23.
+//  Copyright © 2017年 xiaokai.zhan. All rights reserved.
 //
 
 #import "ViewController.h"
-#import "SCPushStreamViewController.h"
+#import "ELPushStreamViewController.h"
 
 @interface ViewController ()
 
@@ -15,13 +15,20 @@
 
 @implementation ViewController
 
-- (IBAction)preViewClick:(id)sender {
-    
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (IBAction)forward:(id)sender {
+    NSLog(@"forward To Preview...");
+    ELPushStreamViewController* viewController = [[ELPushStreamViewController alloc] init];
+    [[self navigationController] pushViewController:viewController animated:YES];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 

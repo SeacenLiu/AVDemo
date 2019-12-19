@@ -2,8 +2,8 @@
 //  ViewController.h
 //  VideoToolboxEncoder
 //
-//  Created by SeacenLiu on 2019/12/18.
-//  Copyright © 2019 SeacenLiu. All rights reserved.
+//  Created by apple on 2017/2/23.
+//  Copyright © 2017年 xiaokai.zhan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

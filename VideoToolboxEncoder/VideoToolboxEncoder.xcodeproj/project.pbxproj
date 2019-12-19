@@ -17,8 +17,21 @@
 		1454C95223AA6BC000393B93 /* VideoToolboxEncoderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C95123AA6BC000393B93 /* VideoToolboxEncoderTests.m */; };
 		1454C95D23AA6BC000393B93 /* VideoToolboxEncoderUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C95C23AA6BC000393B93 /* VideoToolboxEncoderUITests.m */; };
 		1454C96E23AA6C2900393B93 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1454C96D23AA6C2900393B93 /* VideoToolbox.framework */; };
-		1454C97223AA6C8B00393B93 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C97023AA6C8B00393B93 /* CommonUtil.m */; };
-		1454C97523AA6D2100393B93 /* SCPushStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C97423AA6D2100393B93 /* SCPushStreamViewController.m */; };
+		1454CA2C23ABC29700393B93 /* ELPushStreamViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA0B23ABC29700393B93 /* ELPushStreamViewController.mm */; };
+		1454CA2D23ABC29700393B93 /* H264HwEncoderImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1023ABC29700393B93 /* H264HwEncoderImpl.mm */; };
+		1454CA2E23ABC29700393B93 /* H264HwEncoderHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1123ABC29700393B93 /* H264HwEncoderHandler.mm */; };
+		1454CA2F23ABC29700393B93 /* ELImageCameraRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1323ABC29700393B93 /* ELImageCameraRenderer.m */; };
+		1454CA3023ABC29700393B93 /* ELImageVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1523ABC29700393B93 /* ELImageVideoCamera.m */; };
+		1454CA3123ABC29700393B93 /* ELImageVideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1923ABC29700393B93 /* ELImageVideoEncoder.m */; };
+		1454CA3223ABC29700393B93 /* ELImageEncoderRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1A23ABC29700393B93 /* ELImageEncoderRenderer.mm */; };
+		1454CA3323ABC29700393B93 /* ELImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA1B23ABC29700393B93 /* ELImageView.m */; };
+		1454CA3423ABC29700393B93 /* ELImageOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2023ABC29700393B93 /* ELImageOutput.m */; };
+		1454CA3523ABC29700393B93 /* ELImageDirectPassRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2123ABC29700393B93 /* ELImageDirectPassRenderer.m */; };
+		1454CA3623ABC29700393B93 /* ELImageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2323ABC29700393B93 /* ELImageContext.m */; };
+		1454CA3723ABC29700393B93 /* ELImageProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2823ABC29700393B93 /* ELImageProgram.m */; };
+		1454CA3823ABC29700393B93 /* ELImageTextureFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2923ABC29700393B93 /* ELImageTextureFrame.m */; };
+		1454CA3923ABC29700393B93 /* ELImageVideoScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA2A23ABC29700393B93 /* ELImageVideoScheduler.m */; };
+		1454CA3C23ABC30600393B93 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454CA3B23ABC30600393B93 /* CommonUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,10 +71,37 @@
 		1454C95C23AA6BC000393B93 /* VideoToolboxEncoderUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoToolboxEncoderUITests.m; sourceTree = "<group>"; };
 		1454C95E23AA6BC000393B93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1454C96D23AA6C2900393B93 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
-		1454C97023AA6C8B00393B93 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
-		1454C97123AA6C8B00393B93 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
-		1454C97323AA6D2100393B93 /* SCPushStreamViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCPushStreamViewController.h; sourceTree = "<group>"; };
-		1454C97423AA6D2100393B93 /* SCPushStreamViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCPushStreamViewController.m; sourceTree = "<group>"; };
+		1454CA0A23ABC29700393B93 /* ELPushStreamConfigeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ELPushStreamConfigeration.h; path = "../../../../Block/music-video-guide/iOS-VideoToolboxEncoder/VideoToolboxEncoder/ELPushStreamConfigeration.h"; sourceTree = "<group>"; };
+		1454CA0B23ABC29700393B93 /* ELPushStreamViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ELPushStreamViewController.mm; path = "../../../../Block/music-video-guide/iOS-VideoToolboxEncoder/VideoToolboxEncoder/ELPushStreamViewController.mm"; sourceTree = "<group>"; };
+		1454CA0E23ABC29700393B93 /* H264HwEncoderImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = H264HwEncoderImpl.h; sourceTree = "<group>"; };
+		1454CA0F23ABC29700393B93 /* H264HwEncoderHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = H264HwEncoderHandler.h; sourceTree = "<group>"; };
+		1454CA1023ABC29700393B93 /* H264HwEncoderImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = H264HwEncoderImpl.mm; sourceTree = "<group>"; };
+		1454CA1123ABC29700393B93 /* H264HwEncoderHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = H264HwEncoderHandler.mm; sourceTree = "<group>"; };
+		1454CA1323ABC29700393B93 /* ELImageCameraRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageCameraRenderer.m; sourceTree = "<group>"; };
+		1454CA1423ABC29700393B93 /* ELImageVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageVideoCamera.h; sourceTree = "<group>"; };
+		1454CA1523ABC29700393B93 /* ELImageVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageVideoCamera.m; sourceTree = "<group>"; };
+		1454CA1623ABC29700393B93 /* ELImageCameraRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageCameraRenderer.h; sourceTree = "<group>"; };
+		1454CA1723ABC29700393B93 /* ELImageVideoScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageVideoScheduler.h; sourceTree = "<group>"; };
+		1454CA1923ABC29700393B93 /* ELImageVideoEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageVideoEncoder.m; sourceTree = "<group>"; };
+		1454CA1A23ABC29700393B93 /* ELImageEncoderRenderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ELImageEncoderRenderer.mm; sourceTree = "<group>"; };
+		1454CA1B23ABC29700393B93 /* ELImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageView.m; sourceTree = "<group>"; };
+		1454CA1C23ABC29700393B93 /* ELImageVideoEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageVideoEncoder.h; sourceTree = "<group>"; };
+		1454CA1D23ABC29700393B93 /* ELImageEncoderRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageEncoderRenderer.h; sourceTree = "<group>"; };
+		1454CA1E23ABC29700393B93 /* ELImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageView.h; sourceTree = "<group>"; };
+		1454CA2023ABC29700393B93 /* ELImageOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageOutput.m; sourceTree = "<group>"; };
+		1454CA2123ABC29700393B93 /* ELImageDirectPassRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageDirectPassRenderer.m; sourceTree = "<group>"; };
+		1454CA2223ABC29700393B93 /* ELImageProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageProgram.h; sourceTree = "<group>"; };
+		1454CA2323ABC29700393B93 /* ELImageContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageContext.m; sourceTree = "<group>"; };
+		1454CA2423ABC29700393B93 /* ELImageTextureFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageTextureFrame.h; sourceTree = "<group>"; };
+		1454CA2523ABC29700393B93 /* ELImageDirectPassRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageDirectPassRenderer.h; sourceTree = "<group>"; };
+		1454CA2623ABC29700393B93 /* ELImageOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageOutput.h; sourceTree = "<group>"; };
+		1454CA2723ABC29700393B93 /* ELImageContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELImageContext.h; sourceTree = "<group>"; };
+		1454CA2823ABC29700393B93 /* ELImageProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageProgram.m; sourceTree = "<group>"; };
+		1454CA2923ABC29700393B93 /* ELImageTextureFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageTextureFrame.m; sourceTree = "<group>"; };
+		1454CA2A23ABC29700393B93 /* ELImageVideoScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageVideoScheduler.m; sourceTree = "<group>"; };
+		1454CA2B23ABC29700393B93 /* ELPushStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ELPushStreamViewController.h; path = "../../../../Block/music-video-guide/iOS-VideoToolboxEncoder/VideoToolboxEncoder/ELPushStreamViewController.h"; sourceTree = "<group>"; };
+		1454CA3A23ABC30600393B93 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
+		1454CA3B23ABC30600393B93 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,10 +154,10 @@
 		1454C93423AA6BBE00393B93 /* VideoToolboxEncoder */ = {
 			isa = PBXGroup;
 			children = (
-				1454C97323AA6D2100393B93 /* SCPushStreamViewController.h */,
-				1454C97423AA6D2100393B93 /* SCPushStreamViewController.m */,
-				1454C96A23AA6BD600393B93 /* Encoder */,
-				1454C96B23AA6BED00393B93 /* ImageClient */,
+				1454CA0A23ABC29700393B93 /* ELPushStreamConfigeration.h */,
+				1454CA2B23ABC29700393B93 /* ELPushStreamViewController.h */,
+				1454CA0B23ABC29700393B93 /* ELPushStreamViewController.mm */,
+				1454CA0C23ABC29700393B93 /* ImageClient */,
 				1454C96F23AA6C8B00393B93 /* Utils */,
 				1454C93B23AA6BBE00393B93 /* ViewController.h */,
 				1454C93C23AA6BBE00393B93 /* ViewController.m */,
@@ -152,20 +192,6 @@
 			path = VideoToolboxEncoderUITests;
 			sourceTree = "<group>";
 		};
-		1454C96A23AA6BD600393B93 /* Encoder */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Encoder;
-			sourceTree = "<group>";
-		};
-		1454C96B23AA6BED00393B93 /* ImageClient */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ImageClient;
-			sourceTree = "<group>";
-		};
 		1454C96C23AA6C2900393B93 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,10 +203,76 @@
 		1454C96F23AA6C8B00393B93 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				1454C97023AA6C8B00393B93 /* CommonUtil.m */,
-				1454C97123AA6C8B00393B93 /* CommonUtil.h */,
+				1454CA3A23ABC30600393B93 /* CommonUtil.h */,
+				1454CA3B23ABC30600393B93 /* CommonUtil.m */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		1454CA0C23ABC29700393B93 /* ImageClient */ = {
+			isa = PBXGroup;
+			children = (
+				1454CA0D23ABC29700393B93 /* encoder */,
+				1454CA1223ABC29700393B93 /* imageInput */,
+				1454CA1723ABC29700393B93 /* ELImageVideoScheduler.h */,
+				1454CA1823ABC29700393B93 /* imageOutput */,
+				1454CA1F23ABC29700393B93 /* imageCore */,
+				1454CA2A23ABC29700393B93 /* ELImageVideoScheduler.m */,
+			);
+			name = ImageClient;
+			path = "../../../../Block/music-video-guide/iOS-VideoToolboxEncoder/VideoToolboxEncoder/ImageClient";
+			sourceTree = "<group>";
+		};
+		1454CA0D23ABC29700393B93 /* encoder */ = {
+			isa = PBXGroup;
+			children = (
+				1454CA0E23ABC29700393B93 /* H264HwEncoderImpl.h */,
+				1454CA0F23ABC29700393B93 /* H264HwEncoderHandler.h */,
+				1454CA1023ABC29700393B93 /* H264HwEncoderImpl.mm */,
+				1454CA1123ABC29700393B93 /* H264HwEncoderHandler.mm */,
+			);
+			path = encoder;
+			sourceTree = "<group>";
+		};
+		1454CA1223ABC29700393B93 /* imageInput */ = {
+			isa = PBXGroup;
+			children = (
+				1454CA1323ABC29700393B93 /* ELImageCameraRenderer.m */,
+				1454CA1423ABC29700393B93 /* ELImageVideoCamera.h */,
+				1454CA1523ABC29700393B93 /* ELImageVideoCamera.m */,
+				1454CA1623ABC29700393B93 /* ELImageCameraRenderer.h */,
+			);
+			path = imageInput;
+			sourceTree = "<group>";
+		};
+		1454CA1823ABC29700393B93 /* imageOutput */ = {
+			isa = PBXGroup;
+			children = (
+				1454CA1923ABC29700393B93 /* ELImageVideoEncoder.m */,
+				1454CA1A23ABC29700393B93 /* ELImageEncoderRenderer.mm */,
+				1454CA1B23ABC29700393B93 /* ELImageView.m */,
+				1454CA1C23ABC29700393B93 /* ELImageVideoEncoder.h */,
+				1454CA1D23ABC29700393B93 /* ELImageEncoderRenderer.h */,
+				1454CA1E23ABC29700393B93 /* ELImageView.h */,
+			);
+			path = imageOutput;
+			sourceTree = "<group>";
+		};
+		1454CA1F23ABC29700393B93 /* imageCore */ = {
+			isa = PBXGroup;
+			children = (
+				1454CA2023ABC29700393B93 /* ELImageOutput.m */,
+				1454CA2123ABC29700393B93 /* ELImageDirectPassRenderer.m */,
+				1454CA2223ABC29700393B93 /* ELImageProgram.h */,
+				1454CA2323ABC29700393B93 /* ELImageContext.m */,
+				1454CA2423ABC29700393B93 /* ELImageTextureFrame.h */,
+				1454CA2523ABC29700393B93 /* ELImageDirectPassRenderer.h */,
+				1454CA2623ABC29700393B93 /* ELImageOutput.h */,
+				1454CA2723ABC29700393B93 /* ELImageContext.h */,
+				1454CA2823ABC29700393B93 /* ELImageProgram.m */,
+				1454CA2923ABC29700393B93 /* ELImageTextureFrame.m */,
+			);
+			path = imageCore;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -313,12 +405,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1454C97223AA6C8B00393B93 /* CommonUtil.m in Sources */,
+				1454CA3223ABC29700393B93 /* ELImageEncoderRenderer.mm in Sources */,
+				1454CA3C23ABC30600393B93 /* CommonUtil.m in Sources */,
+				1454CA2E23ABC29700393B93 /* H264HwEncoderHandler.mm in Sources */,
+				1454CA3523ABC29700393B93 /* ELImageDirectPassRenderer.m in Sources */,
+				1454CA3023ABC29700393B93 /* ELImageVideoCamera.m in Sources */,
+				1454CA3623ABC29700393B93 /* ELImageContext.m in Sources */,
+				1454CA3323ABC29700393B93 /* ELImageView.m in Sources */,
+				1454CA2C23ABC29700393B93 /* ELPushStreamViewController.mm in Sources */,
 				1454C93D23AA6BBE00393B93 /* ViewController.m in Sources */,
+				1454CA3123ABC29700393B93 /* ELImageVideoEncoder.m in Sources */,
+				1454CA2F23ABC29700393B93 /* ELImageCameraRenderer.m in Sources */,
+				1454CA2D23ABC29700393B93 /* H264HwEncoderImpl.mm in Sources */,
 				1454C93723AA6BBE00393B93 /* AppDelegate.m in Sources */,
+				1454CA3723ABC29700393B93 /* ELImageProgram.m in Sources */,
+				1454CA3923ABC29700393B93 /* ELImageVideoScheduler.m in Sources */,
 				1454C94823AA6BC000393B93 /* main.m in Sources */,
-				1454C97523AA6D2100393B93 /* SCPushStreamViewController.m in Sources */,
 				1454C93A23AA6BBE00393B93 /* SceneDelegate.m in Sources */,
+				1454CA3823ABC29700393B93 /* ELImageTextureFrame.m in Sources */,
+				1454CA3423ABC29700393B93 /* ELImageOutput.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,12 +593,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6426K9AWKV;
 				INFOPLIST_FILE = VideoToolboxEncoder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seacen.VideoToolboxEncoder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seacenliu.VideoToolboxEncoder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -504,12 +610,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6426K9AWKV;
 				INFOPLIST_FILE = VideoToolboxEncoder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seacen.VideoToolboxEncoder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seacenliu.VideoToolboxEncoder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
