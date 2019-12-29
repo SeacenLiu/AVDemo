@@ -16,17 +16,33 @@
 @implementation ELPushStreamViewController
 
 #pragma -mark life cycle
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    CGRect bounds = self.view.bounds;
-    _videoScheduler = [[ELImageVideoScheduler alloc] initWithFrame:bounds videoFrameRate:kFrameRate];
+    _videoScheduler = [[ELImageVideoScheduler alloc] initWithFrame:self.view.bounds
+                                                    videoFrameRate:kFrameRate];
+    [self setupUI];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [_videoScheduler startPreview];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [_videoScheduler stopPreview];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)setupUI {
     [self.view insertSubview:[_videoScheduler previewView] atIndex:0];
     [self addEncoderBtn];
 }
 
-- (void) addEncoderBtn
-{
+- (void)addEncoderBtn {
     _encoderBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     CGFloat screenWidth = self.view.bounds.size.width;
     CGFloat screenHeight = self.view.bounds.size.height;
@@ -48,39 +64,24 @@
 
 // Called when start/stop button is pressed
 - (void)OnStartStop:(id)sender {
-    if (_started)
-    {
+    if (_started) { // 停止编码
         [_videoScheduler stopEncode];
         _started = NO;
         [_encoderBtn setSelected:NO];
-    }
-    else
-    {
-        [_videoScheduler startEncodeWithFPS:kFrameRate maxBitRate:kMaxVideoBitRate avgBitRate:kAVGVideoBitRate encoderWidth:kDesiredWidth encoderHeight:kDesiredHeight encoderStatusDelegate:self];
+    } else { // 开始编码
+        [_videoScheduler startEncodeWithFPS:kFrameRate
+                                 maxBitRate:kMaxVideoBitRate
+                                 avgBitRate:kAVGVideoBitRate
+                               encoderWidth:kDesiredWidth
+                              encoderHeight:kDesiredHeight
+                      encoderStatusDelegate:self];
         _started = YES;
         [_encoderBtn setSelected:YES];
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [_videoScheduler startPreview];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [_videoScheduler stopPreview];
-}
-
--(void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 #pragma -mark Encoder Delegate
-- (void) onEncoderInitialFailed{
+- (void)onEncoderInitialFailed {
     dispatch_async(dispatch_get_main_queue(), ^{
         [_videoScheduler stopEncode];
         //您的直播无法正常播放(编码器初始化失败)，请立即联系客服人员
@@ -93,7 +94,7 @@
     });
 }
 
-- (void) onEncoderEncodedFailed{
+- (void)onEncoderEncodedFailed{
     dispatch_async(dispatch_get_main_queue(), ^{
         [_videoScheduler stopEncode];
         //您的直播无法正常播放(编码器编码视频失败)，请立即联系客服人员
