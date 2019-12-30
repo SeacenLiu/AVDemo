@@ -38,31 +38,26 @@
     return self;
 }
 
-- (void) settingMaxBitRate:(int)maxBitRate avgBitRate:(int)avgBitRate fps:(int)fps;
-{
+- (void)settingMaxBitRate:(int)maxBitRate avgBitRate:(int)avgBitRate fps:(int)fps {
     [[self encoderRenderer] settingMaxBitRate:maxBitRate avgBitRate:avgBitRate fps:fps];
 }
 
-- (void) stopEncode
-{
+- (void)stopEncode {
     if(_encoderRenderer){
         [_encoderRenderer stopEncode];
         _encoderRenderer = nil;
     }
 }
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime timimgInfo:(CMSampleTimingInfo)timimgInfo;
-{
+- (void)newFrameReadyAtTime:(CMTime)frameTime timimgInfo:(CMSampleTimingInfo)timimgInfo {
     [[self encoderRenderer] renderWithTextureId:[_inputFrameTexture texture] timimgInfo:timimgInfo];
 }
 
-- (void)setInputTexture:(ELImageTextureFrame *)textureFrame;
-{
+- (void)setInputTexture:(ELImageTextureFrame *)textureFrame {
     _inputFrameTexture = textureFrame;
 }
 
-- (ELImageEncoderRenderer*) encoderRenderer;
-{
+- (ELImageEncoderRenderer*)encoderRenderer {
     if(nil == _encoderRenderer){
         _encoderRenderer = [[ELImageEncoderRenderer alloc] initWithWidth:_encoderWidth height:_encoderHeight fps:_fps maxBitRate:_maxBitRate avgBitRate:_avgBitRate encoderStatusDelegate:_encoderStatusDelegate];
         if (![_encoderRenderer prepareRender]){

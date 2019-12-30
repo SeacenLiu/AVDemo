@@ -17,12 +17,9 @@ void runAsyncOnContextQueue(ELImageContext *context, void (^block)(void));
 
 @interface ELImageOutput : NSObject
 {
-    
     ELImageTextureFrame *outputTexture;
-    
     NSMutableArray *targets;
 }
-
 
 - (void)setInputTextureForTarget:(id<ELImageInput>)target;
 

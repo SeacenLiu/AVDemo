@@ -88,45 +88,36 @@ void runAsyncOnContextQueue(ELImageContext *context, void (^block)(void))
 
 @implementation ELImageOutput
 
-- (id)init;
-{
-    if (!(self = [super init]))
-    {
+- (instancetype)init {
+    if (!(self = [super init])) {
         return nil;
     }
-    
     targets = [[NSMutableArray alloc] init];
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [self removeAllTargets];
 }
 
-- (ELImageTextureFrame *)framebufferForOutput;
-{
+- (ELImageTextureFrame *)framebufferForOutput {
     return outputTexture;
 }
 
-- (void)setInputTextureForTarget:(id<ELImageInput>)target;
-{
+- (void)setInputTextureForTarget:(id<ELImageInput>)target {
     [target setInputTexture:[self framebufferForOutput]];
 }
 
-- (NSArray*)targets;
-{
+- (NSArray*)targets {
     return [NSArray arrayWithArray:targets];
 }
 
-- (void)addTarget:(id<ELImageInput>)newTarget;
-{
+- (void)addTarget:(id<ELImageInput>)newTarget {
     [targets addObject:newTarget];
 }
 
 
-- (void)removeTarget:(id<ELImageInput>)targetToRemove;
-{
+- (void)removeTarget:(id<ELImageInput>)targetToRemove {
     if(![targets containsObject:targetToRemove])
     {
         return;
@@ -137,8 +128,7 @@ void runAsyncOnContextQueue(ELImageContext *context, void (^block)(void))
     });
 }
 
-- (void)removeAllTargets;
-{
+- (void)removeAllTargets {
     runSyncOnVideoProcessingQueue(^{
         [targets removeAllObjects];
     });

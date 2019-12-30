@@ -28,8 +28,7 @@
 #pragma mark -
 #pragma mark Usage
 
-- (id)initWithSize:(CGSize)framebufferSize;
-{
+- (instancetype)initWithSize:(CGSize)framebufferSize {
     GPUTextureFrameOptions defaultTextureOptions;
     defaultTextureOptions.minFilter = GL_LINEAR;
     defaultTextureOptions.magFilter = GL_LINEAR;
@@ -47,25 +46,21 @@
     return self;
 }
 
-- (int) width;
-{
+- (int)width {
     return _size.width;
 }
 
-- (int) height;
-{
+- (int)height {
     return _size.height;
 }
 
-- (GLuint) texture;
-{
+- (GLuint)texture {
     return _texture;
 }
 
-- (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureFrameOptions)fboTextureOptions;
-{
-    if (!(self = [super init]))
-    {
+- (instancetype)initWithSize:(CGSize)framebufferSize
+              textureOptions:(GPUTextureFrameOptions)fboTextureOptions {
+    if (!(self = [super init])) {
         return nil;
     }
     _size = framebufferSize;
@@ -75,8 +70,8 @@
     return self;
 }
 
-- (void)activateFramebuffer;
-{
+- (void)activateFramebuffer {
+    // 绑定帧缓冲
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
     glViewport(0, 0, (int)_size.width, (int)_size.height);
 }
@@ -89,8 +84,7 @@
 #pragma mark -
 #pragma mark Internal
 
-- (void)generateTexture;
-{
+- (void)generateTexture {
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &_texture);
     glBindTexture(GL_TEXTURE_2D, _texture);
@@ -102,13 +96,11 @@
     
 }
 
-- (void)generateFramebuffer;
-{
+- (void)generateFramebuffer {
     glGenFramebuffers(1, &_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
     
-    if ([ELImageContext supportsFastTextureUpload])
-    {
+    if ([ELImageContext supportsFastTextureUpload]) {
         CVOpenGLESTextureCacheRef coreVideoTextureCache = [[ELImageContext sharedImageProcessingContext] coreVideoTextureCache];
         CFDictionaryRef empty; // empty value for attr value.
         CFMutableDictionaryRef attrs;
@@ -117,8 +109,7 @@
         CFDictionarySetValue(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);
         
         CVReturn err = CVPixelBufferCreate(kCFAllocatorDefault, (int)_size.width, (int)_size.height, kCVPixelFormatType_32BGRA, attrs, &renderTarget);
-        if (err)
-        {
+        if (err) {
             NSLog(@"FBO size: %f, %f", _size.width, _size.height);
             NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
         }
@@ -133,8 +124,7 @@
                                                             _textureOptions.type,
                                                             0,
                                                             &renderTexture);
-        if (err)
-        {
+        if (err) {
             NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
         }
         
@@ -147,9 +137,7 @@
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _textureOptions.wrapT);
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
-    }
-    else
-    {
+    } else {
         [self generateTexture];
         glBindTexture(GL_TEXTURE_2D, _texture);
         glTexImage2D(GL_TEXTURE_2D, 0, _textureOptions.internalFormat, (int)_size.width, (int)_size.height, 0, _textureOptions.format, _textureOptions.type, 0);
@@ -158,8 +146,7 @@
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-- (GLubyte *)byteBuffer;
-{
+- (GLubyte *)byteBuffer {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CVPixelBufferLockBaseAddress(renderTarget, 0);
     GLubyte * bufferBytes = CVPixelBufferGetBaseAddress(renderTarget);
@@ -170,8 +157,7 @@
 #endif
 }
 
-- (void)destroyFramebuffer;
-{
+- (void)destroyFramebuffer {
     runSyncOnVideoProcessingQueue(^{
         
         if (_framebuffer)

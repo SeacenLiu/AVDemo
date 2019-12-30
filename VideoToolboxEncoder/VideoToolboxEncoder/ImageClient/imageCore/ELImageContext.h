@@ -13,11 +13,18 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import "ELImageInput.h"
 
 #define TEXTURE_FRAME_ASPECT_RATIO                                  16.0/9.0f
 
-typedef enum { kELImageNoRotation, kELImageFlipHorizontal } ELImageRotationMode;
+typedef enum {
+    kELImageNoRotation,
+    kELImageFlipHorizontal,
+} ELImageRotationMode;
 
+/**
+ * OpenGL 上下文类
+ */
 @interface ELImageContext : NSObject
 
 @property(readonly, nonatomic) dispatch_queue_t contextQueue;
@@ -40,12 +47,5 @@ typedef enum { kELImageNoRotation, kELImageFlipHorizontal } ELImageRotationMode;
 - (void)useSharegroup:(EAGLSharegroup *)sharegroup;
 
 - (void)useAsCurrentContext;
-
-@end
-
-@protocol ELImageInput <NSObject>
-
-- (void)newFrameReadyAtTime:(CMTime)frameTime timimgInfo:(CMSampleTimingInfo)timimgInfo;
-- (void)setInputTexture:(ELImageTextureFrame *)textureFrame;
 
 @end

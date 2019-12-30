@@ -78,25 +78,28 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
     GLint matrixUniform;
 }
 
-- (BOOL) prepareRender:(BOOL) isFullYUVRange;
-{
+- (BOOL)prepareRender:(BOOL)isFullYUVRange {
     BOOL ret = FALSE;
-    if(isFullYUVRange){
+    // 着色器程序的编译与附着
+    if (isFullYUVRange) { // 根据YUV形式配置不同的着色器代码
         program = [[ELImageProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
     } else{
         program = [[ELImageProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:YUVVideoRangeConversionForLAFragmentShaderString];
     }
-    if(program){
+    if (program) {
         [program addAttribute:@"position"];
         [program addAttribute:@"inputTextureCoordinate"];
-        if([program link]){
+        // 着色器程序的连接
+        if ([program link]) {
+            // 属性获取
             positionAttribute = [program attributeIndex:@"position"];
             textureCoordinateAttribute = [program attributeIndex:@"inputTextureCoordinate"];
             luminanceTextureUniform = [program uniformIndex:@"luminanceTexture"];
             chrominanceTextureUniform = [program uniformIndex:@"chrominanceTexture"];
             matrixUniform = [program uniformIndex:@"colorConversionMatrix"];
-            
+            // 激活使用程序
             [program use];
+            // 以顶点属性位置值作为参数，启用顶点属性
             glEnableVertexAttribArray(positionAttribute);
             glEnableVertexAttribArray(textureCoordinateAttribute);
             
@@ -106,12 +109,14 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
     return ret;
 }
 
-- (void) renderWithSampleBuffer:(CMSampleBufferRef) sampleBuffer aspectRatio:(float)aspectRatio preferredConversion:(const GLfloat *)preferredConversion imageRotation:(ELImageRotationMode) inputTexRotation;
-{
+- (void)renderWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                   aspectRatio:(float)aspectRatio
+           preferredConversion:(const GLfloat *)preferredConversion
+                 imageRotation:(ELImageRotationMode) inputTexRotation {
 //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-    int bufferWidth = (int) CVPixelBufferGetWidth(cameraFrame);
-    int bufferHeight = (int) CVPixelBufferGetHeight(cameraFrame);
+    int bufferWidth = (int)CVPixelBufferGetWidth(cameraFrame);
+    int bufferHeight = (int)CVPixelBufferGetHeight(cameraFrame);
 //    CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     
     [program use];
@@ -123,9 +128,19 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
 
     // Y-plane
     glActiveTexture(GL_TEXTURE4);
-    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[ELImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
-    if (err)
-    {
+    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                                                       [[ELImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                                                       cameraFrame,
+                                                       NULL,
+                                                       GL_TEXTURE_2D,
+                                                       GL_LUMINANCE,
+                                                       bufferWidth,
+                                                       bufferHeight,
+                                                       GL_LUMINANCE,
+                                                       GL_UNSIGNED_BYTE,
+                                                       0,
+                                                       &luminanceTextureRef);
+    if (err) {
         NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
     }
         
@@ -136,9 +151,19 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
         
     // UV-plane
     glActiveTexture(GL_TEXTURE5);
-    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[ELImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
-    if (err)
-    {
+    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                                                       [[ELImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                                                       cameraFrame,
+                                                       NULL,
+                                                       GL_TEXTURE_2D,
+                                                       GL_LUMINANCE_ALPHA,
+                                                       bufferWidth/2,
+                                                       bufferHeight/2,
+                                                       GL_LUMINANCE_ALPHA,
+                                                       GL_UNSIGNED_BYTE,
+                                                       1,
+                                                       &chrominanceTextureRef);
+    if (err) {
         NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
     }
     chrominanceTexture = CVOpenGLESTextureGetName(chrominanceTextureRef);
@@ -146,15 +171,23 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    [self convertYUVToRGBOutputWithWidth:bufferWidth height:bufferHeight aspectRatio:aspectRatio preferredConversion:preferredConversion inputTexRotation:inputTexRotation];
+    // YUV 转 RGB
+    [self convertYUVToRGBOutputWithWidth:bufferWidth
+                                  height:bufferHeight
+                             aspectRatio:aspectRatio
+                     preferredConversion:preferredConversion
+                        inputTexRotation:inputTexRotation];
 
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     CFRelease(luminanceTextureRef);
     CFRelease(chrominanceTextureRef);
 }
 
-- (void)convertYUVToRGBOutputWithWidth:(int) bufferWidth height:(int) bufferHeight aspectRatio:(float)aspectRatio preferredConversion:(const GLfloat *)preferredConversion inputTexRotation:(ELImageRotationMode) inputTexRotation;
-{
+- (void)convertYUVToRGBOutputWithWidth:(int)bufferWidth
+                                height:(int)bufferHeight
+                           aspectRatio:(float)aspectRatio
+                   preferredConversion:(const GLfloat *)preferredConversion
+                      inputTexRotation:(ELImageRotationMode)inputTexRotation {
     int targetWidth = bufferHeight / aspectRatio;
     int targetHeight = bufferHeight;
     float fromX = (float)((bufferWidth - targetWidth) / 2) / (float) bufferWidth;
@@ -176,7 +209,7 @@ NSString *const YUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
         fromX, 0.0f,
         toX, 0.0f,
     };
-    if(inputTexRotation == kELImageFlipHorizontal){
+    if (inputTexRotation == kELImageFlipHorizontal) {
         rotate180TextureCoordinates[0] = toX;
         rotate180TextureCoordinates[2] = fromX;
         rotate180TextureCoordinates[4] = toX;

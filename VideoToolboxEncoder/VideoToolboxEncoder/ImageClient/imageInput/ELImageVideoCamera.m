@@ -16,9 +16,9 @@
 
 // BT.601, which is the standard for SDTV.
 GLfloat colorConversion601Default[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.392, 2.017,
-    1.596, -0.813,   0.0,
+    1.164,  1.164,   1.164,
+    0.0,    -0.392,  2.017,
+    1.596,  -0.813,  0.0,
 };
 
 // BT.601 full range (ref: http://www.equasys.de/colorconversion.html)
@@ -34,7 +34,6 @@ GLfloat colorConversion709Default[] = {
     0.0, -0.213, 2.112,
     1.793, -0.533,   0.0,
 };
-
 
 GLfloat *colorConversion601 = colorConversion601Default;
 GLfloat *colorConversion601FullRange = colorConversion601FullRangeDefault;
@@ -58,7 +57,7 @@ GLfloat *colorConversion709 = colorConversion709Default;
 // 处理输入输出设备的数据流动
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 // 输入输出设备的数据连接
-@property (nonatomic, strong) AVCaptureConnection* connection;
+@property (nonatomic, strong) AVCaptureConnection *connection;
 // 输入设备
 @property (nonatomic, strong) AVCaptureDeviceInput *captureInput;
 // 视频输出
@@ -70,10 +69,8 @@ GLfloat *colorConversion709 = colorConversion709Default;
 
 @implementation ELImageVideoCamera
 
-- (id)initWithFPS:(int)fps;
-{
-    self = [super init];
-    if (self) {
+- (instancetype)initWithFPS:(int)fps; {
+    if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 
@@ -84,8 +81,8 @@ GLfloat *colorConversion709 = colorConversion709Default;
         _frameRenderingSemaphore = dispatch_semaphore_create(1);
         runSyncOnVideoProcessingQueue(^{
             [ELImageContext useImageProcessingContext];
-            _cameraLoadTexRenderer = [[ELImageCameraRenderer alloc] init];
-            if (![_cameraLoadTexRenderer prepareRender:isFullYUVRange]) {
+            self->_cameraLoadTexRenderer = [[ELImageCameraRenderer alloc] init];
+            if (![self->_cameraLoadTexRenderer prepareRender:self->isFullYUVRange]) {
                 NSLog(@"Create Camera Load Texture Renderer Failed...");
             }
         });
@@ -102,33 +99,27 @@ GLfloat *colorConversion709 = colorConversion709Default;
 }
 
 #pragma interface methods
-
-- (void)startCapture
-{
-    if (![_captureSession isRunning])
-    {
+- (void)startCapture {
+    if (![_captureSession isRunning]) {
         [_captureSession startRunning];
-    };
+    }
 }
 
-- (void)stopCapture
-{
-    if ([_captureSession isRunning])
-    {
+- (void)stopCapture {
+    if ([_captureSession isRunning]) {
         [_captureSession stopRunning];
     }
 }
 
 #pragma mark - 初始化
-- (void)initialSession
-{
+- (void)initialSession {
     // 初始化 session 和设备
     self.captureSession = [[AVCaptureSession alloc] init];
     self.captureInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:nil];
     // [self backCamera] 为自定义方法，参见下文
     self.captureOutput = [[AVCaptureVideoDataOutput alloc] init];
     self.captureOutput.alwaysDiscardsLateVideoFrames = YES;
-    // 输出配置
+    // 输出配置 - YUV 420 采样
     BOOL supportsFullYUVRange = NO;
     NSArray *supportedPixelFormats = _captureOutput.availableVideoCVPixelFormatTypes;
     for (NSNumber *currentPixelFormat in supportedPixelFormats)
@@ -168,9 +159,11 @@ GLfloat *colorConversion709 = colorConversion709Default;
     } else{
         [_captureSession setSessionPreset:[NSString stringWithString:kCommonCaptureSessionPreset]];
     }
-    
+    // 连接类型配置
     self.connection = [self.captureOutput connectionWithMediaType:AVMediaTypeVideo];
+    // 视频方向
     [self setRelativeVideoOrientation];
+    // 帧率设置
     [self setFrameRate];
     
     [_captureSession commitConfiguration];
@@ -198,6 +191,7 @@ GLfloat *colorConversion709 = colorConversion709Default;
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {
             NSError *error = nil;
+            // 设置中心自动对焦
             if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus] && [device lockForConfiguration:&error]){
                 [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
                 if ([device isFocusPointOfInterestSupported])
@@ -215,12 +209,9 @@ GLfloat *colorConversion709 = colorConversion709Default;
     // begin configuration for the AVCaptureSession
     [_captureSession beginConfiguration];
     // picture resolution
-    if([_captureSession.sessionPreset isEqualToString:[NSString stringWithString:AVCaptureSessionPreset640x480]])
-    {
+    if ([_captureSession.sessionPreset isEqualToString:[NSString stringWithString:AVCaptureSessionPreset640x480]]) {
         [_captureSession setSessionPreset:[NSString stringWithString:AVCaptureSessionPreset1280x720]];
-    }
-    else
-    {
+    } else {
         [_captureSession setSessionPreset:[NSString stringWithString:AVCaptureSessionPreset640x480]];
     }
     [_captureSession commitConfiguration];
@@ -256,8 +247,8 @@ GLfloat *colorConversion709 = colorConversion709Default;
             
             self.connection = [self.captureOutput connectionWithMediaType:AVMediaTypeVideo];
             
+            // 防抖
             AVCaptureVideoStabilizationMode stabilizationMode = AVCaptureVideoStabilizationModeStandard;
-            
             BOOL supportStabilization = [self.captureInput.device.activeFormat isVideoStabilizationModeSupported:stabilizationMode];
             NSLog(@"device active format: %@, 是否支持防抖: %@", self.captureInput.device.activeFormat,
                   supportStabilization ? @"support" : @"not support");
@@ -265,8 +256,10 @@ GLfloat *colorConversion709 = colorConversion709Default;
                 [self.connection setPreferredVideoStabilizationMode:stabilizationMode];
                 NSLog(@"===============mode %@", @(self.connection.activeVideoStabilizationMode));
             }
-
+            
+            // 视频方向设置
             [self setRelativeVideoOrientation];
+            // 视频帧率设置
             [self setFrameRate];
             
             [self.captureSession commitConfiguration];
@@ -288,19 +281,16 @@ GLfloat *colorConversion709 = colorConversion709Default;
     return _sampleBufferCallbackQueue;
 }
 
-- (void)setFrameRate:(int)frameRate;
-{
+- (void)setFrameRate:(int)frameRate {
     _frameRate = frameRate;
     [self setFrameRate];
 }
 
-- (void)setFrameRate;
-{
-    if (_frameRate > 0)
-    {
+- (void)setFrameRate {
+    if (_frameRate > 0) {
         if ([[self captureInput].device respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
             [[self captureInput].device respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
-            
+            // 在设备中设置
             NSError *error;
             [[self captureInput].device lockForConfiguration:&error];
             if (error == nil) {
@@ -317,11 +307,9 @@ GLfloat *colorConversion709 = colorConversion709Default;
 #endif
             }
             [[self captureInput].device unlockForConfiguration];
-            
         } else {
-            
-            for (AVCaptureConnection *connection in [self captureOutput].connections)
-            {
+            // 在连接中设置
+            for (AVCaptureConnection *connection in [self captureOutput].connections) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
@@ -332,10 +320,7 @@ GLfloat *colorConversion709 = colorConversion709Default;
 #pragma clang diagnostic pop
             }
         }
-        
-    }
-    else
-    {
+    } else {
         if ([[self captureInput].device respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
             [[self captureInput].device respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
             
@@ -370,19 +355,17 @@ GLfloat *colorConversion709 = colorConversion709Default;
 #pragma clang diagnostic pop
             }
         }
-        
     }
 }
 
-- (int32_t)frameRate;
-{
+- (int32_t)frameRate {
     return _frameRate;
 }
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
-
--(void) captureOutput:(AVCaptureOutput*)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection*)connection
-{
+- (void)captureOutput:(AVCaptureOutput*)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection*)connectio {
     if (self.shouldEnableOpenGL) {
         if (dispatch_semaphore_wait(_frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0) {
             return;
@@ -392,63 +375,58 @@ GLfloat *colorConversion709 = colorConversion709Default;
         runAsyncOnVideoProcessingQueue(^{
             [self processVideoSampleBuffer:sampleBuffer];
             CFRelease(sampleBuffer);
-            dispatch_semaphore_signal(_frameRenderingSemaphore);
+            dispatch_semaphore_signal(self->_frameRenderingSemaphore);
         });
     }
 }
 
 
-- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
-{
+- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer {
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
-    if (colorAttachments != NULL)
-    {
-        if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo)
-        {
-            if (isFullYUVRange)
-            {
+    CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame,
+                                                       kCVImageBufferYCbCrMatrixKey,
+                                                       NULL);
+    if (colorAttachments != NULL) {
+        if (CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo) {
+            if (isFullYUVRange) {
                 _preferredConversion = colorConversion601FullRange;
-            }
-            else
-            {
+            } else {
                 _preferredConversion = colorConversion601;
             }
-        }
-        else
-        {
+        } else {
             _preferredConversion = colorConversion709;
         }
-    }
-    else
-    {
-        if (isFullYUVRange)
-        {
+    } else {
+        if (isFullYUVRange) {
             _preferredConversion = colorConversion601FullRange;
-        }
-        else
-        {
+        } else {
             _preferredConversion = colorConversion601;
         }
     }
     
     [ELImageContext useImageProcessingContext];
+    // 生成视频画面帧纹理并绑定到帧缓冲
     [[self cameraFrameTextureWithSampleBuffer:sampleBuffer aspectRatio:TEXTURE_FRAME_ASPECT_RATIO] activateFramebuffer];
-    [_cameraLoadTexRenderer renderWithSampleBuffer:sampleBuffer aspectRatio:TEXTURE_FRAME_ASPECT_RATIO preferredConversion:_preferredConversion imageRotation:_inputTexRotation];
+    // 渲染
+    [_cameraLoadTexRenderer renderWithSampleBuffer:sampleBuffer
+                                       aspectRatio:TEXTURE_FRAME_ASPECT_RATIO
+                               preferredConversion:_preferredConversion
+                                     imageRotation:_inputTexRotation];
+    // 将纹理和时间传递到后续的 Target 中
     CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     CMSampleTimingInfo timimgInfo = kCMTimingInfoInvalid;
     CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timimgInfo);
-    for (id<ELImageInput> currentTarget in targets){
+    for (id<ELImageInput> currentTarget in targets) {
         [currentTarget setInputTexture:outputTexture];
         [currentTarget newFrameReadyAtTime:currentTime timimgInfo:timimgInfo];
     }
 }
 
-- (ELImageTextureFrame*) cameraFrameTextureWithSampleBuffer:(CMSampleBufferRef) sampleBuffer aspectRatio:(float) aspectRatio;
-{
-    if(!outputTexture){
+- (ELImageTextureFrame*)cameraFrameTextureWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                                               aspectRatio:(float)aspectRatio {
+    if (!outputTexture) {
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-        int bufferHeight = (int) CVPixelBufferGetHeight(cameraFrame);
+        int bufferHeight = (int)CVPixelBufferGetHeight(cameraFrame);
         int targetWidth = bufferHeight / aspectRatio;
         int targetHeight = bufferHeight;
         outputTexture = [[ELImageTextureFrame alloc] initWithSize:CGSizeMake(targetWidth, targetHeight)];
@@ -456,27 +434,23 @@ GLfloat *colorConversion709 = colorConversion709Default;
     return outputTexture;
 }
 
-
-- (void) updateOrientationSendToTargets;
-{
+// 更新渲染方向
+- (void)updateOrientationSendToTargets {
     runSyncOnVideoProcessingQueue(^{
-        if ([self cameraPosition] == AVCaptureDevicePositionBack){
-            _inputTexRotation = kELImageNoRotation;
+        if ([self cameraPosition] == AVCaptureDevicePositionBack) {
+            self->_inputTexRotation = kELImageNoRotation;
         } else{
-            _inputTexRotation = kELImageFlipHorizontal;
+            self->_inputTexRotation = kELImageFlipHorizontal;
         }
     });
 }
 
-
-- (AVCaptureDevicePosition)cameraPosition
-{
+- (AVCaptureDevicePosition)cameraPosition {
     return [[_captureInput device] position];
 }
 
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     if ([_captureSession isRunning])
@@ -489,8 +463,7 @@ GLfloat *colorConversion709 = colorConversion709Default;
 }
 
 
-- (void)removeInputsAndOutputs;
-{
+- (void)removeInputsAndOutputs {
     [_captureSession beginConfiguration];
     if (_captureInput) {
         [_captureSession removeInput:_captureInput];

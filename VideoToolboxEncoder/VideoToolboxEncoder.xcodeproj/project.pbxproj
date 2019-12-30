@@ -81,6 +81,7 @@
 		1449D02623B8FA54002DBF23 /* ELImageProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageProgram.m; sourceTree = "<group>"; };
 		1449D02723B8FA54002DBF23 /* ELImageTextureFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageTextureFrame.m; sourceTree = "<group>"; };
 		1449D02823B8FA54002DBF23 /* ELImageVideoScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELImageVideoScheduler.m; sourceTree = "<group>"; };
+		1449D03723B9A247002DBF23 /* ELImageInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ELImageInput.h; sourceTree = "<group>"; };
 		1454C93223AA6BBE00393B93 /* VideoToolboxEncoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoToolboxEncoder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1454C93523AA6BBE00393B93 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1454C93623AA6BBE00393B93 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -133,12 +134,12 @@
 		1449D00A23B8FA54002DBF23 /* ImageClient */ = {
 			isa = PBXGroup;
 			children = (
+				1449D01523B8FA54002DBF23 /* ELImageVideoScheduler.h */,
+				1449D02823B8FA54002DBF23 /* ELImageVideoScheduler.m */,
 				1449D00B23B8FA54002DBF23 /* encoder */,
 				1449D01023B8FA54002DBF23 /* imageInput */,
-				1449D01523B8FA54002DBF23 /* ELImageVideoScheduler.h */,
 				1449D01623B8FA54002DBF23 /* imageOutput */,
 				1449D01D23B8FA54002DBF23 /* imageCore */,
-				1449D02823B8FA54002DBF23 /* ELImageVideoScheduler.m */,
 			);
 			path = ImageClient;
 			sourceTree = "<group>";
@@ -157,10 +158,10 @@
 		1449D01023B8FA54002DBF23 /* imageInput */ = {
 			isa = PBXGroup;
 			children = (
-				1449D01123B8FA54002DBF23 /* ELImageCameraRenderer.m */,
 				1449D01223B8FA54002DBF23 /* ELImageVideoCamera.h */,
 				1449D01323B8FA54002DBF23 /* ELImageVideoCamera.m */,
 				1449D01423B8FA54002DBF23 /* ELImageCameraRenderer.h */,
+				1449D01123B8FA54002DBF23 /* ELImageCameraRenderer.m */,
 			);
 			path = imageInput;
 			sourceTree = "<group>";
@@ -168,12 +169,12 @@
 		1449D01623B8FA54002DBF23 /* imageOutput */ = {
 			isa = PBXGroup;
 			children = (
-				1449D01723B8FA54002DBF23 /* ELImageVideoEncoder.m */,
-				1449D01823B8FA54002DBF23 /* ELImageEncoderRenderer.mm */,
-				1449D01923B8FA54002DBF23 /* ELImageView.m */,
 				1449D01A23B8FA54002DBF23 /* ELImageVideoEncoder.h */,
+				1449D01723B8FA54002DBF23 /* ELImageVideoEncoder.m */,
 				1449D01B23B8FA54002DBF23 /* ELImageEncoderRenderer.h */,
+				1449D01823B8FA54002DBF23 /* ELImageEncoderRenderer.mm */,
 				1449D01C23B8FA54002DBF23 /* ELImageView.h */,
+				1449D01923B8FA54002DBF23 /* ELImageView.m */,
 			);
 			path = imageOutput;
 			sourceTree = "<group>";
@@ -181,15 +182,16 @@
 		1449D01D23B8FA54002DBF23 /* imageCore */ = {
 			isa = PBXGroup;
 			children = (
+				1449D03723B9A247002DBF23 /* ELImageInput.h */,
+				1449D02423B8FA54002DBF23 /* ELImageOutput.h */,
 				1449D01E23B8FA54002DBF23 /* ELImageOutput.m */,
+				1449D02323B8FA54002DBF23 /* ELImageDirectPassRenderer.h */,
 				1449D01F23B8FA54002DBF23 /* ELImageDirectPassRenderer.m */,
 				1449D02023B8FA54002DBF23 /* ELImageProgram.h */,
+				1449D02623B8FA54002DBF23 /* ELImageProgram.m */,
+				1449D02523B8FA54002DBF23 /* ELImageContext.h */,
 				1449D02123B8FA54002DBF23 /* ELImageContext.m */,
 				1449D02223B8FA54002DBF23 /* ELImageTextureFrame.h */,
-				1449D02323B8FA54002DBF23 /* ELImageDirectPassRenderer.h */,
-				1449D02423B8FA54002DBF23 /* ELImageOutput.h */,
-				1449D02523B8FA54002DBF23 /* ELImageContext.h */,
-				1449D02623B8FA54002DBF23 /* ELImageProgram.m */,
 				1449D02723B8FA54002DBF23 /* ELImageTextureFrame.m */,
 			);
 			path = imageCore;

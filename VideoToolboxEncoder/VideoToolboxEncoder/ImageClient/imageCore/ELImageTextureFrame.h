@@ -12,7 +12,6 @@
 #import <OpenGLES/ES2/glext.h>
 #import <CoreGraphics/CGGeometry.h>
 
-
 typedef struct GPUTextureFrameOptions {
     GLenum minFilter;
     GLenum magFilter;
@@ -23,18 +22,21 @@ typedef struct GPUTextureFrameOptions {
     GLenum type;
 } GPUTextureFrameOptions;
 
+/**
+ * 画面纹理类
+ */
 @interface ELImageTextureFrame : NSObject
 
-- (id)initWithSize:(CGSize)framebufferSize;
+- (instancetype)initWithSize:(CGSize)framebufferSize;
 
-- (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureFrameOptions)fboTextureOptions;
+- (instancetype)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureFrameOptions)fboTextureOptions;
 
 - (void)activateFramebuffer;
 
-- (GLuint) texture;
+- (GLuint)texture;
 
 - (GLubyte *)byteBuffer;
 
-- (int) width;
-- (int) height;
+- (int)width;
+- (int)height;
 @end

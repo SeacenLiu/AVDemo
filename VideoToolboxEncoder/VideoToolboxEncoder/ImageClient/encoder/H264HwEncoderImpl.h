@@ -5,11 +5,10 @@
 #define CONTINUOUS_ENCODE_FAILURE_TIMES_TRESHOLD                              100
 
 @protocol ELVideoEncoderStatusDelegate <NSObject>
-
-- (void) onEncoderInitialFailed;
-
-- (void) onEncoderEncodedFailed;
-
+// 编译器初始化失败
+- (void)onEncoderInitialFailed;
+// 编译器编译失败
+- (void)onEncoderEncodedFailed;
 @end
 
 @class H264HwEncoderImpl;

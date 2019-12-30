@@ -15,6 +15,10 @@
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
+
+/**
+ * 着色器程序类
+ */
 @interface ELImageProgram : NSObject
 
 - (void)use;
@@ -27,6 +31,7 @@
 
 - (void)addAttribute:(NSString *)attributeName;
 
-- (id) initWithVertexShaderString:(NSString *)vShaderString fragmentShaderString:(NSString *)fShaderString;
+- (instancetype)initWithVertexShaderString:(NSString *)vShaderString
+                      fragmentShaderString:(NSString *)fShaderString;
 
 @end

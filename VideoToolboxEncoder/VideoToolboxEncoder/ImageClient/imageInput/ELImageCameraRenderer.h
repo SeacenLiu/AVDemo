@@ -11,8 +11,11 @@
 
 @interface ELImageCameraRenderer : NSObject
 
-- (BOOL) prepareRender:(BOOL) isFullYUVRange;
+- (BOOL)prepareRender:(BOOL)isFullYUVRange;
 
-- (void) renderWithSampleBuffer:(CMSampleBufferRef) sampleBuffer aspectRatio:(float)aspectRatio preferredConversion:(const GLfloat *) preferredConversion imageRotation:(ELImageRotationMode) inputTexRotation;
+- (void)renderWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                   aspectRatio:(float)aspectRatio
+           preferredConversion:(const GLfloat *)preferredConversion
+                 imageRotation:(ELImageRotationMode) inputTexRotation;
 
 @end

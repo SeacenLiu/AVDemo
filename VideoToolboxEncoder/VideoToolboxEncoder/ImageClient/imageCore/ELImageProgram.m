@@ -17,16 +17,13 @@
 }
 
 
-- (void) use
-{
+- (void)use {
     glUseProgram(program);
 }
 
-
-- (id) initWithVertexShaderString:(NSString *)vShaderString fragmentShaderString:(NSString *)fShaderString
-{
-    if ((self = [super init]))
-    {
+- (instancetype)initWithVertexShaderString:(NSString *)vShaderString
+            fragmentShaderString:(NSString *)fShaderString {
+    if ((self = [super init])) {
         attributes = [[NSMutableArray alloc] init];
         uniforms = [[NSMutableArray alloc] init];
         program = glCreateProgram();
@@ -34,18 +31,17 @@
         // Create and compile vertex shader
         if (![self compileShader:&vertShader
                             type:GL_VERTEX_SHADER
-                          string:vShaderString])
-        {
+                          string:vShaderString]) {
             NSLog(@"Failed to compile vertex shader");
         }
         
         // Create and compile fragment shader
         if (![self compileShader:&fragShader
                             type:GL_FRAGMENT_SHADER
-                          string:fShaderString])
-        {
+                          string:fShaderString]) {
             NSLog(@"Failed to compile fragment shader");
         }
+        
         // Attach Shader to program
         glAttachShader(program, vertShader);
         glAttachShader(program, fragShader);
@@ -55,16 +51,13 @@
 
 - (BOOL)compileShader:(GLuint *)shader
                  type:(GLenum)type
-               string:(NSString *)shaderString
-{
+               string:(NSString *)shaderString {
     //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
     GLint status;
     const GLchar *source;
     
     source = (GLchar *)[shaderString UTF8String];
-    if (!source)
-    {
+    if (!source) {
         NSLog(@"Failed to load vertex shader");
         return NO;
     }
@@ -75,20 +68,15 @@
     
     glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
     
-    if (status != GL_TRUE)
-    {
+    if (status != GL_TRUE) {
         GLint logLength;
         glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
-        if (logLength > 0)
-        {
+        if (logLength > 0) {
             GLchar *log = (GLchar *)malloc(logLength);
             glGetShaderInfoLog(*shader, logLength, &logLength, log);
-            if (shader == &vertShader)
-            {
+            if (shader == &vertShader) {
                 NSLog(@" vertex Shader log is : %@", [NSString stringWithFormat:@"%s", log]);
-            }
-            else
-            {
+            } else {
                 NSLog(@" fragment Shader log is : %@", [NSString stringWithFormat:@"%s", log]);
             }
             free(log);
@@ -100,8 +88,7 @@
 
 - (void)addAttribute:(NSString *)attributeName
 {
-    if (![attributes containsObject:attributeName])
-    {
+    if (![attributes containsObject:attributeName]) {
         [attributes addObject:attributeName];
         glBindAttribLocation(program,
                              (GLuint)[attributes indexOfObject:attributeName],
@@ -110,19 +97,16 @@
 }
 // END:addattribute
 // START:indexmethods
-- (GLuint)attributeIndex:(NSString *)attributeName
-{
+- (GLuint)attributeIndex:(NSString *)attributeName {
     return (GLuint)[attributes indexOfObject:attributeName];
 }
-- (GLuint)uniformIndex:(NSString *)uniformName
-{
+
+- (GLuint)uniformIndex:(NSString *)uniformName {
     return glGetUniformLocation(program, [uniformName UTF8String]);
 }
 
-- (BOOL)link
-{
+- (BOOL)link {
     //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
     GLint status;
     
     glLinkProgram(program);
@@ -131,13 +115,12 @@
     if (status == GL_FALSE)
         return NO;
     
-    if (vertShader)
-    {
+    if (vertShader) {
         glDeleteShader(vertShader);
         vertShader = 0;
     }
-    if (fragShader)
-    {
+    
+    if (fragShader) {
         glDeleteShader(fragShader);
         fragShader = 0;
     }

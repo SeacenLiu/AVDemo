@@ -10,22 +10,22 @@
 #import "ELImageVideoEncoder.h"
 
 @interface ELImageVideoScheduler : NSObject
+/** 默认开启自动对比度 */
+- (instancetype)initWithFrame:(CGRect)bounds videoFrameRate:(int)frameRate;
+- (instancetype)initWithFrame:(CGRect)bounds videoFrameRate:(int)frameRate disableAutoContrast:(BOOL)disableAutoContrast;
 
-/**
- *  默认开启自动对比度
- */
-- (instancetype) initWithFrame:(CGRect) bounds videoFrameRate:(int)frameRate;
-- (instancetype) initWithFrame:(CGRect) bounds videoFrameRate:(int)frameRate disableAutoContrast:(BOOL)disableAutoContrast;
-- (UIView*) previewView;
+- (UIView*)previewView;
+- (void)startPreview;
+- (void)stopPreview;
 
-- (void) startPreview;
+- (int)switchFrontBackCamera;
 
-- (void) stopPreview;
+- (void)startEncodeWithFPS:(float)fps
+                maxBitRate:(int)maxBitRate
+                avgBitRate:(int)avgBitRate
+              encoderWidth:(int)encoderWidth
+             encoderHeight:(int)encoderHeight
+     encoderStatusDelegate:(id<ELVideoEncoderStatusDelegate>)encoderStatusDelegate;
+- (void)stopEncode;
 
-- (int) switchFrontBackCamera;
-
-- (void) startEncodeWithFPS:(float)fps maxBitRate:(int)maxBitRate avgBitRate:(int)avgBitRate
-               encoderWidth:(int)encoderWidth encoderHeight:(int)encoderHeight encoderStatusDelegate:(id<ELVideoEncoderStatusDelegate>)encoderStatusDelegate;
-
-- (void) stopEncode;
 @end

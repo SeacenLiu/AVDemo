@@ -11,7 +11,7 @@
 
 @interface ELImageVideoCamera : ELImageOutput<AVCaptureVideoDataOutputSampleBufferDelegate>
 
-- (id)initWithFPS:(int)fps;
+- (instancetype)initWithFPS:(int)fps;
 
 - (void)startCapture;
 
