@@ -63,5 +63,5 @@ fastlane/test_output
 iOSInjectionProject/
 
 # FFMpeg
-VideoPlayer/VideoPlayer/FFmpeg-iOS
-FDKACCEncoder/FDKACCEncoder/FFmpeg-iOS
+Todo/VideoPlayer/VideoPlayer/FFmpeg-iOS
+Todo/FDKACCEncoder/FDKACCEncoder/FFmpeg-iOS
