@@ -24,13 +24,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
-        // 音频播放
+        // 音频播放 - AudioToolbox
         if (indexPath.row == 0) {
-            // AudioUnit 播放 PCM 文件
+            // AudioUnit 播放 PCM 文件(by NSInputStream)
             AUPCMPlayerViewController *vc = [AUPCMPlayerViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         } else if (indexPath.row == 1) {
-            // AUGraph 播放 MP3 文件
+            // AUGraph 播放 MP3 文件(by AudioFilePlayer)
             AUGraphPlayerViewController *vc = [AUGraphPlayerViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
