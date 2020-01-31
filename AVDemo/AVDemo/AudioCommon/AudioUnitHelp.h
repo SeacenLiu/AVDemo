@@ -11,10 +11,10 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#include <AudioToolbox/AudioToolbox.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 /** 创建指定音频组件描述 */
-AudioComponentDescription comDesc(OSType type,
+static AudioComponentDescription comDesc(OSType type,
                                   OSType subType,
                                   OSType manufuture,
                                   UInt32 flags,
@@ -38,7 +38,7 @@ AudioComponentDescription comDesc(OSType type,
  * channels: 声道数
  * bytesPerChannel: 每一个声道的字节数
  */
-AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
+static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
                                                Float64 rate,
                                                UInt32 channels,
                                                UInt32 bytesPerChannel,
@@ -64,7 +64,8 @@ AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
     return asbd;
 }
 
-void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
+/** 打印音频流格式 */
+static void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
     char formatID[5];
     UInt32 mFormatID = CFSwapInt32HostToBig(asbd.mFormatID);
     bcopy (&mFormatID, formatID, 4);
@@ -78,6 +79,26 @@ void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
     printf("Channels per Frame:  %10d\n",    (unsigned int)asbd.mChannelsPerFrame);
     printf("Bits per Channel:    %10d\n",    (unsigned int)asbd.mBitsPerChannel);
     printf("\n");
+}
+
+/** 检查 OSStatus */
+static void CheckStatus(OSStatus status, NSString *message, BOOL fatal) {
+    if(status != noErr) {
+        char fourCC[16];
+        *(UInt32 *)fourCC = CFSwapInt32HostToBig(status);
+        fourCC[4] = '\0';
+        
+        if (isprint(fourCC[0]) &&
+            isprint(fourCC[1]) &&
+            isprint(fourCC[2]) &&
+            isprint(fourCC[3]))
+            NSLog(@"%@: %s", message, fourCC);
+        else
+            NSLog(@"%@: %d", message, (int)status);
+        
+        if (fatal)
+            exit(-1);
+    }
 }
 
 #endif /* AudioUnitHelp_h */

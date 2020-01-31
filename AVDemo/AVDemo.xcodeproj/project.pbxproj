@@ -20,6 +20,15 @@
 		1473BE0423E2AAAB00FEED0F /* AUPCMPlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE0223E2AAAB00FEED0F /* AUPCMPlayerViewController.xib */; };
 		1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE0623E2AAD200FEED0F /* AUPCMPlayer.m */; };
 		1473BE1023E2B20000FEED0F /* start-dash.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE0F23E2B20000FEED0F /* start-dash.pcm */; };
+		1473BE1823E2FE2600FEED0F /* AUGraphPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE1723E2FE2600FEED0F /* AUGraphPlayer.m */; };
+		1473BE1C23E2FE3A00FEED0F /* AUGraphPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE1A23E2FE3A00FEED0F /* AUGraphPlayerViewController.m */; };
+		1473BE1D23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE1B23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib */; };
+		1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE2A23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.m */; };
+		1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE2D23E2FF8D00FEED0F /* SCAudioSession.m */; };
+		1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BE3023E2FFA000FEED0F /* NSString+Path.m */; };
+		1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3623E3BDC700FEED0F /* AUPCMPlayer.png */; };
+		1473BE3923E3D42E00FEED0F /* test2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3823E3D42E00FEED0F /* test2.mp3 */; };
+		1473BE3B23E3D44200FEED0F /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3A23E3D44200FEED0F /* test.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +74,21 @@
 		1473BE0623E2AAD200FEED0F /* AUPCMPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUPCMPlayer.m; sourceTree = "<group>"; };
 		1473BE0F23E2B20000FEED0F /* start-dash.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "start-dash.pcm"; sourceTree = "<group>"; };
 		1473BE1423E2BA3100FEED0F /* AudioUnitHelp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitHelp.h; sourceTree = "<group>"; };
+		1473BE1623E2FE2600FEED0F /* AUGraphPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUGraphPlayer.h; sourceTree = "<group>"; };
+		1473BE1723E2FE2600FEED0F /* AUGraphPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayer.m; sourceTree = "<group>"; };
+		1473BE1923E2FE3A00FEED0F /* AUGraphPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUGraphPlayerViewController.h; sourceTree = "<group>"; };
+		1473BE1A23E2FE3A00FEED0F /* AUGraphPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayerViewController.m; sourceTree = "<group>"; };
+		1473BE1B23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AUGraphPlayerViewController.xib; sourceTree = "<group>"; };
+		1473BE2A23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAudioSession+RouteUtils.m"; sourceTree = "<group>"; };
+		1473BE2B23E2FF8D00FEED0F /* SCAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAudioSession.h; sourceTree = "<group>"; };
+		1473BE2C23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAudioSession+RouteUtils.h"; sourceTree = "<group>"; };
+		1473BE2D23E2FF8D00FEED0F /* SCAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAudioSession.m; sourceTree = "<group>"; };
+		1473BE3023E2FFA000FEED0F /* NSString+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
+		1473BE3123E2FFA000FEED0F /* NSString+Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Path.h"; sourceTree = "<group>"; };
+		1473BE3323E3012900FEED0F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		1473BE3623E3BDC700FEED0F /* AUPCMPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUPCMPlayer.png; sourceTree = "<group>"; };
+		1473BE3823E3D42E00FEED0F /* test2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test2.mp3; sourceTree = "<group>"; };
+		1473BE3A23E3D44200FEED0F /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,17 +139,20 @@
 		1473BDC823E264D000FEED0F /* AVDemo */ = {
 			isa = PBXGroup;
 			children = (
+				1473BE3323E3012900FEED0F /* PrefixHeader.pch */,
 				1473BDFE23E2AA6B00FEED0F /* ViewControllers */,
 				1473BDFF23E2AA7B00FEED0F /* AUPCMPlayer */,
+				1473BE1523E2FE0F00FEED0F /* AUGraphPlayer */,
 				1473BE1123E2B9C100FEED0F /* AudioCommon */,
+				1473BE1E23E2FE7900FEED0F /* Category */,
 				1473BE0823E2AAE000FEED0F /* Resources */,
+				1473BDCF23E264D000FEED0F /* ViewController.h */,
+				1473BDD023E264D000FEED0F /* ViewController.m */,
+				1473BDD223E264D000FEED0F /* Main.storyboard */,
 				1473BDC923E264D000FEED0F /* AppDelegate.h */,
 				1473BDCA23E264D000FEED0F /* AppDelegate.m */,
 				1473BDCC23E264D000FEED0F /* SceneDelegate.h */,
 				1473BDCD23E264D000FEED0F /* SceneDelegate.m */,
-				1473BDCF23E264D000FEED0F /* ViewController.h */,
-				1473BDD023E264D000FEED0F /* ViewController.m */,
-				1473BDD223E264D000FEED0F /* Main.storyboard */,
 				1473BDD523E264D100FEED0F /* Assets.xcassets */,
 				1473BDD723E264D100FEED0F /* LaunchScreen.storyboard */,
 				1473BDDA23E264D100FEED0F /* Info.plist */,
@@ -158,6 +185,9 @@
 				1473BE0023E2AAAB00FEED0F /* AUPCMPlayerViewController.h */,
 				1473BE0123E2AAAB00FEED0F /* AUPCMPlayerViewController.m */,
 				1473BE0223E2AAAB00FEED0F /* AUPCMPlayerViewController.xib */,
+				1473BE1923E2FE3A00FEED0F /* AUGraphPlayerViewController.h */,
+				1473BE1A23E2FE3A00FEED0F /* AUGraphPlayerViewController.m */,
+				1473BE1B23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -165,6 +195,7 @@
 		1473BDFF23E2AA7B00FEED0F /* AUPCMPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				1473BE3623E3BDC700FEED0F /* AUPCMPlayer.png */,
 				1473BE0523E2AAD200FEED0F /* AUPCMPlayer.h */,
 				1473BE0623E2AAD200FEED0F /* AUPCMPlayer.m */,
 			);
@@ -174,6 +205,8 @@
 		1473BE0823E2AAE000FEED0F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1473BE3A23E3D44200FEED0F /* test.mp3 */,
+				1473BE3823E3D42E00FEED0F /* test2.mp3 */,
 				1473BE0F23E2B20000FEED0F /* start-dash.pcm */,
 			);
 			path = Resources;
@@ -183,8 +216,30 @@
 			isa = PBXGroup;
 			children = (
 				1473BE1423E2BA3100FEED0F /* AudioUnitHelp.h */,
+				1473BE2B23E2FF8D00FEED0F /* SCAudioSession.h */,
+				1473BE2D23E2FF8D00FEED0F /* SCAudioSession.m */,
+				1473BE2C23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.h */,
+				1473BE2A23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.m */,
 			);
 			path = AudioCommon;
+			sourceTree = "<group>";
+		};
+		1473BE1523E2FE0F00FEED0F /* AUGraphPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				1473BE1623E2FE2600FEED0F /* AUGraphPlayer.h */,
+				1473BE1723E2FE2600FEED0F /* AUGraphPlayer.m */,
+			);
+			path = AUGraphPlayer;
+			sourceTree = "<group>";
+		};
+		1473BE1E23E2FE7900FEED0F /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				1473BE3123E2FFA000FEED0F /* NSString+Path.h */,
+				1473BE3023E2FFA000FEED0F /* NSString+Path.m */,
+			);
+			path = Category;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,11 +345,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1473BE1D23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib in Resources */,
+				1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */,
+				1473BE3B23E3D44200FEED0F /* test.mp3 in Resources */,
 				1473BE1023E2B20000FEED0F /* start-dash.pcm in Resources */,
 				1473BE0423E2AAAB00FEED0F /* AUPCMPlayerViewController.xib in Resources */,
 				1473BDD923E264D100FEED0F /* LaunchScreen.storyboard in Resources */,
 				1473BDD623E264D100FEED0F /* Assets.xcassets in Resources */,
 				1473BDD423E264D000FEED0F /* Main.storyboard in Resources */,
+				1473BE3923E3D42E00FEED0F /* test2.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,11 +379,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				1473BDD123E264D000FEED0F /* ViewController.m in Sources */,
+				1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */,
 				1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */,
+				1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */,
 				1473BE0323E2AAAB00FEED0F /* AUPCMPlayerViewController.m in Sources */,
 				1473BDCB23E264D000FEED0F /* AppDelegate.m in Sources */,
+				1473BE1C23E2FE3A00FEED0F /* AUGraphPlayerViewController.m in Sources */,
 				1473BDDC23E264D100FEED0F /* main.m in Sources */,
+				1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
+				1473BE1823E2FE2600FEED0F /* AUGraphPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,6 +559,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6426K9AWKV;
+				GCC_PREFIX_HEADER = AVDemo/PrefixHeader.pch;
 				INFOPLIST_FILE = AVDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -512,6 +577,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6426K9AWKV;
+				GCC_PREFIX_HEADER = AVDemo/PrefixHeader.pch;
 				INFOPLIST_FILE = AVDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

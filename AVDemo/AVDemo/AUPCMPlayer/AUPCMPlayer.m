@@ -10,7 +10,6 @@
 #import <AudioUnit/AudioUnit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <assert.h>
-#import "AudioUnitHelp.h"
 
 const uint32_t CONST_BUFFER_SIZE = 0x10000;
 

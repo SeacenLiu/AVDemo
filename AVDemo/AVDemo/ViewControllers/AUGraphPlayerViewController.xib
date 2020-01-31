@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AUGraphPlayerViewController">
+            <connections>
+                <outlet property="view" destination="OEk-Hp-hLw" id="mEc-RY-ibR"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="OEk-Hp-hLw">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Audio Graph Player" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N7J-hD-39o">
+                    <rect key="frame" x="123.5" y="214.5" width="167" height="24"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wMw-gw-pYh">
+                    <rect key="frame" x="84" y="434" width="39" height="38"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                    <state key="normal" title="Play"/>
+                    <connections>
+                        <action selector="playMusic:" destination="-1" eventType="touchUpInside" id="LsA-cv-Qpz"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vpZ-2R-ha7">
+                    <rect key="frame" x="183.5" y="664.5" width="47" height="30"/>
+                    <state key="normal" title="Switch"/>
+                    <connections>
+                        <action selector="switchAction:" destination="-1" eventType="touchUpInside" id="kH8-CD-qIq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y2s-I3-SLB">
+                    <rect key="frame" x="289" y="434" width="43" height="38"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                    <state key="normal" title="Stop"/>
+                    <connections>
+                        <action selector="stopMusic:" destination="-1" eventType="touchUpInside" id="QUe-3z-9dZ"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="N7J-hD-39o" firstAttribute="centerY" secondItem="Los-3p-FE0" secondAttribute="centerY" multiplier="0.5" id="1I1-f4-s68"/>
+                <constraint firstItem="vpZ-2R-ha7" firstAttribute="centerX" secondItem="Los-3p-FE0" secondAttribute="centerX" id="CPi-Vl-xY8"/>
+                <constraint firstItem="vpZ-2R-ha7" firstAttribute="centerY" secondItem="Los-3p-FE0" secondAttribute="centerY" multiplier="1.5" id="EpS-gU-Wvv"/>
+                <constraint firstItem="wMw-gw-pYh" firstAttribute="centerY" secondItem="Los-3p-FE0" secondAttribute="centerY" id="UKv-ZP-cN9"/>
+                <constraint firstItem="Y2s-I3-SLB" firstAttribute="centerY" secondItem="Los-3p-FE0" secondAttribute="centerY" id="gwq-HQ-2FT"/>
+                <constraint firstItem="wMw-gw-pYh" firstAttribute="centerX" secondItem="Los-3p-FE0" secondAttribute="centerX" multiplier="0.5" id="sy1-Kx-6tX"/>
+                <constraint firstItem="Y2s-I3-SLB" firstAttribute="centerX" secondItem="Los-3p-FE0" secondAttribute="centerX" multiplier="1.5" id="t1m-pH-gfG"/>
+                <constraint firstItem="N7J-hD-39o" firstAttribute="centerX" secondItem="Los-3p-FE0" secondAttribute="centerX" id="xMG-La-Z7M"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Los-3p-FE0"/>
+            <point key="canvasLocation" x="138" y="118"/>
+        </view>
+    </objects>
+</document>
