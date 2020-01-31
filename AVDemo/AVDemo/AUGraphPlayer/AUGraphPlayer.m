@@ -106,7 +106,7 @@
     playerDescription.componentSubType = kAudioUnitSubType_AudioFilePlayer;
     status = AUGraphAddNode(mPlayerGraph, &playerDescription, &mPlayerNode);
     CheckStatus(status, @"Could not add Player node to AUGraph", YES);
-    // 2-3: 添加 Splitter (格式转化器)
+    // 2-3: 添加 Splitter (音频器)
     /**
      An audio unit that provides 2 output buses and 1 input bus. The audio unit
      splits (duplicates) the input signal to the two output buses
@@ -250,18 +250,18 @@
     
     // 6: 连接起Node来 connect a node's output to a node's input
     AUGraphConnectNodeInput(mPlayerGraph, mPlayerNode, ELEMENT_0, mSplitterNode, ELEMENT_0);
-    CheckStatus(status, @"Player Node Connect To IONode", YES);
+    CheckStatus(status, @"Player Node Connect To Splitter Node", YES);
     AUGraphConnectNodeInput(mPlayerGraph, mSplitterNode, ELEMENT_0, mVocalMixerNode, ELEMENT_0);
-    CheckStatus(status, @"Player Node Connect To IONode", YES);
+    CheckStatus(status, @"Splitter Node Connect To Vocal MixerNode", YES);
     
     AUGraphConnectNodeInput(mPlayerGraph, mSplitterNode, ELEMENT_1, mAccMixerNode, ELEMENT_1);
-    CheckStatus(status, @"Player Node Connect To IONode", YES);
+    CheckStatus(status, @"Splitter Node Connect To Acc Mixer Node", YES);
     
     AUGraphConnectNodeInput(mPlayerGraph, mVocalMixerNode, ELEMENT_0, mAccMixerNode, ELEMENT_0);
-    CheckStatus(status, @"Player Node Connect To IONode", YES);
+    CheckStatus(status, @"Vocal Mixer Node Connect To Acc Mixer Node", YES);
     
     AUGraphConnectNodeInput(mPlayerGraph, mAccMixerNode, ELEMENT_0, mPlayerIONode, ELEMENT_0);
-    CheckStatus(status, @"Player Node Connect To IONode", YES);
+    CheckStatus(status, @"Acc Mixer Node Connect To IONode", YES);
     
     // 7 :初始化Graph
     status = AUGraphInitialize(mPlayerGraph);
@@ -282,14 +282,12 @@
     CheckStatus(status, @"Open AudioFile... ", YES);
     
     // 在全局域的输出元素中设置播放器单元目标文件
-    status = AudioUnitSetProperty(
-                                  mPlayerUnit,
+    status = AudioUnitSetProperty(mPlayerUnit,
                                   kAudioUnitProperty_ScheduledFileIDs,
                                   kAudioUnitScope_Global,
                                   ELEMENT_0,
                                   &musicFile,
-                                  sizeof(musicFile)
-                                  );
+                                  sizeof(musicFile));
     CheckStatus(status, @"Tell AudioFile Player Unit Load Which File... ", YES);
     
     // 通过音频文件获取音频数据流的格式

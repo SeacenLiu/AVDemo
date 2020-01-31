@@ -29,6 +29,7 @@
 		1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3623E3BDC700FEED0F /* AUPCMPlayer.png */; };
 		1473BE3923E3D42E00FEED0F /* test2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3823E3D42E00FEED0F /* test2.mp3 */; };
 		1473BE3B23E3D44200FEED0F /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3A23E3D44200FEED0F /* test.mp3 */; };
+		1473BE3D23E43A4000FEED0F /* AUGraphPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1473BE3C23E43A4000FEED0F /* AUGraphPlayer.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		1473BE3623E3BDC700FEED0F /* AUPCMPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUPCMPlayer.png; sourceTree = "<group>"; };
 		1473BE3823E3D42E00FEED0F /* test2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test2.mp3; sourceTree = "<group>"; };
 		1473BE3A23E3D44200FEED0F /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
+		1473BE3C23E43A4000FEED0F /* AUGraphPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUGraphPlayer.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +229,7 @@
 		1473BE1523E2FE0F00FEED0F /* AUGraphPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				1473BE3C23E43A4000FEED0F /* AUGraphPlayer.png */,
 				1473BE1623E2FE2600FEED0F /* AUGraphPlayer.h */,
 				1473BE1723E2FE2600FEED0F /* AUGraphPlayer.m */,
 			);
@@ -349,6 +352,7 @@
 				1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */,
 				1473BE3B23E3D44200FEED0F /* test.mp3 in Resources */,
 				1473BE1023E2B20000FEED0F /* start-dash.pcm in Resources */,
+				1473BE3D23E43A4000FEED0F /* AUGraphPlayer.png in Resources */,
 				1473BE0423E2AAAB00FEED0F /* AUPCMPlayerViewController.xib in Resources */,
 				1473BDD923E264D100FEED0F /* LaunchScreen.storyboard in Resources */,
 				1473BDD623E264D100FEED0F /* Assets.xcassets in Resources */,
