@@ -75,6 +75,7 @@ static OSStatus InputRenderCallback(void *inRefCon,
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback];
         [[SCAudioSession sharedInstance] setPreferredSampleRate:sampleRate];
         [[SCAudioSession sharedInstance] setActive:YES];
+        // TODO: - 缓冲时间设置？
         [[SCAudioSession sharedInstance] setPreferredLatency:SMAudioIOBufferDurationSmall * 4];
         [[SCAudioSession sharedInstance] addRouteChangeListener];
         
@@ -188,16 +189,14 @@ static OSStatus InputRenderCallback(void *inRefCon,
     CheckStatus(status, @"I/O unit enableio error", YES);
     // 1-2: 定义音频流格式
     AudioStreamBasicDescription float32StreamFormat;
-    UInt32 bytesPerSample = sizeof(Float32); // 8
-    bzero(&float32StreamFormat, sizeof(float32StreamFormat));
-    float32StreamFormat.mSampleRate             = _sampleRate;
-    float32StreamFormat.mFormatID               = kAudioFormatLinearPCM;
-    float32StreamFormat.mFormatFlags            = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
-    float32StreamFormat.mBytesPerPacket         = bytesPerSample;
-    float32StreamFormat.mFramesPerPacket        = 1;
-    float32StreamFormat.mBytesPerFrame          = bytesPerSample;
-    float32StreamFormat.mChannelsPerFrame       = _channels;
-    float32StreamFormat.mBitsPerChannel         = 8 * bytesPerSample;
+    UInt32 bytesPerChannel = sizeof(Float32); // 4
+    AudioFormatFlags formatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+    float32StreamFormat = linearPCMStreamDes(formatFlags,       // 存储格式
+                                             _sampleRate,       // 采样率
+                                             _channels,         // 声道数
+                                             bytesPerChannel);  // 单声道字节数
+    printAudioStreamFormat(float32StreamFormat);
+    
     // 1-3: 设置I/O单元在输入流格式
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioUnitProperty_StreamFormat,
@@ -209,16 +208,14 @@ static OSStatus InputRenderCallback(void *inRefCon,
     // 2. 设置转换器单元属性
     // 2-1: 定义客户端流格式
     AudioStreamBasicDescription sint16StreamFormat;
-    bytesPerSample = sizeof(SInt16); // 2
-    bzero(&sint16StreamFormat, sizeof(sint16StreamFormat));
-    sint16StreamFormat.mSampleRate        = _sampleRate;
-    sint16StreamFormat.mFormatID          = kAudioFormatLinearPCM;
-    sint16StreamFormat.mFormatFlags       = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
-    sint16StreamFormat.mBytesPerPacket    = bytesPerSample * _channels;
-    sint16StreamFormat.mFramesPerPacket   = 1;
-    sint16StreamFormat.mBytesPerFrame     = bytesPerSample * _channels;
-    sint16StreamFormat.mChannelsPerFrame  = _channels;
-    sint16StreamFormat.mBitsPerChannel    = 8 * bytesPerSample;
+    bytesPerChannel = sizeof(SInt16); // 2
+    formatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
+    sint16StreamFormat = linearPCMStreamDes(formatFlags,       // 存储格式
+                                            _sampleRate,       // 采样率
+                                            _channels,         // 声道数
+                                            bytesPerChannel);  // 单声道字节数
+    printAudioStreamFormat(sint16StreamFormat);
+    
     // 2-2: 设置转换器单元的输入流格式
     status = AudioUnitSetProperty(_convertUnit,
                                   kAudioUnitProperty_StreamFormat,
@@ -295,14 +292,18 @@ static OSStatus InputRenderCallback(void *inRefCon,
                  flags:(AudioUnitRenderActionFlags *)flags {
     // 清空当前数据
     for (int iBuffer = 0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
-        memset(ioData->mBuffers[iBuffer].mData, 0, ioData->mBuffers[iBuffer].mDataByteSize);
+        memset(ioData->mBuffers[iBuffer].mData,
+               0,
+               ioData->mBuffers[iBuffer].mDataByteSize);
     }
     
     // 通过代理填充数据
     if(_fillAudioDataDelegate) {
         [_fillAudioDataDelegate fillAudioData:_outData numFrames:numFrames numChannels:_channels];
         for (int iBuffer = 0; iBuffer < ioData->mNumberBuffers; ++iBuffer) {
-            memcpy((SInt16 *)ioData->mBuffers[iBuffer].mData, _outData, ioData->mBuffers[iBuffer].mDataByteSize);
+            memcpy((SInt16 *)ioData->mBuffers[iBuffer].mData,
+                   _outData,
+                   ioData->mBuffers[iBuffer].mDataByteSize);
         }
     }
     return noErr;

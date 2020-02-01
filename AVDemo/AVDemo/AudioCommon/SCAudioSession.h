@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) AVAudioSession *audioSession;
 @property (nonatomic, assign) Float64 preferredSampleRate;
 @property (nonatomic, assign, readonly) Float64 currentSampleRate;
+/** 当前I/O缓冲区的持续时间，以秒为单位 */
 @property (nonatomic, assign) NSTimeInterval preferredLatency;
 @property (nonatomic, assign) BOOL active;
 @property (nonatomic, copy) AVAudioSessionCategory category;
