@@ -41,8 +41,8 @@ static AudioComponentDescription comDesc(OSType type,
 static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
                                                Float64 rate,
                                                UInt32 channels,
-                                               UInt32 bytesPerChannel,
-                                               UInt32 bitsPerByte) {
+                                               UInt32 bytesPerChannel) {
+    UInt32 bitsPerByte = 8; // 1个字节 = 8个二进制位
     BOOL isPlanner = flags & kAudioFormatFlagIsNonInterleaved;
     
     AudioStreamBasicDescription asbd;
@@ -50,7 +50,7 @@ static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
     asbd.mSampleRate = rate;                    // 采样率
     asbd.mFormatID = kAudioFormatLinearPCM;     // 编码格式
     asbd.mFormatFlags = flags;                  // 采样格式及存储方式
-    asbd.mBitsPerChannel = bitsPerByte * bytesPerChannel; // 位深(1个字节 = 8个二进制位)
+    asbd.mBitsPerChannel = bitsPerByte * bytesPerChannel; // 位深
     asbd.mChannelsPerFrame = (UInt32)channels;  // 声道数
     if (isPlanner) { // planner格式: 每一帧只是包含一个Channel
         asbd.mBytesPerFrame = bytesPerChannel;  // 每一帧的字节数

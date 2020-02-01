@@ -40,9 +40,6 @@
 		1473BED823E46FD500FEED0F /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEC923E46FD500FEED0F /* libswresample.a */; };
 		1473BED923E46FD500FEED0F /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BECA23E46FD500FEED0F /* libswscale.a */; };
 		1473BEDA23E46FD600FEED0F /* libx264.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BED023E46FD500FEED0F /* libx264.a */; };
-		1473BEDD23E4701F00FEED0F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDC23E4701F00FEED0F /* AudioToolbox.framework */; };
-		1473BEDF23E4702900FEED0F /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDE23E4702800FEED0F /* VideoToolbox.framework */; };
-		1473BEE123E4703100FEED0F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE023E4703100FEED0F /* CoreMedia.framework */; };
 		1473BEE323E4704000FEED0F /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE223E4704000FEED0F /* libiconv.2.4.0.tbd */; };
 		1473BEE523E4704C00FEED0F /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE423E4704C00FEED0F /* libiconv.tbd */; };
 		1473BEE723E4705600FEED0F /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE623E4705600FEED0F /* libbz2.tbd */; };
@@ -51,6 +48,16 @@
 		1473BF0123E470ED00FEED0F /* accompany_decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1473BEFA23E470EC00FEED0F /* accompany_decoder.cpp */; };
 		1473BF0223E470ED00FEED0F /* packet_queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1473BEFE23E470EC00FEED0F /* packet_queue.cpp */; };
 		1473BF0323E470ED00FEED0F /* accompany_decoder_controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1473BEFF23E470EC00FEED0F /* accompany_decoder_controller.cpp */; };
+		1473BF0523E4828900FEED0F /* spark.aac in Resources */ = {isa = PBXBuildFile; fileRef = 1473BF0423E4828900FEED0F /* spark.aac */; };
+		1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BF0823E4843D00FEED0F /* AUAudioOutput.m */; };
+		1473BF0C23E4862100FEED0F /* AUAudioOutput+Interruption.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BF0B23E4862100FEED0F /* AUAudioOutput+Interruption.m */; };
+		1473BF0F23E4872700FEED0F /* AUAudioPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1473BF0E23E4872700FEED0F /* AUAudioPlayer.mm */; };
+		1473BF1023E4912500FEED0F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDC23E4701F00FEED0F /* AudioToolbox.framework */; };
+		1473BF1123E4912D00FEED0F /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDE23E4702800FEED0F /* VideoToolbox.framework */; };
+		1473BF1223E4913800FEED0F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE023E4703100FEED0F /* CoreMedia.framework */; };
+		1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */; };
+		1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */; };
+		1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1489267623E53779008D1CD7 /* AUAudioPlayer.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -255,6 +262,17 @@
 		1473BEFD23E470EC00FEED0F /* accompany_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = accompany_decoder.h; sourceTree = "<group>"; };
 		1473BEFE23E470EC00FEED0F /* packet_queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = packet_queue.cpp; sourceTree = "<group>"; };
 		1473BEFF23E470EC00FEED0F /* accompany_decoder_controller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = accompany_decoder_controller.cpp; sourceTree = "<group>"; };
+		1473BF0423E4828900FEED0F /* spark.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = spark.aac; sourceTree = "<group>"; };
+		1473BF0723E4843D00FEED0F /* AUAudioOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioOutput.h; sourceTree = "<group>"; };
+		1473BF0823E4843D00FEED0F /* AUAudioOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioOutput.m; sourceTree = "<group>"; };
+		1473BF0A23E4862100FEED0F /* AUAudioOutput+Interruption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUAudioOutput+Interruption.h"; sourceTree = "<group>"; };
+		1473BF0B23E4862100FEED0F /* AUAudioOutput+Interruption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUAudioOutput+Interruption.m"; sourceTree = "<group>"; };
+		1473BF0D23E4872700FEED0F /* AUAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioPlayer.h; sourceTree = "<group>"; };
+		1473BF0E23E4872700FEED0F /* AUAudioPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AUAudioPlayer.mm; sourceTree = "<group>"; };
+		1489267123E492F7008D1CD7 /* AUAudioPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioPlayerViewController.h; sourceTree = "<group>"; };
+		1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioPlayerViewController.m; sourceTree = "<group>"; };
+		1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AUAudioPlayerViewController.xib; sourceTree = "<group>"; };
+		1489267623E53779008D1CD7 /* AUAudioPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUAudioPlayer.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,13 +280,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1473BF1223E4913800FEED0F /* CoreMedia.framework in Frameworks */,
+				1473BF1123E4912D00FEED0F /* VideoToolbox.framework in Frameworks */,
+				1473BF1023E4912500FEED0F /* AudioToolbox.framework in Frameworks */,
 				1473BEE923E4707900FEED0F /* libz.tbd in Frameworks */,
 				1473BEE723E4705600FEED0F /* libbz2.tbd in Frameworks */,
 				1473BEE523E4704C00FEED0F /* libiconv.tbd in Frameworks */,
 				1473BEE323E4704000FEED0F /* libiconv.2.4.0.tbd in Frameworks */,
-				1473BEE123E4703100FEED0F /* CoreMedia.framework in Frameworks */,
-				1473BEDF23E4702900FEED0F /* VideoToolbox.framework in Frameworks */,
-				1473BEDD23E4701F00FEED0F /* AudioToolbox.framework in Frameworks */,
 				1473BED823E46FD500FEED0F /* libswresample.a in Frameworks */,
 				1473BED723E46FD500FEED0F /* libavdevice.a in Frameworks */,
 				1473BED323E46FD500FEED0F /* libavfilter.a in Frameworks */,
@@ -327,6 +345,7 @@
 				1473BDFE23E2AA6B00FEED0F /* ViewControllers */,
 				1473BDFF23E2AA7B00FEED0F /* AUPCMPlayer */,
 				1473BE1523E2FE0F00FEED0F /* AUGraphPlayer */,
+				1473BF0623E482CF00FEED0F /* AUAudioPlayer */,
 				1473BE1123E2B9C100FEED0F /* AudioCommon */,
 				1473BE1E23E2FE7900FEED0F /* Category */,
 				1473BE0823E2AAE000FEED0F /* Resources */,
@@ -373,6 +392,9 @@
 				1473BE1923E2FE3A00FEED0F /* AUGraphPlayerViewController.h */,
 				1473BE1A23E2FE3A00FEED0F /* AUGraphPlayerViewController.m */,
 				1473BE1B23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib */,
+				1489267123E492F7008D1CD7 /* AUAudioPlayerViewController.h */,
+				1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */,
+				1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -390,6 +412,7 @@
 		1473BE0823E2AAE000FEED0F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1473BF0423E4828900FEED0F /* spark.aac */,
 				1473BE3A23E3D44200FEED0F /* walking.mp3 */,
 				1473BE3823E3D42E00FEED0F /* heart.mp3 */,
 				1473BE0F23E2B20000FEED0F /* start-dash.pcm */,
@@ -737,6 +760,20 @@
 			path = libffmpeg_decoder;
 			sourceTree = "<group>";
 		};
+		1473BF0623E482CF00FEED0F /* AUAudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				1489267623E53779008D1CD7 /* AUAudioPlayer.png */,
+				1473BF0D23E4872700FEED0F /* AUAudioPlayer.h */,
+				1473BF0E23E4872700FEED0F /* AUAudioPlayer.mm */,
+				1473BF0723E4843D00FEED0F /* AUAudioOutput.h */,
+				1473BF0823E4843D00FEED0F /* AUAudioOutput.m */,
+				1473BF0A23E4862100FEED0F /* AUAudioOutput+Interruption.h */,
+				1473BF0B23E4862100FEED0F /* AUAudioOutput+Interruption.m */,
+			);
+			path = AUAudioPlayer;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -840,6 +877,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */,
 				1473BE1D23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib in Resources */,
 				1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */,
 				1473BE3B23E3D44200FEED0F /* walking.mp3 in Resources */,
@@ -847,6 +885,8 @@
 				1473BE3D23E43A4000FEED0F /* AUGraphPlayer.png in Resources */,
 				1473BE0423E2AAAB00FEED0F /* AUPCMPlayerViewController.xib in Resources */,
 				1473BDD923E264D100FEED0F /* LaunchScreen.storyboard in Resources */,
+				1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */,
+				1473BF0523E4828900FEED0F /* spark.aac in Resources */,
 				1473BDD623E264D100FEED0F /* Assets.xcassets in Resources */,
 				1473BDD423E264D000FEED0F /* Main.storyboard in Resources */,
 				1473BE3923E3D42E00FEED0F /* heart.mp3 in Resources */,
@@ -874,11 +914,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1473BF0F23E4872700FEED0F /* AUAudioPlayer.mm in Sources */,
 				1473BDD123E264D000FEED0F /* ViewController.m in Sources */,
 				1473BF0023E470EC00FEED0F /* packet_pool.cpp in Sources */,
 				1473BF0123E470ED00FEED0F /* accompany_decoder.cpp in Sources */,
 				1473BF0223E470ED00FEED0F /* packet_queue.cpp in Sources */,
 				1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */,
+				1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */,
 				1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */,
 				1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */,
 				1473BE0323E2AAAB00FEED0F /* AUPCMPlayerViewController.m in Sources */,
@@ -888,7 +930,9 @@
 				1473BDDC23E264D100FEED0F /* main.m in Sources */,
 				1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
+				1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */,
 				1473BE1823E2FE2600FEED0F /* AUGraphPlayer.m in Sources */,
+				1473BF0C23E4862100FEED0F /* AUAudioOutput+Interruption.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

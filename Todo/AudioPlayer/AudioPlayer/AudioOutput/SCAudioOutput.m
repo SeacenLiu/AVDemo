@@ -29,7 +29,8 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <Accelerate/Accelerate.h>
 #import "SCAudioSession.h"
-#import "CommonUtil.h"
+//#import "CommonUtil.h"
+#import "NSString+Path.h"
 
 // 输入控制端
 static const AudioUnitElement inputElement = 1;

@@ -171,7 +171,11 @@ API_AVAILABLE(macos(10.0), ios(2.0), watchos(2.0), tvos(9.0));
         NSLog(@"AudioUnitSetProperty error with status: %d", status);
     }
     // 5. 描述输出流的格式
-    AudioStreamBasicDescription outputFormat = linearPCMStreamDes(kAudioFormatFlagIsSignedInteger, 44100, 2, 2, 8);
+    AudioStreamBasicDescription outputFormat;
+    outputFormat= linearPCMStreamDes(kAudioFormatFlagIsSignedInteger, // 存储格式
+                                     44100,                           // 采样率
+                                     2,                               // 声道数
+                                     2);                              // 单声道字节数
     printAudioStreamFormat(outputFormat);
     // 6. 设置 RemoteIO 输入域输出端
     status = AudioUnitSetProperty(_audioUnit,

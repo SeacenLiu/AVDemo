@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "AUPCMPlayerViewController.h"
 #import "AUGraphPlayerViewController.h"
+#import "AUAudioPlayerViewController.h"
 
 @interface ViewController ()
 
@@ -32,6 +33,10 @@
         } else if (indexPath.row == 1) {
             // AUGraph 播放 MP3 文件(by AudioFilePlayer)
             AUGraphPlayerViewController *vc = [AUGraphPlayerViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        } else if (indexPath.row == 2) {
+            // AudioUnit 播放 ACC 文件(by ffmpeg decode)
+            AUAudioPlayerViewController *vc = [AUAudioPlayerViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
