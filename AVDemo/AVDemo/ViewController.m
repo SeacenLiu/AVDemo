@@ -10,6 +10,7 @@
 #import "AUPCMPlayerViewController.h"
 #import "AUGraphPlayerViewController.h"
 #import "AUAudioPlayerViewController.h"
+#import "AUAudioRecorderViewController.h"
 
 @interface ViewController ()
 
@@ -37,6 +38,12 @@
         } else if (indexPath.row == 2) {
             // AudioUnit 播放 ACC 文件(by ffmpeg decode)
             AUAudioPlayerViewController *vc = [AUAudioPlayerViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    } else if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            // AudioUnit 录制音频并保存为 caf 文件
+            AUAudioRecorderViewController *vc = [AUAudioRecorderViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }

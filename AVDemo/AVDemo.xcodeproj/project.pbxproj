@@ -58,6 +58,10 @@
 		1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */; };
 		1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */; };
 		1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1489267623E53779008D1CD7 /* AUAudioPlayer.png */; };
+		1489267C23E56618008D1CD7 /* AUAudioRecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267A23E56618008D1CD7 /* AUAudioRecorderViewController.m */; };
+		1489267D23E56618008D1CD7 /* AUAudioRecorderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1489267B23E56618008D1CD7 /* AUAudioRecorderViewController.xib */; };
+		1489268023E566C9008D1CD7 /* AUAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */; };
+		1489268323E566FE008D1CD7 /* AUAudioRecorder+Interruption.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489268223E566FE008D1CD7 /* AUAudioRecorder+Interruption.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -273,6 +277,13 @@
 		1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioPlayerViewController.m; sourceTree = "<group>"; };
 		1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AUAudioPlayerViewController.xib; sourceTree = "<group>"; };
 		1489267623E53779008D1CD7 /* AUAudioPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUAudioPlayer.png; sourceTree = "<group>"; };
+		1489267923E56618008D1CD7 /* AUAudioRecorderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioRecorderViewController.h; sourceTree = "<group>"; };
+		1489267A23E56618008D1CD7 /* AUAudioRecorderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioRecorderViewController.m; sourceTree = "<group>"; };
+		1489267B23E56618008D1CD7 /* AUAudioRecorderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AUAudioRecorderViewController.xib; sourceTree = "<group>"; };
+		1489267E23E566C9008D1CD7 /* AUAudioRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioRecorder.h; sourceTree = "<group>"; };
+		1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioRecorder.m; sourceTree = "<group>"; };
+		1489268123E566FE008D1CD7 /* AUAudioRecorder+Interruption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUAudioRecorder+Interruption.h"; sourceTree = "<group>"; };
+		1489268223E566FE008D1CD7 /* AUAudioRecorder+Interruption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUAudioRecorder+Interruption.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -346,6 +357,7 @@
 				1473BDFF23E2AA7B00FEED0F /* AUPCMPlayer */,
 				1473BE1523E2FE0F00FEED0F /* AUGraphPlayer */,
 				1473BF0623E482CF00FEED0F /* AUAudioPlayer */,
+				1489267823E5601A008D1CD7 /* AUAudioRecorder */,
 				1473BE1123E2B9C100FEED0F /* AudioCommon */,
 				1473BE1E23E2FE7900FEED0F /* Category */,
 				1473BE0823E2AAE000FEED0F /* Resources */,
@@ -395,6 +407,9 @@
 				1489267123E492F7008D1CD7 /* AUAudioPlayerViewController.h */,
 				1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */,
 				1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */,
+				1489267923E56618008D1CD7 /* AUAudioRecorderViewController.h */,
+				1489267A23E56618008D1CD7 /* AUAudioRecorderViewController.m */,
+				1489267B23E56618008D1CD7 /* AUAudioRecorderViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -774,6 +789,17 @@
 			path = AUAudioPlayer;
 			sourceTree = "<group>";
 		};
+		1489267823E5601A008D1CD7 /* AUAudioRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				1489267E23E566C9008D1CD7 /* AUAudioRecorder.h */,
+				1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */,
+				1489268123E566FE008D1CD7 /* AUAudioRecorder+Interruption.h */,
+				1489268223E566FE008D1CD7 /* AUAudioRecorder+Interruption.m */,
+			);
+			path = AUAudioRecorder;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -888,6 +914,7 @@
 				1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */,
 				1473BF0523E4828900FEED0F /* spark.aac in Resources */,
 				1473BDD623E264D100FEED0F /* Assets.xcassets in Resources */,
+				1489267D23E56618008D1CD7 /* AUAudioRecorderViewController.xib in Resources */,
 				1473BDD423E264D000FEED0F /* Main.storyboard in Resources */,
 				1473BE3923E3D42E00FEED0F /* heart.mp3 in Resources */,
 			);
@@ -917,9 +944,11 @@
 				1473BF0F23E4872700FEED0F /* AUAudioPlayer.mm in Sources */,
 				1473BDD123E264D000FEED0F /* ViewController.m in Sources */,
 				1473BF0023E470EC00FEED0F /* packet_pool.cpp in Sources */,
+				1489267C23E56618008D1CD7 /* AUAudioRecorderViewController.m in Sources */,
 				1473BF0123E470ED00FEED0F /* accompany_decoder.cpp in Sources */,
 				1473BF0223E470ED00FEED0F /* packet_queue.cpp in Sources */,
 				1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */,
+				1489268323E566FE008D1CD7 /* AUAudioRecorder+Interruption.m in Sources */,
 				1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */,
 				1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */,
 				1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */,
@@ -931,6 +960,7 @@
 				1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
 				1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */,
+				1489268023E566C9008D1CD7 /* AUAudioRecorder.m in Sources */,
 				1473BE1823E2FE2600FEED0F /* AUGraphPlayer.m in Sources */,
 				1473BF0C23E4862100FEED0F /* AUAudioOutput+Interruption.m in Sources */,
 			);

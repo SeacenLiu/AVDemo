@@ -43,6 +43,11 @@ static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
                                                UInt32 channels,
                                                UInt32 bytesPerChannel) {
     UInt32 bitsPerByte = 8; // 1个字节 = 8个二进制位
+    
+    /*
+     * Packet 数据(kAudioFormatFlagIsPacked): 各个声道数据依次存储在mBuffers[0]中
+     * Planner 数据(kAudioFormatFlagIsNonInterleaved): 每个声道数据分别存储在mBuffers[0],...,mBuffers[i]中
+     */
     BOOL isPlanner = flags & kAudioFormatFlagIsNonInterleaved;
     
     AudioStreamBasicDescription asbd;
