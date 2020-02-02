@@ -9,6 +9,7 @@
 #import "AUAudioRecorder.h"
 #import "SCAudioSession.h"
 #import "AUAudioRecorder+Interruption.h"
+#import "AUExtAudioFile+Write.h"
 
 static const AudioUnitElement inputElement = 1;
 static const AudioUnitElement outputElement = 0;
@@ -23,6 +24,7 @@ static const AudioUnitElement outputElement = 0;
 
 @property (nonatomic, copy)   NSString*          filePath;
 @property (nonatomic, assign) Float64            sampleRate;
+@property (nonatomic, assign) UInt32          channels;
 
 @property (nonatomic, assign) AUGraph            auGraph;
 @property (nonatomic, assign) AUNode             ioNode;
@@ -36,7 +38,7 @@ static const AudioUnitElement outputElement = 0;
 
 @implementation AUAudioRecorder
 {
-    ExtAudioFileRef finalAudioFile;
+    AUExtAudioFile *audioFile;
 }
 
 #pragma mark - life cycle
@@ -45,6 +47,7 @@ static const AudioUnitElement outputElement = 0;
         // 属性初始化
         _filePath = path;
         _sampleRate = 44100.0;
+        _channels = 2;
         
         // 音频会话设置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
@@ -67,7 +70,21 @@ static const AudioUnitElement outputElement = 0;
 
 #pragma mark - public method
 - (void)start {
-    [self prepareFinalWriteFile];
+    AudioStreamBasicDescription clientFormat;
+    UInt32 fSize = sizeof (clientFormat);
+    memset(&clientFormat, 0, sizeof(clientFormat));
+    CheckStatus(AudioUnitGetProperty(_mixerUnit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Output,
+                                     outputElement,
+                                     &clientFormat,
+                                     &fSize),
+                @"AudioUnitGetProperty on failed",
+                YES);
+    NSLog(@"---------------------- clientFormat --------------------------");
+    printAudioStreamFormat(clientFormat);
+    audioFile = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
+    
     OSStatus status = AUGraphStart(_auGraph);
     CheckStatus(status, @"启动音频图失败", YES);
 }
@@ -76,7 +93,7 @@ static const AudioUnitElement outputElement = 0;
     OSStatus status = AUGraphStop(_auGraph);
     CheckStatus(status, @"停止音频图失败", YES);
     // 关闭文件和释放对象
-    ExtAudioFileDispose(finalAudioFile);
+    [audioFile closeFile];
 }
 
 #pragma mark - Audio Unit Graph
@@ -179,12 +196,20 @@ static const AudioUnitElement outputElement = 0;
                                   sizeof (maximumFramesPerSlice));
     CheckStatus(status, @"RemoteIO 切片最大帧数设置失败", YES);
     // 设置音频图中的音频流格式
-    AudioStreamBasicDescription linearPCMFormat;// = [self noninterleavedPCMFormatWithChannels:2];
+    // 录制音频流格式
+    AudioStreamBasicDescription recordASDB;
+    AudioFormatFlags recordFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsNonInterleaved;
+    recordASDB = linearPCMStreamDes(recordFlags, _sampleRate, _channels, sizeof(UInt16));
+    //
+    
+    AudioStreamBasicDescription linearPCMFormat;
     AudioFormatFlags formatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
     linearPCMFormat = linearPCMStreamDes(formatFlags,
                                          _sampleRate,
                                          2,
                                          sizeof(Float32));
+    NSLog(@"---------------------- linearPCMFormat --------------------------");
+    printAudioStreamFormat(linearPCMFormat);
     
     // RemoteIO 流格式
     AudioUnitSetProperty(_ioUnit,
@@ -305,84 +330,9 @@ static OSStatus RenderCallback(void *inRefCon,
                     ioData);
     
     // 异步向文件中写入数据
-    result = ExtAudioFileWriteAsync(recorder->finalAudioFile,
-                                    inNumberFrames,
-                                    ioData);
+    result = [recorder->audioFile writeFrames:inNumberFrames toBufferData:ioData async:YES];
+    
     return result;
 }
 
-#pragma mark - 音频文件写入
-- (void)prepareFinalWriteFile {
-    // 目标音频流
-    AudioStreamBasicDescription destinationFormat;
-    memset(&destinationFormat, 0, sizeof(destinationFormat));
-    destinationFormat.mFormatID = kAudioFormatLinearPCM;
-    destinationFormat.mSampleRate = _sampleRate;
-    // if we want pcm, default to signed 16-bit little-endian
-    destinationFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
-    destinationFormat.mBitsPerChannel = 16;
-    destinationFormat.mChannelsPerFrame = 2;
-    destinationFormat.mBytesPerPacket = destinationFormat.mBytesPerFrame = (destinationFormat.mBitsPerChannel / 8) * destinationFormat.mChannelsPerFrame;
-    destinationFormat.mFramesPerPacket = 1;
-    
-    UInt32 size = sizeof(destinationFormat);
-    OSStatus result = AudioFormatGetProperty(kAudioFormatProperty_FormatInfo,
-                                             0,
-                                             NULL,
-                                             &size,
-                                             &destinationFormat);
-    if (result)
-        printf("AudioFormatGetProperty %d \n", (int)result);
-    
-    CFURLRef destinationURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
-                                                            (CFStringRef)_filePath,
-                                                            kCFURLPOSIXPathStyle,
-                                                            false);
-    
-    // 指定文件格式 (.m4a .caf)
-    result = ExtAudioFileCreateWithURL(destinationURL,
-                                       kAudioFileCAFType,
-                                       &destinationFormat,
-                                       NULL,
-                                       kAudioFileFlags_EraseFile,
-                                       &finalAudioFile);
-    if (result)
-        printf("ExtAudioFileCreateWithURL %d \n", (int)result);
-    CFRelease(destinationURL);
-    
-    // 获取 Mixer 输出端输出域的流格式
-    AudioStreamBasicDescription clientFormat;
-    UInt32 fSize = sizeof (clientFormat);
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_mixerUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Output,
-                                     outputElement,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    // 为文件设置指定流格式
-    CheckStatus(ExtAudioFileSetProperty(finalAudioFile,
-                                        kExtAudioFileProperty_ClientDataFormat,
-                                        sizeof(clientFormat),
-                                        &clientFormat),
-                @"ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat failed",
-                YES);
-    
-    // 编码设置
-    UInt32 codec = kAppleHardwareAudioCodecManufacturer;
-    CheckStatus(ExtAudioFileSetProperty(finalAudioFile,
-                                        kExtAudioFileProperty_CodecManufacturer,
-                                        sizeof(codec),
-                                        &codec),
-                @"ExtAudioFileSetProperty on extAudioFile Faild",
-                YES);
-    
-    CheckStatus(ExtAudioFileWriteAsync(finalAudioFile,
-                                       0,
-                                       NULL),
-                @"ExtAudioFileWriteAsync Failed",
-                YES);
-}
 @end

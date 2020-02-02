@@ -62,6 +62,9 @@
 		1489267D23E56618008D1CD7 /* AUAudioRecorderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1489267B23E56618008D1CD7 /* AUAudioRecorderViewController.xib */; };
 		1489268023E566C9008D1CD7 /* AUAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */; };
 		1489268323E566FE008D1CD7 /* AUAudioRecorder+Interruption.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489268223E566FE008D1CD7 /* AUAudioRecorder+Interruption.m */; };
+		1489275F23E5D2B5008D1CD7 /* AUExtAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489275E23E5D2B5008D1CD7 /* AUExtAudioFile.m */; };
+		1489276723E665A3008D1CD7 /* AUExtAudioFile+Read.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489276623E665A3008D1CD7 /* AUExtAudioFile+Read.m */; };
+		1489276A23E665B0008D1CD7 /* AUExtAudioFile+Write.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489276923E665B0008D1CD7 /* AUExtAudioFile+Write.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -284,6 +287,13 @@
 		1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioRecorder.m; sourceTree = "<group>"; };
 		1489268123E566FE008D1CD7 /* AUAudioRecorder+Interruption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUAudioRecorder+Interruption.h"; sourceTree = "<group>"; };
 		1489268223E566FE008D1CD7 /* AUAudioRecorder+Interruption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUAudioRecorder+Interruption.m"; sourceTree = "<group>"; };
+		1489275D23E5D2B5008D1CD7 /* AUExtAudioFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUExtAudioFile.h; sourceTree = "<group>"; };
+		1489275E23E5D2B5008D1CD7 /* AUExtAudioFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUExtAudioFile.m; sourceTree = "<group>"; };
+		1489276023E5DB24008D1CD7 /* AUAudioDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioDefine.h; sourceTree = "<group>"; };
+		1489276523E665A3008D1CD7 /* AUExtAudioFile+Read.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUExtAudioFile+Read.h"; sourceTree = "<group>"; };
+		1489276623E665A3008D1CD7 /* AUExtAudioFile+Read.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUExtAudioFile+Read.m"; sourceTree = "<group>"; };
+		1489276823E665B0008D1CD7 /* AUExtAudioFile+Write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUExtAudioFile+Write.h"; sourceTree = "<group>"; };
+		1489276923E665B0008D1CD7 /* AUExtAudioFile+Write.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUExtAudioFile+Write.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -443,6 +453,8 @@
 				1473BE2D23E2FF8D00FEED0F /* SCAudioSession.m */,
 				1473BE2C23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.h */,
 				1473BE2A23E2FF8D00FEED0F /* AVAudioSession+RouteUtils.m */,
+				1489276023E5DB24008D1CD7 /* AUAudioDefine.h */,
+				1489276123E66575008D1CD7 /* AUExtAudioFile */,
 			);
 			path = AudioCommon;
 			sourceTree = "<group>";
@@ -800,6 +812,19 @@
 			path = AUAudioRecorder;
 			sourceTree = "<group>";
 		};
+		1489276123E66575008D1CD7 /* AUExtAudioFile */ = {
+			isa = PBXGroup;
+			children = (
+				1489275D23E5D2B5008D1CD7 /* AUExtAudioFile.h */,
+				1489275E23E5D2B5008D1CD7 /* AUExtAudioFile.m */,
+				1489276823E665B0008D1CD7 /* AUExtAudioFile+Write.h */,
+				1489276923E665B0008D1CD7 /* AUExtAudioFile+Write.m */,
+				1489276523E665A3008D1CD7 /* AUExtAudioFile+Read.h */,
+				1489276623E665A3008D1CD7 /* AUExtAudioFile+Read.m */,
+			);
+			path = AUExtAudioFile;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -946,10 +971,12 @@
 				1473BF0023E470EC00FEED0F /* packet_pool.cpp in Sources */,
 				1489267C23E56618008D1CD7 /* AUAudioRecorderViewController.m in Sources */,
 				1473BF0123E470ED00FEED0F /* accompany_decoder.cpp in Sources */,
+				1489276723E665A3008D1CD7 /* AUExtAudioFile+Read.m in Sources */,
 				1473BF0223E470ED00FEED0F /* packet_queue.cpp in Sources */,
 				1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */,
 				1489268323E566FE008D1CD7 /* AUAudioRecorder+Interruption.m in Sources */,
 				1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */,
+				1489275F23E5D2B5008D1CD7 /* AUExtAudioFile.m in Sources */,
 				1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */,
 				1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */,
 				1473BE0323E2AAAB00FEED0F /* AUPCMPlayerViewController.m in Sources */,
@@ -958,6 +985,7 @@
 				1473BF0323E470ED00FEED0F /* accompany_decoder_controller.cpp in Sources */,
 				1473BDDC23E264D100FEED0F /* main.m in Sources */,
 				1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */,
+				1489276A23E665B0008D1CD7 /* AUExtAudioFile+Write.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
 				1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */,
 				1489268023E566C9008D1CD7 /* AUAudioRecorder.m in Sources */,

@@ -39,9 +39,9 @@ static AudioComponentDescription comDesc(OSType type,
  * bytesPerChannel: 每一个声道的字节数
  */
 static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
-                                               Float64 rate,
-                                               UInt32 channels,
-                                               UInt32 bytesPerChannel) {
+                                                      Float64 rate,
+                                                      UInt32 channels,
+                                                      UInt32 bytesPerChannel) {
     UInt32 bitsPerByte = 8; // 1个字节 = 8个二进制位
     
     /*
@@ -83,6 +83,7 @@ static void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
     printf("Bytes per Frame:     %10d\n",    (unsigned int)asbd.mBytesPerFrame);
     printf("Channels per Frame:  %10d\n",    (unsigned int)asbd.mChannelsPerFrame);
     printf("Bits per Channel:    %10d\n",    (unsigned int)asbd.mBitsPerChannel);
+    printf("Reserved:            %10d\n",    (unsigned int)asbd.mReserved);
     printf("\n");
 }
 
