@@ -240,6 +240,7 @@ static const AudioUnitElement outputElement = 0;
     bzero(&asbd, sizeof(asbd));
     asbd.mSampleRate = _sampleRate;
     asbd.mFormatID = kAudioFormatLinearPCM;
+    // kAudioFormatFlagIsSignedInteger
     asbd.mFormatFlags = kAudioFormatFlagsAudioUnitCanonical | kAudioFormatFlagIsNonInterleaved;
     asbd.mBitsPerChannel = 8 * bytesPerSample; // sizeof(Byte) = 8?
     asbd.mBytesPerFrame = bytesPerSample;
@@ -248,6 +249,8 @@ static const AudioUnitElement outputElement = 0;
     asbd.mChannelsPerFrame = channels;
     return asbd;
 }
+
+// kAudioFormatFlagIsNonInterleaved ->
 
 - (void)makeNodeConnections {
     /**

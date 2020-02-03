@@ -69,6 +69,10 @@ static AudioStreamBasicDescription linearPCMStreamDes(AudioFormatFlags flags,
     return asbd;
 }
 
+static bool CheckASBDisPlanner(AudioStreamBasicDescription asbd) {
+    return asbd.mFormatFlags & kAudioFormatFlagIsNonInterleaved;
+}
+
 /** 打印音频流格式 */
 static void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
     char formatID[5];

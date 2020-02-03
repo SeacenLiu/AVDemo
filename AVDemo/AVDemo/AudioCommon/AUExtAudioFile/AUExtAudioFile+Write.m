@@ -72,7 +72,7 @@
     else if (_fileTypeId == kAudioFileCAFType || _fileTypeId == kAudioFileWAVEType) { // 保存为caf或者wav格式文件，不编码
         // 如果不做压缩，则原封不动的保存到音频文件中
         fileDataDesc.mFormatID = kAudioFormatLinearPCM;
-        fileDataDesc.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;//_clientabsdForWriter.mFormatFlags;
+        fileDataDesc.mFormatFlags = _clientabsdForWriter.mFormatFlags;
         fileDataDesc.mChannelsPerFrame = _clientabsdForWriter.mChannelsPerFrame;
         fileDataDesc.mSampleRate = _clientabsdForWriter.mSampleRate;
         fileDataDesc.mFramesPerPacket = _clientabsdForWriter.mFramesPerPacket;
@@ -87,19 +87,10 @@
         NSAssert(YES, @"此格式还不支持");
     }
     
-    AudioStreamBasicDescription destinationFormat;
-    AudioFormatFlags flags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
-    destinationFormat = linearPCMStreamDes(flags,
-                                           _clientabsdForWriter.mSampleRate,
-                                           2,
-                                           sizeof(Float32));
-    NSLog(@"---------------------- destinationFormat --------------------------");
-    printAudioStreamFormat(destinationFormat);
-    
     // 根据指定的封装格式，指定的编码方式创建ExtAudioFileRef对象
     OSStatus status = ExtAudioFileCreateWithURL((__bridge CFURLRef)recordFileUrl,
                                                 _fileTypeId,
-                                                &destinationFormat,
+                                                &fileDataDesc,
                                                 NULL,
                                                 kAudioFileFlags_EraseFile,
                                                 &_audioFile);

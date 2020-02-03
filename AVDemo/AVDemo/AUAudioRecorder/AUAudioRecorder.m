@@ -36,11 +36,12 @@ static const AudioUnitElement outputElement = 0;
 
 @end
 
+#define BufferList_cache_size (1024*10*5)
 @implementation AUAudioRecorder
 {
     AUExtAudioFile *audioFile;
+    AudioBufferList *_bufferList;
 }
-
 #pragma mark - life cycle
 - (instancetype)initWithPath:(NSString*)path {
     if (self = [self init]) {
@@ -48,6 +49,13 @@ static const AudioUnitElement outputElement = 0;
         _filePath = path;
         _sampleRate = 44100.0;
         _channels = 2;
+        
+//        _bufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList) + (_channels - 1) * sizeof(AudioBuffer));
+//        _bufferList->mNumberBuffers = _channels;
+//        for (NSInteger i=0; i<_channels; i++) {
+//            _bufferList->mBuffers[i].mData = malloc(BufferList_cache_size);
+//            _bufferList->mBuffers[i].mDataByteSize = BufferList_cache_size;
+//        }
         
         // 音频会话设置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
@@ -73,14 +81,15 @@ static const AudioUnitElement outputElement = 0;
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_mixerUnit,
+    CheckStatus(AudioUnitGetProperty(_ioUnit,
                                      kAudioUnitProperty_StreamFormat,
                                      kAudioUnitScope_Output,
-                                     outputElement,
+                                     inputElement,
                                      &clientFormat,
                                      &fSize),
                 @"AudioUnitGetProperty on failed",
                 YES);
+    
     NSLog(@"---------------------- clientFormat --------------------------");
     printAudioStreamFormat(clientFormat);
     audioFile = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
@@ -168,24 +177,33 @@ static const AudioUnitElement outputElement = 0;
                                   inputElement,
                                   &enableIO,
                                   sizeof(enableIO));
-    CheckStatus(status, @"RemoteIO IO 启动失败", YES);
-    // 设置 Mixer 输出流数量（输出端输入域）
-    UInt32 mixerElementCount = 1;
-    status = AudioUnitSetProperty(_mixerUnit,
-                                  kAudioUnitProperty_ElementCount,
-                                  kAudioUnitScope_Input,
-                                  outputElement,
-                                  &mixerElementCount,
-                                  sizeof(mixerElementCount));
-    CheckStatus(status, @"Mixer 元素数量设置失败", YES);
-    // 设置 Mixer 的采集率（输出端输出域）
-    status = AudioUnitSetProperty(_mixerUnit,
-                                  kAudioUnitProperty_SampleRate,
+    CheckStatus(status, @"麦克风 启动失败", YES);
+    
+    status = AudioUnitSetProperty(_ioUnit,
+                                  kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Output,
                                   outputElement,
-                                  &_sampleRate,
-                                  sizeof(_sampleRate));
-    CheckStatus(status, @"Mixer 采集率设置失败", YES);
+                                  &enableIO,
+                                  sizeof(enableIO));
+    CheckStatus(status, @"扬声器 启动失败", YES);
+    
+//    // 设置 Mixer 输出流数量（输出端输入域）
+//    UInt32 mixerElementCount = 1;
+//    status = AudioUnitSetProperty(_mixerUnit,
+//                                  kAudioUnitProperty_ElementCount,
+//                                  kAudioUnitScope_Input,
+//                                  outputElement,
+//                                  &mixerElementCount,
+//                                  sizeof(mixerElementCount));
+//    CheckStatus(status, @"Mixer 元素数量设置失败", YES);
+//    // 设置 Mixer 的采集率（输出端输出域）
+//    status = AudioUnitSetProperty(_mixerUnit,
+//                                  kAudioUnitProperty_SampleRate,
+//                                  kAudioUnitScope_Output,
+//                                  outputElement,
+//                                  &_sampleRate,
+//                                  sizeof(_sampleRate));
+//    CheckStatus(status, @"Mixer 采集率设置失败", YES);
     // 设置 RemoteIO 切片最大帧数（输出端全局域）
     UInt32 maximumFramesPerSlice = 4096;
     status = AudioUnitSetProperty(_ioUnit,
@@ -200,47 +218,16 @@ static const AudioUnitElement outputElement = 0;
     AudioStreamBasicDescription recordASDB;
     AudioFormatFlags recordFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsNonInterleaved;
     recordASDB = linearPCMStreamDes(recordFlags, _sampleRate, _channels, sizeof(UInt16));
-    //
     
+    // kAudioFormatFlagsNativeFloatPacked
     AudioStreamBasicDescription linearPCMFormat;
-    AudioFormatFlags formatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+    AudioFormatFlags formatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
     linearPCMFormat = linearPCMStreamDes(formatFlags,
                                          _sampleRate,
                                          2,
-                                         sizeof(Float32));
+                                         sizeof(UInt16));
     NSLog(@"---------------------- linearPCMFormat --------------------------");
     printAudioStreamFormat(linearPCMFormat);
-    
-    // RemoteIO 流格式
-    AudioUnitSetProperty(_ioUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Input,
-                         outputElement,
-                         &linearPCMFormat,
-                         sizeof(linearPCMFormat));
-    
-    // Convert 流格式
-    AudioUnitSetProperty(_convertUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Input,
-                         outputElement,
-                         &linearPCMFormat,
-                         sizeof(linearPCMFormat));
-    
-    AudioUnitSetProperty(_convertUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Output,
-                         outputElement,
-                         &linearPCMFormat,
-                         sizeof(linearPCMFormat));
-    
-    // Mixer 流格式
-    AudioUnitSetProperty(_mixerUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Input,
-                         outputElement,
-                         &linearPCMFormat,
-                         sizeof(linearPCMFormat));
     
     // RemoteIO 流格式
     AudioUnitSetProperty(_ioUnit,
@@ -249,6 +236,37 @@ static const AudioUnitElement outputElement = 0;
                          inputElement,
                          &linearPCMFormat,
                          sizeof(linearPCMFormat));
+    
+//    // Convert 流格式
+//    AudioUnitSetProperty(_convertUnit,
+//                         kAudioUnitProperty_StreamFormat,
+//                         kAudioUnitScope_Input,
+//                         outputElement,
+//                         &linearPCMFormat,
+//                         sizeof(linearPCMFormat));
+//
+//    AudioUnitSetProperty(_convertUnit,
+//                         kAudioUnitProperty_StreamFormat,
+//                         kAudioUnitScope_Output,
+//                         outputElement,
+//                         &linearPCMFormat,
+//                         sizeof(linearPCMFormat));
+//
+//    // Mixer 流格式
+//    AudioUnitSetProperty(_mixerUnit,
+//                         kAudioUnitProperty_StreamFormat,
+//                         kAudioUnitScope_Input,
+//                         outputElement,
+//                         &linearPCMFormat,
+//                         sizeof(linearPCMFormat));
+    
+//    // RemoteIO 流格式
+//    AudioUnitSetProperty(_ioUnit,
+//                         kAudioUnitProperty_StreamFormat,
+//                         kAudioUnitScope_Output,
+//                         inputElement,
+//                         &linearPCMFormat,
+//                         sizeof(linearPCMFormat));
     /**
      *
      * RemoteIO(InputElement) -stereoStreamFormat->
@@ -263,21 +281,27 @@ static const AudioUnitElement outputElement = 0;
 }
 
 - (void)makeNodeConnections {
+    // 耳返!
+    OSStatus status = noErr;
+    status = AUGraphConnectNodeInput(_auGraph,
+                                     _ioNode, inputElement,
+                                     _ioNode, outputElement);
+    
     /**
      * _ioNode(InputElement)->_convertNode(OutputElement)->
      * _mixerNode(OutputElement)->_ioNode(OutputElement)
      */
-    OSStatus status = noErr;
-    // 连接 RemoteIO 的输入端到 Convert 的输出端
-    status = AUGraphConnectNodeInput(_auGraph,
-                                     _ioNode, inputElement,
-                                     _convertNode, outputElement);
-    CheckStatus(status, @"连接 RemoteIO 的输出到 Convert 的输入失败", YES);
-    //  连接 Convert 的输出端到 Mixer 的输入端
-    status = AUGraphConnectNodeInput(_auGraph,
-                                     _convertNode, outputElement,
-                                     _mixerNode, outputElement);
-    CheckStatus(status, @"连接 Convert 的输出到 Mixer 的输入失败", YES);
+//    OSStatus status = noErr;
+//    // 连接 RemoteIO 的输入端到 Convert 的输出端
+//    status = AUGraphConnectNodeInput(_auGraph,
+//                                     _ioNode, inputElement,
+//                                     _convertNode, outputElement);
+//    CheckStatus(status, @"连接 RemoteIO 的输出到 Convert 的输入失败", YES);
+//    //  连接 Convert 的输出端到 Mixer 的输入端
+//    status = AUGraphConnectNodeInput(_auGraph,
+//                                     _convertNode, outputElement,
+//                                     _mixerNode, outputElement);
+//    CheckStatus(status, @"连接 Convert 的输出到 Mixer 的输入失败", YES);
     // _mixerNode(OutputElement)->_ioNode(OutputElement) 是后续通过RenderCallBack获取的
     
 }
@@ -287,10 +311,12 @@ static const AudioUnitElement outputElement = 0;
     AURenderCallbackStruct finalRenderProc;
     finalRenderProc.inputProc = &RenderCallback;
     finalRenderProc.inputProcRefCon = (__bridge void *)self;
-    status = AUGraphSetNodeInputCallback(_auGraph,
-                                         _ioNode,
-                                         outputElement,
-                                         &finalRenderProc);
+    status = AudioUnitSetProperty(_ioUnit,
+                                  kAudioOutputUnitProperty_SetInputCallback,
+                                  kAudioUnitScope_Output,
+                                  inputElement,
+                                  &finalRenderProc,
+                                  sizeof(finalRenderProc));
     CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
 }
 
@@ -321,16 +347,22 @@ static OSStatus RenderCallback(void *inRefCon,
     OSStatus result = noErr;
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
 
-    // 将 Mixer 输出的音频数据渲染到 ioData，即连接了 Mixer 与 RemoteIO(OutputElement)
-    AudioUnitRender(recorder->_mixerUnit,
+    AudioBufferList *packetBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList) + (recorder->_channels - 1) * sizeof(AudioBuffer));
+    packetBufferList->mNumberBuffers = 1;
+    packetBufferList->mBuffers[0].mData = malloc(BufferList_cache_size);
+    packetBufferList->mBuffers[0].mDataByteSize = BufferList_cache_size;
+    
+    AudioUnitRender(recorder->_ioUnit,
                     ioActionFlags,
                     inTimeStamp,
-                    outputElement,
+                    inBusNumber,
                     inNumberFrames,
-                    ioData);
+                    packetBufferList);
     
     // 异步向文件中写入数据
-    result = [recorder->audioFile writeFrames:inNumberFrames toBufferData:ioData async:YES];
+    result = [recorder->audioFile writeFrames:inNumberFrames
+                                 toBufferData:packetBufferList
+                                        async:YES];
     
     return result;
 }
