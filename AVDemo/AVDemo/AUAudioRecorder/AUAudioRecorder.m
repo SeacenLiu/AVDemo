@@ -10,6 +10,7 @@
 #import "SCAudioSession.h"
 #import "AUAudioRecorder+Interruption.h"
 #import "AUExtAudioFile+Write.h"
+#import "NSString+Path.h"
 
 static const AudioUnitElement inputElement = 1;
 static const AudioUnitElement outputElement = 0;
@@ -35,14 +36,18 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
 @property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
+@property (nonatomic, assign, getter=isEnableMixer) BOOL enableMixer;
 
 @end
 
 #define BufferList_cache_size (1024*10*5)
 @implementation AUAudioRecorder
 {
-    AUExtAudioFile *audioFile;
-    AudioBufferList *_bufferList;
+    AudioBufferList* _bufferList;
+    AUExtAudioFile*  _dataWriter;
+
+    NSString*        _backgroundPath;
+    AUExtAudioFile*  _dataReader;
 }
 #pragma mark - life cycle
 - (instancetype)initWithPath:(NSString*)path {
@@ -52,9 +57,11 @@ static const AudioUnitElement outputElement = 0;
         _sampleRate = 44100.0;
         _channels = 2;
         
-        self.enablePlayWhenRecord = NO;
+        self.enablePlayWhenRecord = YES;
         
         _bufferList = CreateBufferList(2, NO, BufferList_cache_size);
+        self.enableMixer = YES;
+        _backgroundPath = [NSString bundlePath:@"heart.mp3"];
         
         // 音频会话设置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
@@ -91,7 +98,7 @@ static const AudioUnitElement outputElement = 0;
                 YES);
     NSLog(@"---------------------- clientFormat --------------------------");
     printAudioStreamFormat(clientFormat);
-    audioFile = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
+    _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
     
     OSStatus status = AUGraphStart(_auGraph);
     CheckStatus(status, @"启动音频图失败", YES);
@@ -101,7 +108,7 @@ static const AudioUnitElement outputElement = 0;
     OSStatus status = AUGraphStop(_auGraph);
     CheckStatus(status, @"停止音频图失败", YES);
     // 关闭文件和释放对象
-    [audioFile closeFile];
+    [_dataWriter closeFile];
 }
 
 #pragma mark - Audio Unit Graph
@@ -139,31 +146,35 @@ static const AudioUnitElement outputElement = 0;
     status = AUGraphAddNode(_auGraph, &ioDescription, &_ioNode);
     CheckStatus(status, @"RemoteIO结点添加失败", YES);
     
-    AudioComponentDescription mixerDescription;
-    bzero(&mixerDescription, sizeof(mixerDescription));
-    mixerDescription.componentType = kAudioUnitType_Mixer;
-    mixerDescription.componentSubType = kAudioUnitSubType_MultiChannelMixer;
-    mixerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
-    status = AUGraphAddNode(_auGraph, &mixerDescription, &_mixerNode);
-    CheckStatus(status, @"Mixer结点添加失败", YES);
-    
-    AudioComponentDescription convertDescription;
-    bzero(&convertDescription, sizeof(convertDescription));
-    convertDescription.componentType = kAudioUnitType_FormatConverter;
-    convertDescription.componentSubType = kAudioUnitSubType_AUConverter;
-    convertDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
-    status = AUGraphAddNode(_auGraph, &convertDescription, &_convertNode);
-    CheckStatus(status, @"convert结点添加失败", YES);
+    if (self.isEnableMixer) {
+        AudioComponentDescription mixerDescription;
+        bzero(&mixerDescription, sizeof(mixerDescription));
+        mixerDescription.componentType = kAudioUnitType_Mixer;
+        mixerDescription.componentSubType = kAudioUnitSubType_MultiChannelMixer;
+        mixerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
+        status = AUGraphAddNode(_auGraph, &mixerDescription, &_mixerNode);
+        CheckStatus(status, @"Mixer结点添加失败", YES);
+        
+        AudioComponentDescription convertDescription;
+        bzero(&convertDescription, sizeof(convertDescription));
+        convertDescription.componentType = kAudioUnitType_FormatConverter;
+        convertDescription.componentSubType = kAudioUnitSubType_AUConverter;
+        convertDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
+        status = AUGraphAddNode(_auGraph, &convertDescription, &_convertNode);
+        CheckStatus(status, @"convert结点添加失败", YES);
+    }
 }
 
 - (void)getUnitsFromNodes {
     OSStatus status = noErr;
     status = AUGraphNodeInfo(_auGraph, _ioNode, NULL, &_ioUnit);
     CheckStatus(status, @"获取RemoteIO单元失败", YES);
-    status = AUGraphNodeInfo(_auGraph, _mixerNode, NULL, &_mixerUnit);
-    CheckStatus(status, @"获取Mixer单元失败", YES);
-    status = AUGraphNodeInfo(_auGraph, _convertNode, NULL, &_convertUnit);
-    CheckStatus(status, @"获取Convert单元失败", YES);
+    if (self.isEnableMixer) {
+        status = AUGraphNodeInfo(_auGraph, _mixerNode, NULL, &_mixerUnit);
+        CheckStatus(status, @"获取Mixer单元失败", YES);
+        status = AUGraphNodeInfo(_auGraph, _convertNode, NULL, &_convertUnit);
+        CheckStatus(status, @"获取Convert单元失败", YES);
+    }
 }
 
 - (void)setAudioUnitProperties {
@@ -193,23 +204,36 @@ static const AudioUnitElement outputElement = 0;
                                   &maximumFramesPerSlice,
                                   sizeof (maximumFramesPerSlice));
     CheckStatus(status, @"RemoteIO 切片最大帧数设置失败", YES);
+    
     // 设置音频图中的音频流格式
-    AudioStreamBasicDescription linearPCMFormat;
+    AudioStreamBasicDescription micInputStreamFormat;
     AudioFormatFlags formatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    linearPCMFormat = linearPCMStreamDes(formatFlags,
+    micInputStreamFormat = linearPCMStreamDes(formatFlags,
                                          _sampleRate,
                                          2,
                                          sizeof(UInt16));
-    NSLog(@"---------------------- linearPCMFormat --------------------------");
-    printAudioStreamFormat(linearPCMFormat);
+    NSLog(@"---------------------- micInputStreamFormat --------------------------");
+    printAudioStreamFormat(micInputStreamFormat);
     
     // RemoteIO 流格式
     AudioUnitSetProperty(_ioUnit,
                          kAudioUnitProperty_StreamFormat,
                          kAudioUnitScope_Output,
                          inputElement,
-                         &linearPCMFormat,
-                         sizeof(linearPCMFormat));
+                         &micInputStreamFormat,
+                         sizeof(micInputStreamFormat));
+    if (self.isEnablePlayWhenRecord) {
+        AudioUnitSetProperty(_ioUnit,
+                             kAudioUnitProperty_StreamFormat,
+                             kAudioUnitScope_Input,
+                             outputElement,
+                             &micInputStreamFormat,
+                             sizeof(micInputStreamFormat));
+    }
+    
+    if (self.isEnableMixer) {
+        
+    }
 }
 
 - (void)makeNodeConnections {
@@ -219,12 +243,9 @@ static const AudioUnitElement outputElement = 0;
                                          _ioNode, inputElement,
                                          _ioNode, outputElement);
     }
-}
-
-- (void)setupRenderCallback {
-    OSStatus status;
+    
     AURenderCallbackStruct finalRenderProc;
-    finalRenderProc.inputProc = &RenderCallback;
+    finalRenderProc.inputProc = &saveOutputCallback;
     finalRenderProc.inputProcRefCon = (__bridge void *)self;
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioOutputUnitProperty_SetInputCallback,
@@ -233,6 +254,24 @@ static const AudioUnitElement outputElement = 0;
                                   &finalRenderProc,
                                   sizeof(finalRenderProc));
     CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
+    
+    if (self.isEnableMixer) {
+        
+    }
+}
+
+- (void)setupRenderCallback {
+//    OSStatus status;
+//    AURenderCallbackStruct finalRenderProc;
+//    finalRenderProc.inputProc = &saveOutputCallback;
+//    finalRenderProc.inputProcRefCon = (__bridge void *)self;
+//    status = AudioUnitSetProperty(_ioUnit,
+//                                  kAudioOutputUnitProperty_SetInputCallback,
+//                                  kAudioUnitScope_Output,
+//                                  inputElement,
+//                                  &finalRenderProc,
+//                                  sizeof(finalRenderProc));
+//    CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
 }
 
 - (void)destroyAudioUnitGraph {
@@ -253,7 +292,7 @@ static const AudioUnitElement outputElement = 0;
 }
 
 #pragma mark - 核心回调函数
-static OSStatus RenderCallback(void *inRefCon,
+static OSStatus saveOutputCallback(void *inRefCon,
                                AudioUnitRenderActionFlags *ioActionFlags,
                                const AudioTimeStamp *inTimeStamp,
                                UInt32 inBusNumber,
@@ -270,7 +309,7 @@ static OSStatus RenderCallback(void *inRefCon,
                     recorder->_bufferList);
     
     // 异步向文件中写入数据
-    result = [recorder->audioFile writeFrames:inNumberFrames
+    result = [recorder->_dataWriter writeFrames:inNumberFrames
                                  toBufferData:recorder->_bufferList
                                         async:YES];
     
