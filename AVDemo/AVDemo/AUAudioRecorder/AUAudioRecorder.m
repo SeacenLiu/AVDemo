@@ -24,7 +24,7 @@ static const AudioUnitElement outputElement = 0;
 
 @property (nonatomic, copy)   NSString*          filePath;
 @property (nonatomic, assign) Float64            sampleRate;
-@property (nonatomic, assign) UInt32          channels;
+@property (nonatomic, assign) UInt32             channels;
 
 @property (nonatomic, assign) AUGraph            auGraph;
 @property (nonatomic, assign) AUNode             ioNode;
@@ -33,6 +33,8 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AudioUnit          mixerUnit;
 @property (nonatomic, assign) AUNode             convertNode;
 @property (nonatomic, assign) AudioUnit          convertUnit;
+
+@property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
 
 @end
 
@@ -49,6 +51,8 @@ static const AudioUnitElement outputElement = 0;
         _filePath = path;
         _sampleRate = 44100.0;
         _channels = 2;
+        
+        self.enablePlayWhenRecord = NO;
         
         _bufferList = CreateBufferList(2, NO, BufferList_cache_size);
         
@@ -85,7 +89,6 @@ static const AudioUnitElement outputElement = 0;
                                      &fSize),
                 @"AudioUnitGetProperty on failed",
                 YES);
-    
     NSLog(@"---------------------- clientFormat --------------------------");
     printAudioStreamFormat(clientFormat);
     audioFile = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
@@ -165,7 +168,7 @@ static const AudioUnitElement outputElement = 0;
 
 - (void)setAudioUnitProperties {
     OSStatus status = noErr;
-    // 激活 RemoteIO 的 IO 功能（输入端输入域）
+    // 激活 RemoteIO 的 IO 功能
     UInt32 enableIO = 1;
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
@@ -174,7 +177,6 @@ static const AudioUnitElement outputElement = 0;
                                   &enableIO,
                                   sizeof(enableIO));
     CheckStatus(status, @"麦克风 启动失败", YES);
-    
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Output,
@@ -192,12 +194,6 @@ static const AudioUnitElement outputElement = 0;
                                   sizeof (maximumFramesPerSlice));
     CheckStatus(status, @"RemoteIO 切片最大帧数设置失败", YES);
     // 设置音频图中的音频流格式
-    // 录制音频流格式
-    AudioStreamBasicDescription recordASDB;
-    AudioFormatFlags recordFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsNonInterleaved;
-    recordASDB = linearPCMStreamDes(recordFlags, _sampleRate, _channels, sizeof(UInt16));
-    
-    // kAudioFormatFlagsNativeFloatPacked
     AudioStreamBasicDescription linearPCMFormat;
     AudioFormatFlags formatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
     linearPCMFormat = linearPCMStreamDes(formatFlags,
@@ -217,11 +213,12 @@ static const AudioUnitElement outputElement = 0;
 }
 
 - (void)makeNodeConnections {
-    // 耳返!
     OSStatus status = noErr;
-    status = AUGraphConnectNodeInput(_auGraph,
-                                     _ioNode, inputElement,
-                                     _ioNode, outputElement);
+    if (self.isEnablePlayWhenRecord) {
+        status = AUGraphConnectNodeInput(_auGraph,
+                                         _ioNode, inputElement,
+                                         _ioNode, outputElement);
+    }
 }
 
 - (void)setupRenderCallback {
