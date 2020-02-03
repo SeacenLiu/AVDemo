@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#pragma mark - AudioComponentDescription Help
 /** 创建指定音频组件描述 */
 static AudioComponentDescription comDesc(OSType type,
                                   OSType subType,
@@ -28,6 +29,7 @@ static AudioComponentDescription comDesc(OSType type,
     return acd;
 }
 
+#pragma mark - AudioStreamBasicDescription Help
 /** 创建指定的线性PCM数据流格式
  * 数据量描述关注顺序: Packet(包数) > Frames(帧数) > Channels(通道数) > Bytes(字节数) > Bits(二进制数)
  *
@@ -91,6 +93,7 @@ static void printAudioStreamFormat(AudioStreamBasicDescription asbd) {
     printf("\n");
 }
 
+#pragma mark - Commom
 /** 检查 OSStatus */
 static void CheckStatus(OSStatus status, NSString *message, BOOL fatal) {
     if(status != noErr) {
@@ -108,6 +111,32 @@ static void CheckStatus(OSStatus status, NSString *message, BOOL fatal) {
         
         if (fatal)
             exit(-1);
+    }
+}
+
+#pragma mark - Buffer List Help
+static AudioBufferList* CreateBufferList(UInt32 channels,
+                                         BOOL isPlanner,
+                                         UInt32 cacheSize) {
+    AudioBufferList *bufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList) + (channels - 1) * sizeof(AudioBuffer));
+    bufferList->mNumberBuffers = isPlanner ? (UInt32)channels : 1;
+    for (NSInteger i = 0; i < channels; ++i) {
+        bufferList->mBuffers[i].mData = malloc(cacheSize);
+        bufferList->mBuffers[i].mDataByteSize = cacheSize;
+    }
+    return bufferList;
+}
+
+static void DestroyBufferList(AudioBufferList *bufferList) {
+    if (bufferList != NULL) {
+        for (int i = 0; i < bufferList->mNumberBuffers; ++i) {
+            if (bufferList->mBuffers[i].mData != NULL) {
+                free(bufferList->mBuffers[i].mData);
+                bufferList->mBuffers[i].mData = NULL;
+            }
+        }
+        free(bufferList);
+        bufferList = NULL;
     }
 }
 

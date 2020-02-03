@@ -102,7 +102,10 @@
     
     // 指定是硬件编码还是软件编码
     UInt32 codec = kAppleSoftwareAudioCodecManufacturer;
-    status = ExtAudioFileSetProperty(_audioFile, kExtAudioFileProperty_CodecManufacturer, sizeof(codec), &codec);
+    status = ExtAudioFileSetProperty(_audioFile,
+                                     kExtAudioFileProperty_CodecManufacturer,
+                                     sizeof(codec),
+                                     &codec);
     if (status != noErr) {
         NSLog(@"ExtAudioFileSetProperty kExtAudioFileProperty_CodecManufacturer fail %d",status);
         return -1;
@@ -112,7 +115,10 @@
      *  解决方案：_clientabsdForWriter格式不正确，比如ASDB中mFormatFlags与所对应的mBytesPerPacket等等不符合，那么会造成这种错误
      */
     // 指定输入给ExtAudioUnitRef的音频PCM数据格式(必须要有)
-    status = ExtAudioFileSetProperty(_audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(_clientabsdForWriter), &_clientabsdForWriter);
+    status = ExtAudioFileSetProperty(_audioFile,
+                                     kExtAudioFileProperty_ClientDataFormat,
+                                     sizeof(_clientabsdForWriter),
+                                     &_clientabsdForWriter);
     if (status != noErr) {
         NSLog(@"ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat fail %d",status);
         return -1;

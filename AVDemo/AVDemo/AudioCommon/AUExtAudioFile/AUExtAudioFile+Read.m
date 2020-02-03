@@ -31,18 +31,27 @@
          *  这些步骤对于读取数据不是必须的，主要用于打印和分析
          */
         UInt32 size = sizeof(_fileDataabsdForReader);
-        status = ExtAudioFileGetProperty(_audioFile, kExtAudioFileProperty_FileDataFormat, &size, &_fileDataabsdForReader);
+        status = ExtAudioFileGetProperty(_audioFile,
+                                         kExtAudioFileProperty_FileDataFormat,
+                                         &size,
+                                         &_fileDataabsdForReader);
         if (status != noErr) {
             NSLog(@"ExtAudioFileGetProperty kExtAudioFileProperty_FileDataFormat fail %d",status);
             return nil;
         }
         size = sizeof(_packetSize);
-        ExtAudioFileGetProperty(_audioFile, kExtAudioFileProperty_ClientMaxPacketSize, &size, &_packetSize);
+        ExtAudioFileGetProperty(_audioFile,
+                                kExtAudioFileProperty_ClientMaxPacketSize,
+                                &size,
+                                &_packetSize);
         NSLog(@"每次读取的packet的大小: %u",(unsigned int)_packetSize);
         
         // 备注：_totalFrames一定要是SInt64类型的，否则会出错。
         size = sizeof(_totalFrames);
-        ExtAudioFileGetProperty(_audioFile, kExtAudioFileProperty_FileLengthFrames, &size, &_totalFrames);
+        ExtAudioFileGetProperty(_audioFile,
+                                kExtAudioFileProperty_FileLengthFrames,
+                                &size,
+                                &_totalFrames);
         NSLog(@"文件中包含的frame数目: %lld",_totalFrames);
         
         // 对于从文件中读数据，app属于客户端。对于向文件中写入数据，app也属于客户端
@@ -53,7 +62,10 @@
                                                   outabsd.mBitsPerChannel/8);
         
         size = sizeof(_clientabsdForReader);
-        status = ExtAudioFileSetProperty(_audioFile, kExtAudioFileProperty_ClientDataFormat, size, &_clientabsdForReader);
+        status = ExtAudioFileSetProperty(_audioFile,
+                                         kExtAudioFileProperty_ClientDataFormat,
+                                         size,
+                                         &_clientabsdForReader);
         if (status != noErr) {
             NSLog(@"ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat fail %d",status);
             return nil;
@@ -71,7 +83,6 @@
         SInt64 curFramesOffset = 0;
         // 目前读取指针的postion
         if (ExtAudioFileTell(_audioFile, &curFramesOffset) == noErr) {
-            
             if (curFramesOffset >= _totalFrames) {   // 已经读取完毕
                 ExtAudioFileSeek(_audioFile, 0);
                 curFramesOffset = 0;
