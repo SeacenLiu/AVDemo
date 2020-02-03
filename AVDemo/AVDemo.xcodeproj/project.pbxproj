@@ -65,6 +65,7 @@
 		1489275F23E5D2B5008D1CD7 /* AUExtAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489275E23E5D2B5008D1CD7 /* AUExtAudioFile.m */; };
 		1489276723E665A3008D1CD7 /* AUExtAudioFile+Read.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489276623E665A3008D1CD7 /* AUExtAudioFile+Read.m */; };
 		1489276A23E665B0008D1CD7 /* AUExtAudioFile+Write.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489276923E665B0008D1CD7 /* AUExtAudioFile+Write.m */; };
+		14CA429623E7D59E003D4DE3 /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 14CA429523E7D59E003D4DE3 /* background.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,6 +295,7 @@
 		1489276623E665A3008D1CD7 /* AUExtAudioFile+Read.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUExtAudioFile+Read.m"; sourceTree = "<group>"; };
 		1489276823E665B0008D1CD7 /* AUExtAudioFile+Write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AUExtAudioFile+Write.h"; sourceTree = "<group>"; };
 		1489276923E665B0008D1CD7 /* AUExtAudioFile+Write.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUExtAudioFile+Write.m"; sourceTree = "<group>"; };
+		14CA429523E7D59E003D4DE3 /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -440,6 +442,7 @@
 				1473BF0423E4828900FEED0F /* spark.aac */,
 				1473BE3A23E3D44200FEED0F /* walking.mp3 */,
 				1473BE3823E3D42E00FEED0F /* heart.mp3 */,
+				14CA429523E7D59E003D4DE3 /* background.mp3 */,
 				1473BE0F23E2B20000FEED0F /* start-dash.pcm */,
 			);
 			path = Resources;
@@ -929,6 +932,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */,
+				14CA429623E7D59E003D4DE3 /* background.mp3 in Resources */,
 				1473BE1D23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib in Resources */,
 				1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */,
 				1473BE3B23E3D44200FEED0F /* walking.mp3 in Resources */,

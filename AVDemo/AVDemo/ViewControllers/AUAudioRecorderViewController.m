@@ -38,6 +38,7 @@ NSString * const stopText = @"Stop";
     [super viewDidLoad];
     
     NSString* filePath = [NSString documentsPath:@"recorder.caf"];
+//    NSString* filePath = [NSString documentsPath:@"recorder.m4a"];
     NSLog(@"%@", filePath);
     _recorder = [[AUAudioRecorder alloc] initWithPath:filePath];
     [_btn setTitle:startText forState:UIControlStateNormal];

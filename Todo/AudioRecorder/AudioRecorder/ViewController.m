@@ -39,6 +39,7 @@ NSString * const stopText = @"Stop";
     
     // /Users/cheng/Library/Developer/CoreSimulator/Devices/C35BCAAB-DAFE-4873-A6A9-72396E29C217/data/Containers/Data/Application/88FA5562-358C-43E9-9A95-91ECB5E71269/Documents
     NSString* filePath = [CommonUtil documentsPath:@"recorder.caf"];
+    NSLog(@"%@", filePath);
     _recorder = [[AudioRecorder alloc] initWithPath:filePath];
     [_btn setTitle:startText forState:UIControlStateNormal];
 }
