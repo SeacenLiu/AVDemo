@@ -127,6 +127,13 @@ static AudioBufferList* CreateBufferList(UInt32 channels,
     return bufferList;
 }
 
+static void CopyInterleavedBufferList(AudioBufferList *dst,
+                                      AudioBufferList *src) {
+    dst->mNumberBuffers = src->mNumberBuffers;
+    memcpy(dst->mBuffers[0].mData, src->mBuffers[0].mData, src->mBuffers[0].mDataByteSize);
+    dst->mBuffers[0].mDataByteSize = src->mBuffers[0].mDataByteSize;
+}
+
 static void DestroyBufferList(AudioBufferList *bufferList) {
     if (bufferList != NULL) {
         for (int i = 0; i < bufferList->mNumberBuffers; ++i) {

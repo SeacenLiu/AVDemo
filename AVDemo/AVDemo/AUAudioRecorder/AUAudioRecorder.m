@@ -32,11 +32,6 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AUNode             convertNode;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
-@property (nonatomic, assign) AUNode             splitterNode;
-@property (nonatomic, assign) AudioUnit          splitterUnit;
-@property (nonatomic, assign) AUNode             convertNode2;
-@property (nonatomic, assign) AudioUnit          convertUnit2;
-
 @property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
 @property (nonatomic, assign, getter=isEnableMixer) BOOL enableMixer;
 
@@ -49,8 +44,6 @@ static const AudioUnitElement outputElement = 0;
     AUExtAudioFile*  _dataWriter;
 
     NSString*        _backgroundPath;
-    AUExtAudioFile*  _dataReader;
-    AudioStreamBasicDescription _mixerStreamDesForInput;    // 混音器的输入数据格式
     AudioBufferList* _backgroundBufferList;
 }
 #pragma mark - life cycle
@@ -61,28 +54,12 @@ static const AudioUnitElement outputElement = 0;
         _sampleRate = 44100.0;
         _channels = 2;
         
+        _backgroundPath = [NSString bundlePath:@"background.mp3"];
         self.enablePlayWhenRecord = NO;
+        self.enableMixer = YES;
         
         _bufferList = CreateBufferList(2, NO, BufferList_cache_size);
-        
-        // --------------------------------------------------------------
         _backgroundBufferList = CreateBufferList(2, NO, BufferList_cache_size);
-        self.enableMixer = YES;
-        _backgroundPath = [NSString bundlePath:@"background.mp3"];
-        UInt32 bytesPerSample = 4;  // 要与下面mFormatFlags 对应
-        AudioStreamBasicDescription absd;
-        absd.mFormatID          = kAudioFormatLinearPCM;
-        absd.mFormatFlags       = kAudioFormatFlagsNativeFloatPacked;
-        absd.mBytesPerPacket    = bytesPerSample;
-        absd.mFramesPerPacket   = 1;
-        absd.mBytesPerFrame     = 4;
-        absd.mChannelsPerFrame  = 2;
-        absd.mBitsPerChannel    = 8 * bytesPerSample;
-        absd.mSampleRate        = 0;
-        
-        _dataReader = [[AUExtAudioFile alloc] initWithReadPath:path adsb:absd canrepeat:NO];
-        _mixerStreamDesForInput = _dataReader.clientABSD;
-        // --------------------------------------------------------------
         
         // 音频会话设置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
@@ -97,8 +74,6 @@ static const AudioUnitElement outputElement = 0;
         [self createAudioUnitGraph];
         
         [self setUpFilePlayer];
-        
-        [self checkFormat];
     }
     return self;
 }
@@ -110,17 +85,21 @@ static const AudioUnitElement outputElement = 0;
 
 #pragma mark - public method
 - (void)start {
+    /*
+    ---------- clientFormat ---------
+    Sample Rate:              44100
+    Format ID:                 lpcm
+    Format Flags:                 C
+    Bytes per Packet:             4
+    Frames per Packet:            1
+    Bytes per Frame:              4
+    Channels per Frame:           2
+    Bits per Channel:            16
+    Reserved:                     0
+    */
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
-//    CheckStatus(AudioUnitGetProperty(_ioUnit,
-//                                     kAudioUnitProperty_StreamFormat,
-//                                     kAudioUnitScope_Output,
-//                                     inputElement,
-//                                     &clientFormat,
-//                                     &fSize),
-//                @"AudioUnitGetProperty on failed",
-//                YES);
     CheckStatus(AudioUnitGetProperty(_mixerUnit,
                          kAudioUnitProperty_StreamFormat,
                          kAudioUnitScope_Output,
@@ -129,23 +108,11 @@ static const AudioUnitElement outputElement = 0;
                          &fSize),
     @"AudioUnitGetProperty on failed",
     YES);
-    NSLog(@"---------------------- clientFormat --------------------------");
-    /*
-     2020-02-03 23:25:52.783710+0800 AVDemo[57007:1653650] ---------------------- clientFormat --------------------------
-     Sample Rate:              44100
-     Format ID:                 lpcm
-     Format Flags:                 C
-     Bytes per Packet:             4
-     Frames per Packet:            1
-     Bytes per Frame:              4
-     Channels per Frame:           2
-     Bits per Channel:            16
-     Reserved:                     0
-     */
     
     printAudioStreamFormat(clientFormat);
-    _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeCAF];
-//    _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath adsb:clientFormat fileTypeId:AUAudioFileTypeM4A];
+    _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath
+                                                       adsb:clientFormat
+                                                 fileTypeId:AUAudioFileTypeCAF];
     
     OSStatus status = AUGraphStart(_auGraph);
     CheckStatus(status, @"启动音频图失败", YES);
@@ -216,16 +183,7 @@ static const AudioUnitElement outputElement = 0;
         convertDescription.componentSubType = kAudioUnitSubType_AUConverter;
         convertDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
         status = AUGraphAddNode(_auGraph, &convertDescription, &_convertNode);
-        status = AUGraphAddNode(_auGraph, &convertDescription, &_convertNode2);
         CheckStatus(status, @"convert结点添加失败", YES);
-        
-        AudioComponentDescription splitterDescription;
-        bzero(&splitterDescription, sizeof(splitterDescription));
-        splitterDescription.componentType = kAudioUnitType_FormatConverter;
-        splitterDescription.componentSubType = kAudioUnitSubType_Splitter;
-        splitterDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
-        status = AUGraphAddNode(_auGraph, &splitterDescription, &_splitterNode);
-        CheckStatus(status, @"splitter结点添加失败", YES);
     }
 }
 
@@ -239,10 +197,7 @@ static const AudioUnitElement outputElement = 0;
         status = AUGraphNodeInfo(_auGraph, _mixerNode, NULL, &_mixerUnit);
         CheckStatus(status, @"获取Mixer单元失败", YES);
         status = AUGraphNodeInfo(_auGraph, _convertNode, NULL, &_convertUnit);
-        status = AUGraphNodeInfo(_auGraph, _convertNode2, NULL, &_convertUnit2);
         CheckStatus(status, @"获取Convert单元失败", YES);
-        status = AUGraphNodeInfo(_auGraph, _splitterNode, NULL, &_splitterUnit);
-        CheckStatus(status, @"获取Splitter单元失败", YES);
     }
 }
 
@@ -339,37 +294,6 @@ static const AudioUnitElement outputElement = 0;
                              sizeof(micInputStreamFormat)),
         @"转换器器输出流格式配置失败",YES);
         
-        CheckStatus(AudioUnitSetProperty(_convertUnit2,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Input,
-                             0,
-                             &playerStreamFormat,
-                             sizeof(playerStreamFormat)),
-        @"转换器器输入流格式配置失败",YES);
-        CheckStatus(AudioUnitSetProperty(_convertUnit2,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Output,
-                             0,
-                             &micInputStreamFormat,
-                             sizeof(micInputStreamFormat)),
-        @"转换器器输出流格式配置失败",YES);
-        
-        // splitter
-        CheckStatus(AudioUnitSetProperty(_splitterUnit,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Input,
-                             0,
-                             &playerStreamFormat,
-                             sizeof(playerStreamFormat)),
-        @"分流器输入流格式配置失败",YES);
-        CheckStatus(AudioUnitSetProperty(_splitterUnit,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Output,
-                             0,
-                             &playerStreamFormat,
-                             sizeof(playerStreamFormat)),
-        @"分流器输出流格式配置失败",YES);
-        
         // mixer
         UInt32 mixerInputcount = 2;
         CheckStatus(AudioUnitSetProperty(_mixerUnit,
@@ -398,14 +322,6 @@ static const AudioUnitElement outputElement = 0;
             if (status != noErr) {
                 NSLog(@"AudioUnitSetProperty kAudioUnitProperty_StreamFormat %d",status);
             }
-            
-//            AURenderCallbackStruct callback;
-//            callback.inputProc = mixerInputDataCallback;
-//            callback.inputProcRefCon = (__bridge void*)self;
-//            status = AudioUnitSetProperty(_mixerUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, i, &callback, sizeof(callback));
-//            if (status != noErr) {
-//                NSLog(@"AudioUnitSetProperty kAudioUnitProperty_SetRenderCallback %d",status);
-//            }
         }
         
         status = AudioUnitSetProperty(_mixerUnit,
@@ -443,50 +359,20 @@ static const AudioUnitElement outputElement = 0;
                                           0.2,
                                           0),
                     @"Input Volume Error", YES);
-        
-//        AudioStreamBasicDescription mixerStreamFormat;
-//        AudioFormatFlags mixerFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-//        mixerStreamFormat = linearPCMStreamDes(mixerFlags,
-//                                               _sampleRate,
-//                                               _channels,
-//                                               sizeof(UInt16));
     }
 }
 
 - (void)makeNodeConnections {
     OSStatus status = noErr;
-    if (self.isEnablePlayWhenRecord) {
-        status = AUGraphConnectNodeInput(_auGraph,
-                                         _ioNode, inputElement,
-                                         _ioNode, outputElement);
-    }
     
     if (self.isEnableMixer) {
-        
         status = AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0);
-        
-        status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _splitterNode, 0);
-        status = AUGraphConnectNodeInput(_auGraph, _splitterNode, 0, _convertNode, 0);
-//        status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _mixerNode, 1);
-        status = AUGraphConnectNodeInput(_auGraph, _splitterNode, 1, _convertNode2, 0);
-        
-//        status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _splitterNode, 0);
-//        status = AUGraphConnectNodeInput(_auGraph, _splitterNode, 0, _mixerNode, 1);
-        
-//        status = AUGraphConnectNodeInput(_auGraph, _mixerNode, 0, _ioNode, 0);
+        status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
     }
-    
-//    AURenderCallbackStruct finalRenderProc;
-//    finalRenderProc.inputProc = &saveOutputCallback;
-//    finalRenderProc.inputProcRefCon = (__bridge void *)self;
-//    // AUGraphSetNodeInputCallback
-//    status = AudioUnitSetProperty(_ioUnit,
-//                                  kAudioOutputUnitProperty_SetInputCallback,
-//                                  kAudioUnitScope_Output,
-//                                  1,
-//                                  &finalRenderProc,
-//                                  sizeof(finalRenderProc));
-//    CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
+}
+
+- (void)setupRenderCallback {
+    OSStatus status = noErr;
     
     AURenderCallbackStruct finalRenderProc;
     finalRenderProc.inputProc = &saveMixerOutputCallback;
@@ -496,20 +382,6 @@ static const AudioUnitElement outputElement = 0;
                                          outputElement,
                                          &finalRenderProc);
     CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
-}
-
-- (void)setupRenderCallback {
-//    OSStatus status;
-//    AURenderCallbackStruct finalRenderProc;
-//    finalRenderProc.inputProc = &saveOutputCallback;
-//    finalRenderProc.inputProcRefCon = (__bridge void *)self;
-//    status = AudioUnitSetProperty(_ioUnit,
-//                                  kAudioOutputUnitProperty_SetInputCallback,
-//                                  kAudioUnitScope_Output,
-//                                  inputElement,
-//                                  &finalRenderProc,
-//                                  sizeof(finalRenderProc));
-//    CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
 }
 
 - (void)destroyAudioUnitGraph {
@@ -546,32 +418,8 @@ static OSStatus saveMixerOutputCallback(void *inRefCon,
                     inNumberFrames,
                     recorder->_bufferList);
     
-    CopyInIsInterleavedBufferList(ioData, recorder->_backgroundBufferList);
+    CopyInterleavedBufferList(ioData, recorder->_backgroundBufferList);
     
-
-    // 异步向文件中写入数据
-    result = [recorder->_dataWriter writeFrames:inNumberFrames
-                                 toBufferData:recorder->_bufferList
-                                        async:YES];
-    
-    return result;
-}
-
-static OSStatus saveOutputCallback(void *inRefCon,
-                               AudioUnitRenderActionFlags *ioActionFlags,
-                               const AudioTimeStamp *inTimeStamp,
-                               UInt32 inBusNumber,
-                               UInt32 inNumberFrames,
-                               AudioBufferList *ioData) {
-    OSStatus result = noErr;
-    __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
-    
-    AudioUnitRender(recorder->_ioUnit,
-                    ioActionFlags,
-                    inTimeStamp,
-                    inBusNumber, // 1
-                    inNumberFrames,
-                    recorder->_bufferList);
 
     // 异步向文件中写入数据
     result = [recorder->_dataWriter writeFrames:inNumberFrames
@@ -592,15 +440,9 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     
     result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
     
-    CopyInIsInterleavedBufferList(recorder->_backgroundBufferList, ioData);
+    CopyInterleavedBufferList(recorder->_backgroundBufferList, ioData);
 
     return result;
-}
-
-static void CopyInIsInterleavedBufferList(AudioBufferList *dst, AudioBufferList *src) {
-    dst->mNumberBuffers = src->mNumberBuffers;
-    memcpy(dst->mBuffers[0].mData, src->mBuffers[0].mData, src->mBuffers[0].mDataByteSize);
-    dst->mBuffers[0].mDataByteSize = src->mBuffers[0].mDataByteSize;
 }
 
 - (void)setUpFilePlayer {
@@ -679,73 +521,6 @@ static void CopyInIsInterleavedBufferList(AudioBufferList *dst, AudioBufferList 
                                   &startTime,
                                   sizeof(startTime));
     CheckStatus(status, @"set Player Unit Start Time... ", YES);
-}
-
-#pragma mark - Check
-- (void)checkFormat {
-    AudioStreamBasicDescription clientFormat;
-    UInt32 fSize = sizeof(clientFormat);
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_convertUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Input,
-                                     0,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    NSLog(@"============== convert input ==============");
-    printAudioStreamFormat(clientFormat);
-    
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_convertUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Output,
-                                     0,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    NSLog(@"============== convert output ==============");
-    printAudioStreamFormat(clientFormat);
-    
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_ioUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Output,
-                                     1,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    NSLog(@"============== io 1 output ==============");
-    printAudioStreamFormat(clientFormat);
-    
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_ioUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Input,
-                                     0,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    NSLog(@"============== io 0 input ==============");
-    printAudioStreamFormat(clientFormat);
-    
-    memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_mixerUnit,
-                                     kAudioUnitProperty_StreamFormat,
-                                     kAudioUnitScope_Output,
-                                     0,
-                                     &clientFormat,
-                                     &fSize),
-                @"AudioUnitGetProperty on failed",
-                YES);
-    NSLog(@"============== mixer output ==============");
-    printAudioStreamFormat(clientFormat);
-    
-    CAShow(_auGraph);
 }
 
 @end
