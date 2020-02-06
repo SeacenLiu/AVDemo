@@ -45,18 +45,18 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
 @property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
-@property (nonatomic, assign, getter=isEnableMixer) BOOL enableBgm;
+@property (nonatomic, assign, getter=isEnableBgm) BOOL enableBgm;
 
 @end
 
 #define BufferList_cache_size (1024*10*5)
 @implementation AUAudioRecorder
 {
-    AudioBufferList* _bufferList;
     AUExtAudioFile*  _dataWriter;
-
     NSString*        _backgroundPath;
-    AudioBufferList* _backgroundBufferList;
+    
+    AudioBufferList* _mixbufferList;
+    AudioBufferList* _bgmBufferList;
 }
 #pragma mark - life cycle
 - (instancetype)initWithPath:(NSString*)path {
@@ -70,8 +70,8 @@ static const AudioUnitElement outputElement = 0;
         self.enablePlayWhenRecord = NO;
         self.enableBgm = YES;
         
-        _bufferList = CreateBufferList(2, NO, BufferList_cache_size);
-        _backgroundBufferList = CreateBufferList(2, NO, BufferList_cache_size);
+        _mixbufferList = CreateBufferList(2, NO, BufferList_cache_size);
+        _bgmBufferList = CreateBufferList(2, NO, BufferList_cache_size);
         
         // 音频会话设置
         [[SCAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord];
@@ -92,7 +92,8 @@ static const AudioUnitElement outputElement = 0;
 
 - (void)dealloc {
     [self destroyAudioUnitGraph];
-    DestroyBufferList(_bufferList);
+    DestroyBufferList(_mixbufferList);
+    DestroyBufferList(_bgmBufferList);
 }
 
 #pragma mark - public method
@@ -138,8 +139,6 @@ static const AudioUnitElement outputElement = 0;
     [self setAudioUnitProperties];
     // 6. 连接音频单元
     [self makeNodeConnections];
-    // 7. 设置数据源方法
-//    [self setupRenderCallback];
     // 7. (*)展示音频单元图(空的...)
     CAShow(_auGraph);
     // 8. 初始化音频图
@@ -157,7 +156,7 @@ static const AudioUnitElement outputElement = 0;
     status = AUGraphAddNode(_auGraph, &ioDescription, &_ioNode);
     CheckStatus(status, @"RemoteIO结点添加失败", YES);
     
-    if (self.isEnableMixer) {
+    if (self.isEnableBgm) {
         AudioComponentDescription playerDescription;
         bzero(&playerDescription, sizeof(playerDescription));
         playerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -188,7 +187,7 @@ static const AudioUnitElement outputElement = 0;
     OSStatus status = noErr;
     status = AUGraphNodeInfo(_auGraph, _ioNode, NULL, &_ioUnit);
     CheckStatus(status, @"获取RemoteIO单元失败", YES);
-    if (self.isEnableMixer) {
+    if (self.isEnableBgm) {
         status = AUGraphNodeInfo(_auGraph, _playerNode, NULL, &_playerUnit);
         CheckStatus(status, @"获取player单元失败", YES);
         status = AUGraphNodeInfo(_auGraph, _mixerNode, NULL, &_mixerUnit);
@@ -264,7 +263,7 @@ static const AudioUnitElement outputElement = 0;
                 @"设置 RemoteIO 输出元件输入端回调失败", YES);
     
     // ******************** 开启了背景音乐模式 ********************
-    if (self.isEnableMixer) {
+    if (self.isEnableBgm) {
         // 播放器输出的流格式
         AudioStreamBasicDescription playerStreamFormat;
         playerStreamFormat = [self getPlayerStreamFormat];
@@ -373,7 +372,7 @@ static const AudioUnitElement outputElement = 0;
 - (void)makeNodeConnections {
     OSStatus status = noErr;
     
-    if (self.isEnableMixer) {
+    if (self.isEnableBgm) {
         status = AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0);
         status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
     }
@@ -412,14 +411,18 @@ static OSStatus remoteIOInputDataCallback(void *inRefCon,
                     inTimeStamp,
                     0,
                     inNumberFrames,
-                    recorder->_bufferList);
+                    recorder->_mixbufferList);
     
-    // 将BGM传到扬声器中
-    CopyInterleavedBufferList(ioData, recorder->_backgroundBufferList);
+    // 将声音传到扬声器中
+    if (recorder->_enablePlayWhenRecord) {
+        CopyInterleavedBufferList(ioData, recorder->_mixbufferList);
+    } else {
+        CopyInterleavedBufferList(ioData, recorder->_bgmBufferList);
+    }
     
     // 异步向文件中写入数据
     result = [recorder->_dataWriter writeFrames:inNumberFrames
-                                 toBufferData:recorder->_bufferList
+                                 toBufferData:recorder->_mixbufferList
                                         async:YES];
     
     return result;
@@ -434,26 +437,12 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     OSStatus result = noErr;
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
     
-    if (inBusNumber == 0) {
+    if (inBusNumber == 0) { // 还没有利用到，mixer Element 0 的回调未设置成功
         result = AudioUnitRender(recorder->_ioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
     } else if (inBusNumber == 1) {
         result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
-        CopyInterleavedBufferList(recorder->_backgroundBufferList, ioData);
+        CopyInterleavedBufferList(recorder->_bgmBufferList, ioData);
     }
-
-    return result;
-}
-
-static OSStatus convertInputDataCallback(void *inRefCon,
-                                         AudioUnitRenderActionFlags *ioActionFlags,
-                                         const AudioTimeStamp *inTimeStamp,
-                                         UInt32 inBusNumber,
-                                         UInt32 inNumberFrames,
-                                         AudioBufferList *ioData) {
-    OSStatus result = noErr;
-    __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
-    
-    result = AudioUnitRender(recorder->_playerUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
 
     return result;
 }
