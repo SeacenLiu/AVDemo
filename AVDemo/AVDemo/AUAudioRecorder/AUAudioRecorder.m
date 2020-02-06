@@ -13,6 +13,18 @@
 #import "AUExtAudioFile+Read.h"
 #import "NSString+Path.h"
 
+/** 主要使用的音频流格式
+ * Sample Rate:              44100
+ * Format ID:                 lpcm
+ * Format Flags:                 C
+ * Bytes per Packet:             4
+ * Frames per Packet:            1
+ * Bytes per Frame:              4
+ * Channels per Frame:           2
+ * Bits per Channel:            16
+ * Reserved:                     0
+ */
+
 static const AudioUnitElement inputElement = 1;
 static const AudioUnitElement outputElement = 0;
 
@@ -33,7 +45,7 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
 @property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
-@property (nonatomic, assign, getter=isEnableMixer) BOOL enableMixer;
+@property (nonatomic, assign, getter=isEnableMixer) BOOL enableBgm;
 
 @end
 
@@ -56,7 +68,7 @@ static const AudioUnitElement outputElement = 0;
         
         _backgroundPath = [NSString bundlePath:@"background.mp3"];
         self.enablePlayWhenRecord = NO;
-        self.enableMixer = YES;
+        self.enableBgm = YES;
         
         _bufferList = CreateBufferList(2, NO, BufferList_cache_size);
         _backgroundBufferList = CreateBufferList(2, NO, BufferList_cache_size);
@@ -85,18 +97,6 @@ static const AudioUnitElement outputElement = 0;
 
 #pragma mark - public method
 - (void)start {
-    /*
-    ---------- clientFormat ---------
-    Sample Rate:              44100
-    Format ID:                 lpcm
-    Format Flags:                 C
-    Bytes per Packet:             4
-    Frames per Packet:            1
-    Bytes per Frame:              4
-    Channels per Frame:           2
-    Bits per Channel:            16
-    Reserved:                     0
-    */
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
@@ -106,10 +106,7 @@ static const AudioUnitElement outputElement = 0;
                          outputElement,
                          &clientFormat,
                          &fSize),
-    @"AudioUnitGetProperty on failed",
-    YES);
-    
-    printAudioStreamFormat(clientFormat);
+                @"获取 mixer unit 输出端音频流格式失败",YES);
     _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath
                                                        adsb:clientFormat
                                                  fileTypeId:AUAudioFileTypeCAF];
@@ -142,7 +139,7 @@ static const AudioUnitElement outputElement = 0;
     // 6. 连接音频单元
     [self makeNodeConnections];
     // 7. 设置数据源方法
-    [self setupRenderCallback];
+//    [self setupRenderCallback];
     // 7. (*)展示音频单元图(空的...)
     CAShow(_auGraph);
     // 8. 初始化音频图
@@ -203,24 +200,31 @@ static const AudioUnitElement outputElement = 0;
 
 - (void)setAudioUnitProperties {
     OSStatus status = noErr;
-    // 激活 RemoteIO 的 IO 功能
-    UInt32 enableIO = 1;
+    
+    // **************** 未压缩音频流格式（泛用） ****************
+    AudioStreamBasicDescription micInputStreamFormat;
+    micInputStreamFormat = [self getMicInputStreamFormat];
+    
+    // ------------------ 配置 Remote I/O Unit 属性 ------------------
+    // 启用麦克风与输入元件的连接
+    UInt32 enableInput = 1;
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Input,
                                   inputElement,
-                                  &enableIO,
-                                  sizeof(enableIO));
-    CheckStatus(status, @"麦克风 启动失败", YES);
+                                  &enableInput,
+                                  sizeof(enableInput));
+    CheckStatus(status, @"RemoteIO 麦克风启用失败", YES);
+    // 启用扬声器与输出元件的连接
+    UInt32 enableOutput = 1;
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Output,
                                   outputElement,
-                                  &enableIO,
-                                  sizeof(enableIO));
-    CheckStatus(status, @"扬声器 启动失败", YES);
-    // 设置 RemoteIO 切片最大帧数（输出端全局域）
-    // AudioUnitRender()函数在处理输入数据时，最大的输入吞吐量
+                                  &enableOutput,
+                                  sizeof(enableOutput));
+    CheckStatus(status, @"RemoteIO 扬声器启用失败", YES);
+    // 设置切片最大帧数 - AudioUnitRender()函数在处理输入数据时，最大的输入吞吐量
     UInt32 maximumFramesPerSlice = 4096;
     status = AudioUnitSetProperty(_ioUnit,
                                   kAudioUnitProperty_MaximumFramesPerSlice,
@@ -229,73 +233,78 @@ static const AudioUnitElement outputElement = 0;
                                   &maximumFramesPerSlice,
                                   sizeof (maximumFramesPerSlice));
     CheckStatus(status, @"RemoteIO 切片最大帧数设置失败", YES);
-    
-    // 设置音频图中的音频流格式
-    AudioStreamBasicDescription micInputStreamFormat;
-    AudioFormatFlags formatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
-    micInputStreamFormat = linearPCMStreamDes(formatFlags,
-                                         _sampleRate,
-                                         2,
-                                         sizeof(UInt16));
-    NSLog(@"---------------------- micInputStreamFormat --------------------------");
-    printAudioStreamFormat(micInputStreamFormat);
-    
-    // RemoteIO 流格式
+    // 输入元件输出端流格式
     CheckStatus(AudioUnitSetProperty(_ioUnit,
                                      kAudioUnitProperty_StreamFormat,
                                      kAudioUnitScope_Output,
                                      inputElement,
                                      &micInputStreamFormat,
-                                     sizeof(micInputStreamFormat)), @"设置IOUnit输出端流格式失败", YES);
-//    if (self.isEnablePlayWhenRecord) {
+                                     sizeof(micInputStreamFormat)),
+                @"设置 RemoteIO 输入元件输出端流格式失败", YES);
+    // 输出元件输入端流格式
+    if (self.isEnablePlayWhenRecord || self.enableBgm) {
         CheckStatus(AudioUnitSetProperty(_ioUnit,
                              kAudioUnitProperty_StreamFormat,
                              kAudioUnitScope_Input,
                              outputElement,
                              &micInputStreamFormat,
                              sizeof(micInputStreamFormat)),
-                    @"设置IOUnit输入端流格式失败", YES);
-//    }
+                    @"设置 RemoteIO 输出元件输入端流格式失败", YES);
+    }
+    // 输出元件输入端渲染回调
+    AURenderCallbackStruct finalRenderProc;
+    finalRenderProc.inputProc = &saveOutputCallback;
+    finalRenderProc.inputProcRefCon = (__bridge void *)self;
+    CheckStatus(AudioUnitSetProperty(_ioUnit,
+                                     kAudioUnitProperty_SetRenderCallback,
+                                     kAudioUnitScope_Input,
+                                     outputElement,
+                                     &finalRenderProc,
+                                     sizeof(finalRenderProc)),
+                @"设置 RemoteIO 输出元件输入端回调失败", YES);
     
+    // ******************** 开启了背景音乐模式 ********************
     if (self.isEnableMixer) {
-        // player
-        AudioStreamBasicDescription playerStreamFormat; // 立体声流格式
-        UInt32 bytesPerSample = sizeof(Float32);
-        bzero(&playerStreamFormat, sizeof(playerStreamFormat));
-        playerStreamFormat.mFormatID          = kAudioFormatLinearPCM;
-        playerStreamFormat.mFormatFlags       = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
-        playerStreamFormat.mBytesPerPacket    = bytesPerSample;
-        playerStreamFormat.mFramesPerPacket   = 1;
-        playerStreamFormat.mBytesPerFrame     = bytesPerSample;
-        playerStreamFormat.mChannelsPerFrame  = 2;                    // 2 indicates stereo
-        playerStreamFormat.mBitsPerChannel    = 8 * bytesPerSample;
-        playerStreamFormat.mSampleRate        = 48000; // 48000.0;
+        // 播放器输出的流格式
+        AudioStreamBasicDescription playerStreamFormat;
+        playerStreamFormat = [self getPlayerStreamFormat];
+        
+        // ------------------ 配置 Player Unit 属性 ------------------
+        // 输出端流格式
         status = AudioUnitSetProperty(_playerUnit,
                                       kAudioUnitProperty_StreamFormat,
                                       kAudioUnitScope_Output,
                                       0,
                                       &playerStreamFormat,
                                       sizeof(playerStreamFormat));
-        CheckStatus(status, @"playerStreamFormat error", YES);
+        CheckStatus(status, @"设置播放器元件输出端失败", YES);
         
-        // convert
-        CheckStatus(AudioUnitSetProperty(_convertUnit,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Input,
-                             0,
-                             &playerStreamFormat,
-                             sizeof(playerStreamFormat)),
-        @"转换器器输入流格式配置失败",YES);
-        CheckStatus(AudioUnitSetProperty(_convertUnit,
-                             kAudioUnitProperty_StreamFormat,
-                             kAudioUnitScope_Output,
-                             0,
-                             &micInputStreamFormat,
-                             sizeof(micInputStreamFormat)),
-        @"转换器器输出流格式配置失败",YES);
         
-        // mixer
+        // ------------------ 配置 Convert Unit 属性 ------------------
+        // playerStreamFormat ====================> micInputStreamFormat
+        // 输入端流格式
+        CheckStatus(AudioUnitSetProperty(_convertUnit,
+                                         kAudioUnitProperty_StreamFormat,
+                                         kAudioUnitScope_Input,
+                                         0,
+                                         &playerStreamFormat,
+                                         sizeof(playerStreamFormat)),
+                    @"设置转换器元件输入端流格式配置失败",YES);
+        // 输出端流格式
+        CheckStatus(AudioUnitSetProperty(_convertUnit,
+                                         kAudioUnitProperty_StreamFormat,
+                                         kAudioUnitScope_Output,
+                                         0,
+                                         &micInputStreamFormat,
+                                         sizeof(micInputStreamFormat)),
+                    @"设置转换器元件输出端流格式配置失败",YES);
+        
+        // ------------------ 配置 Mixer Unit 属性 ------------------
+        // micInputStreamFormat
+        //                      =================> micInputStreamFormat
+        // micInputStreamFormat
         UInt32 mixerInputcount = 2;
+        // 输入端元件数
         CheckStatus(AudioUnitSetProperty(_mixerUnit,
                                          kAudioUnitProperty_ElementCount,
                                          kAudioUnitScope_Input,
@@ -303,7 +312,7 @@ static const AudioUnitElement outputElement = 0;
                                          &mixerInputcount,
                                          sizeof(mixerInputcount)),
                     @"配置混音器音轨数失败", YES);
-        
+        // 输出端采样率
         CheckStatus(AudioUnitSetProperty(_mixerUnit,
                                          kAudioUnitProperty_SampleRate,
                                          kAudioUnitScope_Output,
@@ -311,29 +320,27 @@ static const AudioUnitElement outputElement = 0;
                                          &_sampleRate,
                                          sizeof(_sampleRate)),
                     @"配置混音器输出采样率失败", YES);
-        
-        for (int i=0; i < mixerInputcount; ++i) {
-            status = AudioUnitSetProperty(_mixerUnit,
-                                          kAudioUnitProperty_StreamFormat,
-                                          kAudioUnitScope_Input,
-                                          i,
-                                          &micInputStreamFormat,
-                                          sizeof(micInputStreamFormat));
-            if (status != noErr) {
-                NSLog(@"AudioUnitSetProperty kAudioUnitProperty_StreamFormat %d",status);
-            }
+        // 循环配置元件
+        for (int i = 0; i < mixerInputcount; ++i) {
+            // 输入端流格式
+            CheckStatus(AudioUnitSetProperty(_mixerUnit,
+                                             kAudioUnitProperty_StreamFormat,
+                                             kAudioUnitScope_Input,
+                                             i,
+                                             &micInputStreamFormat,
+                                             sizeof(micInputStreamFormat)),
+                        [NSString stringWithFormat:@"配置混音器%d号元件输入端流格式失败", i],
+                        YES);
         }
-        
-        status = AudioUnitSetProperty(_mixerUnit,
+        // 输出端流格式
+        CheckStatus(AudioUnitSetProperty(_mixerUnit,
                                       kAudioUnitProperty_StreamFormat,
                                       kAudioUnitScope_Output,
                                       0,
                                       &micInputStreamFormat,
-                                      sizeof(micInputStreamFormat));
-        if (status != noErr) {
-            NSLog(@"AudioUnitSetProperty kAudioUnitProperty_StreamFormat %d",status);
-        }
-        
+                                      sizeof(micInputStreamFormat)),
+                    @"配置混音器输出端流格式失败", YES);
+        // 输入端渲染回调
         AURenderCallbackStruct callback;
         callback.inputProc = mixerInputDataCallback;
         callback.inputProcRefCon = (__bridge void*)self;
@@ -343,22 +350,23 @@ static const AudioUnitElement outputElement = 0;
                                          1,
                                          &callback,
                                          sizeof(callback)),
-                    @"mixer 输入回调设置失败", YES);
-    
+                    @"配置混音器输入端回调设置失败", YES);
+        
+        // ----------------- 音频单元参数设置 -----------------
         CheckStatus(AudioUnitSetParameter(_mixerUnit,
                                           kMultiChannelMixerParam_Volume,
                                           kAudioUnitScope_Input,
                                           0,
                                           1,
                                           0),
-                    @"Input Volume Error", YES);
+                    @"配置混音器音轨音量失败", YES);
         CheckStatus(AudioUnitSetParameter(_mixerUnit,
                                           kMultiChannelMixerParam_Volume,
                                           kAudioUnitScope_Input,
                                           1,
                                           0.2,
                                           0),
-                    @"Input Volume Error", YES);
+                    @"配置混音器音轨音量失败", YES);
     }
 }
 
@@ -369,19 +377,6 @@ static const AudioUnitElement outputElement = 0;
         status = AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0);
         status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
     }
-}
-
-- (void)setupRenderCallback {
-    OSStatus status = noErr;
-    
-    AURenderCallbackStruct finalRenderProc;
-    finalRenderProc.inputProc = &saveMixerOutputCallback;
-    finalRenderProc.inputProcRefCon = (__bridge void *)self;
-    status = AUGraphSetNodeInputCallback(_auGraph,
-                                         _ioNode,
-                                         outputElement,
-                                         &finalRenderProc);
-    CheckStatus(status, @"设置 RemoteIO 输出回调失败", YES);
 }
 
 - (void)destroyAudioUnitGraph {
@@ -402,7 +397,7 @@ static const AudioUnitElement outputElement = 0;
 }
 
 #pragma mark - 核心回调函数
-static OSStatus saveMixerOutputCallback(void *inRefCon,
+static OSStatus saveOutputCallback(void *inRefCon,
                                AudioUnitRenderActionFlags *ioActionFlags,
                                const AudioTimeStamp *inTimeStamp,
                                UInt32 inBusNumber,
@@ -414,13 +409,12 @@ static OSStatus saveMixerOutputCallback(void *inRefCon,
     AudioUnitRender(recorder->_mixerUnit,
                     ioActionFlags,
                     inTimeStamp,
-                    0, // 1
+                    0,
                     inNumberFrames,
                     recorder->_bufferList);
     
     CopyInterleavedBufferList(ioData, recorder->_backgroundBufferList);
     
-
     // 异步向文件中写入数据
     result = [recorder->_dataWriter writeFrames:inNumberFrames
                                  toBufferData:recorder->_bufferList
@@ -438,9 +432,12 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     OSStatus result = noErr;
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
     
-    result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
-    
-    CopyInterleavedBufferList(recorder->_backgroundBufferList, ioData);
+    if (inBusNumber == 0) {
+        result = AudioUnitRender(recorder->_ioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
+    } else if (inBusNumber == 1) {
+        result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
+        CopyInterleavedBufferList(recorder->_backgroundBufferList, ioData);
+    }
 
     return result;
 }
@@ -521,6 +518,32 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   &startTime,
                                   sizeof(startTime));
     CheckStatus(status, @"set Player Unit Start Time... ", YES);
+}
+
+#pragma mark - help
+- (AudioStreamBasicDescription)getPlayerStreamFormat {
+    AudioStreamBasicDescription playerStreamFormat; // 立体声流格式
+    UInt32 bytesPerSample = sizeof(Float32);
+    bzero(&playerStreamFormat, sizeof(playerStreamFormat));
+    playerStreamFormat.mFormatID          = kAudioFormatLinearPCM;
+    playerStreamFormat.mFormatFlags       = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+    playerStreamFormat.mBytesPerPacket    = bytesPerSample;
+    playerStreamFormat.mFramesPerPacket   = 1;
+    playerStreamFormat.mBytesPerFrame     = bytesPerSample;
+    playerStreamFormat.mChannelsPerFrame  = 2;
+    playerStreamFormat.mBitsPerChannel    = 8 * bytesPerSample;
+    playerStreamFormat.mSampleRate        = 48000; // 48000.0;
+    return playerStreamFormat;
+}
+
+- (AudioStreamBasicDescription)getMicInputStreamFormat {
+    AudioStreamBasicDescription micInputStreamFormat;
+    AudioFormatFlags formatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+    micInputStreamFormat = linearPCMStreamDes(formatFlags,
+                                              _sampleRate,
+                                              2,
+                                              sizeof(UInt16));
+    return micInputStreamFormat;
 }
 
 @end
