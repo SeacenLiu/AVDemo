@@ -330,6 +330,17 @@ static const AudioUnitElement outputElement = 0;
                                              sizeof(micInputStreamFormat)),
                         [NSString stringWithFormat:@"配置混音器%d号元件输入端流格式失败", i],
                         YES);
+            AURenderCallbackStruct callback;
+            // 输入端渲染回调
+            callback.inputProc = mixerInputDataCallback;
+            callback.inputProcRefCon = (__bridge void*)self;
+            CheckStatus(AudioUnitSetProperty(_mixerUnit,
+                                             kAudioUnitProperty_SetRenderCallback,
+                                             kAudioUnitScope_Input,
+                                             i,
+                                             &callback,
+                                             sizeof(callback)),
+                        @"配置混音器输入端回调设置失败", YES);
         }
         // 输出端流格式
         CheckStatus(AudioUnitSetProperty(_mixerUnit,
@@ -339,17 +350,6 @@ static const AudioUnitElement outputElement = 0;
                                       &micInputStreamFormat,
                                       sizeof(micInputStreamFormat)),
                     @"配置混音器输出端流格式失败", YES);
-        // 输入端渲染回调
-        AURenderCallbackStruct callback;
-        callback.inputProc = mixerInputDataCallback;
-        callback.inputProcRefCon = (__bridge void*)self;
-        CheckStatus(AudioUnitSetProperty(_mixerUnit,
-                                         kAudioUnitProperty_SetRenderCallback,
-                                         kAudioUnitScope_Input,
-                                         1,
-                                         &callback,
-                                         sizeof(callback)),
-                    @"配置混音器输入端回调设置失败", YES);
         
         // ----------------- 音频单元参数设置 -----------------
         CheckStatus(AudioUnitSetParameter(_mixerUnit,
@@ -371,10 +371,17 @@ static const AudioUnitElement outputElement = 0;
 
 - (void)makeNodeConnections {
     OSStatus status = noErr;
-    
+
     if (self.isEnableBgm) {
-        status = AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0);
         status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
+        
+        // 注意：
+        // 不调用 AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0); 的情况下，
+        // 会导致 mixerUnit 并没有连接在音频图中，需要额外自己初始化才行
+        // 结论：AUGraphInitialize 函数只换将“kAudioUnitType_Output”和“kAudioUnitType_Generator”连接的音频单元初始化
+        //      对于单独未和“输出音频单元”有直接关系的音频单元会被直接跳过
+        status = AudioUnitInitialize(_mixerUnit);
+        CheckStatus(status, @"初始化_mixerUnit失败", YES);
     }
 }
 
