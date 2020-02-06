@@ -253,7 +253,7 @@ static const AudioUnitElement outputElement = 0;
     }
     // 输出元件输入端渲染回调
     AURenderCallbackStruct finalRenderProc;
-    finalRenderProc.inputProc = &saveOutputCallback;
+    finalRenderProc.inputProc = &remoteIOInputDataCallback;
     finalRenderProc.inputProcRefCon = (__bridge void *)self;
     CheckStatus(AudioUnitSetProperty(_ioUnit,
                                      kAudioUnitProperty_SetRenderCallback,
@@ -397,15 +397,16 @@ static const AudioUnitElement outputElement = 0;
 }
 
 #pragma mark - 核心回调函数
-static OSStatus saveOutputCallback(void *inRefCon,
-                               AudioUnitRenderActionFlags *ioActionFlags,
-                               const AudioTimeStamp *inTimeStamp,
-                               UInt32 inBusNumber,
-                               UInt32 inNumberFrames,
-                               AudioBufferList *ioData) {
+static OSStatus remoteIOInputDataCallback(void *inRefCon,
+                                      AudioUnitRenderActionFlags *ioActionFlags,
+                                      const AudioTimeStamp *inTimeStamp,
+                                      UInt32 inBusNumber,
+                                      UInt32 inNumberFrames,
+                                      AudioBufferList *ioData) {
     OSStatus result = noErr;
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
     
+    // 渲染音频混合器结果
     AudioUnitRender(recorder->_mixerUnit,
                     ioActionFlags,
                     inTimeStamp,
@@ -413,6 +414,7 @@ static OSStatus saveOutputCallback(void *inRefCon,
                     inNumberFrames,
                     recorder->_bufferList);
     
+    // 将BGM传到扬声器中
     CopyInterleavedBufferList(ioData, recorder->_backgroundBufferList);
     
     // 异步向文件中写入数据
@@ -438,6 +440,20 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
         result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
         CopyInterleavedBufferList(recorder->_backgroundBufferList, ioData);
     }
+
+    return result;
+}
+
+static OSStatus convertInputDataCallback(void *inRefCon,
+                                         AudioUnitRenderActionFlags *ioActionFlags,
+                                         const AudioTimeStamp *inTimeStamp,
+                                         UInt32 inBusNumber,
+                                         UInt32 inNumberFrames,
+                                         AudioBufferList *ioData) {
+    OSStatus result = noErr;
+    __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
+    
+    result = AudioUnitRender(recorder->_playerUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
 
     return result;
 }
@@ -485,7 +501,7 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     rgn.mCompletionProc = NULL;
     rgn.mCompletionProcUserData = NULL;
     rgn.mAudioFile = musicFile;
-    rgn.mLoopCount = 2;
+    rgn.mLoopCount = 0;
     rgn.mStartFrame = 0;
     rgn.mFramesToPlay = (UInt32)nPackets * fileASBD.mFramesPerPacket;
     status = AudioUnitSetProperty(_playerUnit,
@@ -532,7 +548,7 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     playerStreamFormat.mBytesPerFrame     = bytesPerSample;
     playerStreamFormat.mChannelsPerFrame  = 2;
     playerStreamFormat.mBitsPerChannel    = 8 * bytesPerSample;
-    playerStreamFormat.mSampleRate        = 48000; // 48000.0;
+    playerStreamFormat.mSampleRate        = 41000; // 48000.0;
     return playerStreamFormat;
 }
 
