@@ -17,10 +17,21 @@ NSString * const stopText = @"Stop";
 
 @property (weak, nonatomic) IBOutlet UIButton *btn;
 @property (nonatomic, strong) AUAudioRecorder *recorder;
+@property (weak, nonatomic) IBOutlet UISlider *musicSlider;
 
 @end
 
 @implementation AUAudioRecorderViewController
+
+- (IBAction)playMusicBtnClick:(id)sender {
+    //        NSString *musicPath = [NSString bundlePath:@"heart.mp3"];
+    NSString *musicPath = [NSString bundlePath:@"background.mp3"];
+    [_recorder playMusicWithPath:musicPath];
+}
+
+- (IBAction)stopMusicBtnClick:(id)sender {
+    [_recorder endPlayMusic];
+}
 
 - (IBAction)btnClick:(UIButton*)sender {
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音

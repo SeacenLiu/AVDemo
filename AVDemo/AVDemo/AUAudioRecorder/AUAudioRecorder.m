@@ -84,8 +84,6 @@ static const AudioUnitElement outputElement = 0;
         
         // 初始化音频图
         [self createAudioUnitGraph];
-        
-        [self setUpFilePlayer];
     }
     return self;
 }
@@ -141,7 +139,7 @@ static const AudioUnitElement outputElement = 0;
     [self makeNodeConnections];
     // 7. (*)展示音频单元图(空的...)
     CAShow(_auGraph);
-    // 8. 初始化音频图
+    // 8. 初始化音频图(间接初始化 Audio Unit)
     status = AUGraphInitialize(_auGraph);
     CheckStatus(status, @"初始化AUGraph失败", YES);
 }
@@ -375,11 +373,11 @@ static const AudioUnitElement outputElement = 0;
     if (self.isEnableBgm) {
         status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
         
-        // 注意：
         // 不调用 AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0); 的情况下，
         // 会导致 mixerUnit 并没有连接在音频图中，需要额外自己初始化才行
         // 结论：AUGraphInitialize 函数只换将“kAudioUnitType_Output”和“kAudioUnitType_Generator”连接的音频单元初始化
         //      对于单独未和“输出音频单元”有直接关系的音频单元会被直接跳过
+        // 注意：需要在属性设置完毕后才得初始化
         status = AudioUnitInitialize(_mixerUnit);
         CheckStatus(status, @"初始化_mixerUnit失败", YES);
     }
@@ -454,24 +452,29 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     return result;
 }
 
-- (void)setUpFilePlayer {
+#pragma mark - AUAudioFilePlayer
+- (void)playMusicWithPath:(NSString *)path {
     OSStatus status = noErr;
-    AudioFileID musicFile;
-    NSURL *url = [NSURL URLWithString:_backgroundPath];
-    CFURLRef songURL = (__bridge  CFURLRef)url;
-    // 打开输入的音频文件
-    status = AudioFileOpenURL(songURL, kAudioFileReadPermission, 0, &musicFile);
-    CheckStatus(status, @"Open AudioFile... ", YES);
     
-    // 在全局域的输出元素中设置播放器单元目标文件
+    // 创建可用URL
+    NSURL *url = [NSURL URLWithString:path];
+    CFURLRef songURL = (__bridge CFURLRef)url;
+    
+    // 打开的音频文件
+    AudioFileID musicFile;
+    status = AudioFileOpenURL(songURL, kAudioFileReadPermission, 0, &musicFile);
+    CheckStatus(status, @"打开音频文件失败", YES);
+    
+    // 指定音频文件
     status = AudioUnitSetProperty(_playerUnit,
                                   kAudioUnitProperty_ScheduledFileIDs,
                                   kAudioUnitScope_Global,
                                   0,
                                   &musicFile,
                                   sizeof(musicFile));
-    CheckStatus(status, @"Tell AudioFile Player Unit Load Which File... ", YES);
+    CheckStatus(status, @"指定音频文件失败", YES);
     
+    // ----------------------- Getter --------------------------
     // 通过音频文件获取音频数据流的格式
     AudioStreamBasicDescription fileASBD;
     UInt32 propSize = sizeof(fileASBD);
@@ -479,36 +482,41 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   kAudioFilePropertyDataFormat,
                                   &propSize,
                                   &fileASBD);
-    CheckStatus(status, @"get the audio data format from the file... ", YES);
+    CheckStatus(status, @"获取音频数据流的格式失败", YES);
+    // TODO: - 需要将这个ASBD接在AUGraph上
     
     // 通过音频文件获取音频数据包的数量
     UInt64 nPackets;
     UInt32 propsize = sizeof(nPackets);
-    AudioFileGetProperty(musicFile,
-                         kAudioFilePropertyAudioDataPacketCount,
-                         &propsize,
-                         &nPackets);
+    status = AudioFileGetProperty(musicFile,
+                                  kAudioFilePropertyAudioDataPacketCount,
+                                  &propsize,
+                                  &nPackets);
+    CheckStatus(status, @"获取音频数据包的数量失败", YES);
+    // ---------------------------------------------------------
     
     // 告知文件播放单元从0开始播放整个文件
     ScheduledAudioFileRegion rgn;
     memset (&rgn.mTimeStamp, 0, sizeof(rgn.mTimeStamp));
     rgn.mTimeStamp.mFlags = kAudioTimeStampSampleTimeValid;
     rgn.mTimeStamp.mSampleTime = 0;
-    rgn.mCompletionProc = NULL;
-    rgn.mCompletionProcUserData = NULL;
+    // 该完成回调在unit读取磁盘信息完成后调用
+    rgn.mCompletionProc = AudioFileRegionCompletionProc;//NULL;
+    rgn.mCompletionProcUserData = (__bridge void*)self;//NULL;
     rgn.mAudioFile = musicFile;
     rgn.mLoopCount = 0;
     rgn.mStartFrame = 0;
-    rgn.mFramesToPlay = (UInt32)nPackets * fileASBD.mFramesPerPacket;
+    rgn.mFramesToPlay = (UInt32)nPackets * fileASBD.mFramesPerPacket; // -1
     status = AudioUnitSetProperty(_playerUnit,
                                   kAudioUnitProperty_ScheduledFileRegion,
                                   kAudioUnitScope_Global,
                                   0,
                                   &rgn,
                                   sizeof(rgn));
-    CheckStatus(status, @"Set Region... ", YES);
+    CheckStatus(status, @"设置播放位置失败", YES);
     
     // 设置文件播放单元参数为默认值
+    // ScheduledFilePrime 用于设置磁盘读取样本帧数
     UInt32 defaultVal = 0;
     status = AudioUnitSetProperty(_playerUnit,
                                   kAudioUnitProperty_ScheduledFilePrime,
@@ -516,23 +524,71 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   0,
                                   &defaultVal,
                                   sizeof(defaultVal));
-    CheckStatus(status, @"Prime Player Unit With Default Value... ", YES);
+    CheckStatus(status, @"ScheduledFilePrime 设置失败", YES);
     
-    // 设置何时开始播放(播放模式)(-1 sample time means next render cycle)
+    // 设置何时开始播放(播放模式)
     AudioTimeStamp startTime;
     memset (&startTime, 0, sizeof(startTime));
     startTime.mFlags = kAudioTimeStampSampleTimeValid;
-    startTime.mSampleTime = -1;
+    startTime.mSampleTime = -1; // 下一个渲染循环
     status = AudioUnitSetProperty(_playerUnit,
                                   kAudioUnitProperty_ScheduleStartTimeStamp,
                                   kAudioUnitScope_Global,
                                   0,
                                   &startTime,
                                   sizeof(startTime));
-    CheckStatus(status, @"set Player Unit Start Time... ", YES);
+    CheckStatus(status, @"设置启动时间失败", YES);
+}
+
+void AudioFileRegionCompletionProc(void * __nullable userData,
+                                   ScheduledAudioFileRegion *fileRegion,
+                                   OSStatus result) {
+    if (result == noErr) {
+        __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)userData;
+        [recorder debugScheduledAudioFileRegion:*fileRegion];
+        AudioTimeStamp curTime;
+        UInt32 curTimeSize = sizeof(curTime);
+        result = AudioUnitGetProperty(recorder->_playerUnit,
+                                      kAudioUnitProperty_CurrentPlayTime,
+                                      kAudioUnitScope_Global,
+                                      0,
+                                      &curTime,
+                                      &curTimeSize);
+        CheckStatus(result, @"获取音频数据流的格式失败", YES);
+        [recorder debugAudioTimeStamp:curTime];
+    } else {
+        NSLog(@"Error: %d", result);
+    }
+}
+
+- (void)endPlayMusic {
+    OSStatus status = noErr;
+    status = AudioUnitReset(_playerUnit, kAudioUnitScope_Global, 0);
+    CheckStatus(status, @"重置音频单元失败", YES);
 }
 
 #pragma mark - help
+- (void)debugAudioTimeStamp:(AudioTimeStamp)ats {
+    NSLog(@"--------AudioTimeStamp-------");
+    NSLog(@"mSampleTime:    %f", ats.mSampleTime);
+    NSLog(@"mSampleTime(s): %f", ats.mSampleTime / 100000);
+    NSLog(@"mHostTime:      %llu", ats.mHostTime);
+    NSLog(@"mRateScalar:    %f", ats.mRateScalar);
+    NSLog(@"mWordClockTime: %llu", ats.mWordClockTime);
+    // TODO: SMPTETime
+    NSLog(@"mFlags:         %d", ats.mFlags);
+    NSLog(@"mReserved:      %u", (unsigned int)ats.mReserved);
+    NSLog(@"-----------------------------");
+}
+
+- (void)debugScheduledAudioFileRegion:(ScheduledAudioFileRegion)rgn {
+    NSLog(@"---ScheduledAudioFileRegion---");
+    [self debugAudioTimeStamp:rgn.mTimeStamp];
+    NSLog(@"mStartFrame:    %lld", rgn.mStartFrame);
+    NSLog(@"mFramesToPlay:  %d", rgn.mFramesToPlay);
+    NSLog(@"-----------------------------");
+}
+
 - (AudioStreamBasicDescription)getPlayerStreamFormat {
     AudioStreamBasicDescription playerStreamFormat; // 立体声流格式
     UInt32 bytesPerSample = sizeof(Float32);
