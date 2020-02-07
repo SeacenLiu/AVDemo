@@ -10,13 +10,27 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class AUAudioRecorder;
+@protocol AUAudioRecorderDelegate <NSObject>
+
+// TODO
+- (void)audioRecorderDidLoadMusicFile:(AUAudioRecorder*)recoder;
+- (void)audioRecorderDidCompletePlay:(AUAudioRecorder*)recoder;
+
+@end
+
+
 @interface AUAudioRecorder : NSObject
+
+@property (nonatomic, weak) id<AUAudioRecorderDelegate> delegate;
 
 - (instancetype)initWithPath:(NSString*)path;
 
-- (void)start;
+- (void)startRecord;
+- (void)stopRecord;
 
-- (void)stop;
+- (void)playMusicWithPath:(NSString *)path;
+- (void)endPlayMusic;
 
 @end
 

@@ -95,7 +95,7 @@ static const AudioUnitElement outputElement = 0;
 }
 
 #pragma mark - public method
-- (void)start {
+- (void)startRecord {
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
@@ -114,7 +114,7 @@ static const AudioUnitElement outputElement = 0;
     CheckStatus(status, @"启动音频图失败", YES);
 }
 
-- (void)stop {
+- (void)stopRecord {
     OSStatus status = AUGraphStop(_auGraph);
     CheckStatus(status, @"停止音频图失败", YES);
     // 关闭文件和释放对象

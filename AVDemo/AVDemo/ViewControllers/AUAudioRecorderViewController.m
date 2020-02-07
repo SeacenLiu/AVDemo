@@ -35,10 +35,10 @@ NSString * const stopText = @"Stop";
 
 - (IBAction)btnClick:(UIButton*)sender {
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音
-        [_recorder start];
+        [_recorder startRecord];
         [sender setTitle:stopText forState:UIControlStateNormal];
     } else if ([sender.titleLabel.text isEqualToString:stopText]) { // 停止录音
-        [_recorder stop];
+        [_recorder stopRecord];
         [sender setTitle:startText forState:UIControlStateNormal];
     } else {
         
@@ -49,7 +49,6 @@ NSString * const stopText = @"Stop";
     [super viewDidLoad];
     
     NSString* filePath = [NSString documentsPath:@"recorder.caf"];
-//    NSString* filePath = [NSString documentsPath:@"recorder.m4a"];
     NSLog(@"%@", filePath);
     _recorder = [[AUAudioRecorder alloc] initWithPath:filePath];
     [_btn setTitle:startText forState:UIControlStateNormal];

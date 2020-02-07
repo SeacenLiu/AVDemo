@@ -28,10 +28,10 @@
     AVAudioSessionInterruptionType interruptionType = [[[sender userInfo] objectForKey:AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
     switch (interruptionType) {
         case AVAudioSessionInterruptionTypeBegan:
-            [self stop];
+            [self stopRecord];
             break;
         case AVAudioSessionInterruptionTypeEnded:
-            [self start];
+            [self startRecord];
             break;
         default:
             break;
