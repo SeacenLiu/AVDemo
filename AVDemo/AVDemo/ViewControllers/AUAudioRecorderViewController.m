@@ -33,6 +33,18 @@ NSString * const stopText = @"Stop";
     [_recorder endPlayMusic];
 }
 
+- (IBAction)bgmVolumeValueChange:(UISlider*)sender {
+    _recorder.bgmVolume = sender.value;
+}
+
+- (IBAction)voiceVolumeValueChange:(UISlider*)sender {
+    _recorder.voiceVolume = sender.value;
+}
+
+- (IBAction)enablePlayWhenRecorAction:(UISwitch *)sender {
+    _recorder.enablePlayWhenRecord = sender.isOn;
+}
+
 - (IBAction)btnClick:(UIButton*)sender {
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音
         [_recorder startRecord];

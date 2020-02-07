@@ -44,9 +44,6 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AUNode             convertNode;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
-@property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
-@property (nonatomic, assign, getter=isEnableBgm) BOOL enableBgm;
-
 @end
 
 #define BufferList_cache_size (1024*10*5)
@@ -239,7 +236,7 @@ static const AudioUnitElement outputElement = 0;
                                      sizeof(micInputStreamFormat)),
                 @"设置 RemoteIO 输入元件输出端流格式失败", YES);
     // 输出元件输入端流格式
-    if (self.isEnablePlayWhenRecord || self.enableBgm) {
+//    if (self.isEnablePlayWhenRecord || self.enableBgm) {
         CheckStatus(AudioUnitSetProperty(_ioUnit,
                              kAudioUnitProperty_StreamFormat,
                              kAudioUnitScope_Input,
@@ -247,7 +244,7 @@ static const AudioUnitElement outputElement = 0;
                              &micInputStreamFormat,
                              sizeof(micInputStreamFormat)),
                     @"设置 RemoteIO 输出元件输入端流格式失败", YES);
-    }
+//    }
     // 输出元件输入端渲染回调
     AURenderCallbackStruct finalRenderProc;
     finalRenderProc.inputProc = &remoteIOInputDataCallback;
@@ -361,7 +358,7 @@ static const AudioUnitElement outputElement = 0;
                                           kMultiChannelMixerParam_Volume,
                                           kAudioUnitScope_Input,
                                           1,
-                                          0.2,
+                                          1,
                                           0),
                     @"配置混音器音轨音量失败", YES);
     }
@@ -422,7 +419,9 @@ static OSStatus remoteIOInputDataCallback(void *inRefCon,
     if (recorder->_enablePlayWhenRecord) {
         CopyInterleavedBufferList(ioData, recorder->_mixbufferList);
     } else {
-        CopyInterleavedBufferList(ioData, recorder->_bgmBufferList);
+        if (recorder->_enableBgm) {
+            CopyInterleavedBufferList(ioData, recorder->_bgmBufferList);
+        }
     }
     
     // 异步向文件中写入数据
@@ -445,11 +444,38 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     if (inBusNumber == 0) { // 还没有利用到，mixer Element 0 的回调未设置成功
         result = AudioUnitRender(recorder->_ioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
     } else if (inBusNumber == 1) {
-        result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
-        CopyInterleavedBufferList(recorder->_bgmBufferList, ioData);
+        if (recorder->_enableBgm) {
+            result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
+            CopyInterleavedBufferList(recorder->_bgmBufferList, ioData);
+        }
     }
 
     return result;
+}
+
+#pragma mark - Setter
+- (void)setVoiceVolume:(CGFloat)voiceVolume {
+    _voiceVolume = voiceVolume;
+    
+    CheckStatus(AudioUnitSetParameter(_mixerUnit,
+                          kMultiChannelMixerParam_Volume,
+                          kAudioUnitScope_Input,
+                          0,
+                          voiceVolume,
+                          0),
+    @"配置混音器音轨音量失败", YES);
+}
+
+- (void)setBgmVolume:(CGFloat)bgmVolume {
+    _bgmVolume = bgmVolume;
+    
+    CheckStatus(AudioUnitSetParameter(_mixerUnit,
+                                      kMultiChannelMixerParam_Volume,
+                                      kAudioUnitScope_Input,
+                                      1,
+                                      bgmVolume,
+                                      0),
+                @"配置混音器音轨音量失败", YES);
 }
 
 #pragma mark - AUAudioFilePlayer
@@ -588,7 +614,7 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     NSLog(@"mHostTime:      %llu", ats.mHostTime);
     NSLog(@"mRateScalar:    %f", ats.mRateScalar);
     NSLog(@"mWordClockTime: %llu", ats.mWordClockTime);
-    // TODO: SMPTETime
+    // TODO: SMPTETime 显示时间
     NSLog(@"mFlags:         %d", ats.mFlags);
     NSLog(@"mReserved:      %u", (unsigned int)ats.mReserved);
     NSLog(@"-----------------------------");

@@ -29,6 +29,18 @@
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="FaC-aZ-q8k">
                     <rect key="frame" x="28" y="707" width="358" height="31"/>
                 </slider>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="n8Z-Wq-I5i">
+                    <rect key="frame" x="28" y="204" width="358" height="31"/>
+                    <connections>
+                        <action selector="voiceVolumeValueChange:" destination="-1" eventType="valueChanged" id="I4K-lR-iB8"/>
+                    </connections>
+                </slider>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Jfs-k5-2CX">
+                    <rect key="frame" x="28" y="127" width="358" height="31"/>
+                    <connections>
+                        <action selector="bgmVolumeValueChange:" destination="-1" eventType="valueChanged" id="Y0i-K6-RAJ"/>
+                    </connections>
+                </slider>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kg6-CJ-5Dz">
                     <rect key="frame" x="172" y="556" width="67" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -45,14 +57,29 @@
                         <action selector="playMusicBtnClick:" destination="-1" eventType="touchUpInside" id="Ykg-nO-v6v"/>
                     </connections>
                 </button>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="thb-vj-5Pe">
+                    <rect key="frame" x="171" y="321" width="49" height="31"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <connections>
+                        <action selector="enablePlayWhenRecorAction:" destination="-1" eventType="valueChanged" id="Vp7-lE-Tld"/>
+                    </connections>
+                </switch>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="FaC-aZ-q8k" secondAttribute="trailing" constant="30" id="IBk-MN-xtj"/>
                 <constraint firstItem="X5C-S2-qZ2" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="IGH-em-VmN"/>
+                <constraint firstItem="Jfs-k5-2CX" firstAttribute="trailing" secondItem="FaC-aZ-q8k" secondAttribute="trailing" id="IvB-aP-BZK"/>
+                <constraint firstItem="n8Z-Wq-I5i" firstAttribute="centerX" secondItem="Jfs-k5-2CX" secondAttribute="centerX" id="TgH-Pn-jqV"/>
+                <constraint firstItem="Jfs-k5-2CX" firstAttribute="leading" secondItem="FaC-aZ-q8k" secondAttribute="leading" id="X7y-3W-IvV"/>
                 <constraint firstItem="FaC-aZ-q8k" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="30" id="YIy-wa-8Qa"/>
+                <constraint firstItem="n8Z-Wq-I5i" firstAttribute="trailing" secondItem="Jfs-k5-2CX" secondAttribute="trailing" id="ePg-6S-kAh"/>
+                <constraint firstItem="Jfs-k5-2CX" firstAttribute="centerX" secondItem="FaC-aZ-q8k" secondAttribute="centerX" id="fOz-hf-8xU"/>
+                <constraint firstItem="n8Z-Wq-I5i" firstAttribute="top" secondItem="Jfs-k5-2CX" secondAttribute="bottom" constant="47" id="hEi-sB-Gq5"/>
                 <constraint firstItem="X5C-S2-qZ2" firstAttribute="centerY" secondItem="Q5M-cg-NOt" secondAttribute="centerY" id="qmE-xB-hkE"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="FaC-aZ-q8k" secondAttribute="bottom" constant="125" id="rqb-jt-adr"/>
+                <constraint firstItem="Jfs-k5-2CX" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="83" id="wmr-qt-ER6"/>
+                <constraint firstItem="n8Z-Wq-I5i" firstAttribute="leading" secondItem="Jfs-k5-2CX" secondAttribute="leading" id="xjp-NQ-G56"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="137.68115942028987" y="116.51785714285714"/>

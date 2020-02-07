@@ -24,6 +24,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<AUAudioRecorderDelegate> delegate;
 
+@property (nonatomic, assign, getter=isEnablePlayWhenRecord) BOOL enablePlayWhenRecord;
+@property (nonatomic, assign, getter=isEnableBgm) BOOL enableBgm;
+/** 背景音乐音量（范围0~1） */
+@property (nonatomic, assign) CGFloat bgmVolume;
+/** 录音音量（范围0~1） */
+@property (nonatomic, assign) CGFloat voiceVolume;
+
 - (instancetype)initWithPath:(NSString*)path;
 
 - (void)startRecord;
