@@ -475,6 +475,17 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     CheckStatus(status, @"指定音频文件失败", YES);
     
     // ----------------------- Getter --------------------------
+    // 通过音频文件获取音频播放预计时长
+    // kAudioFilePropertyEstimatedDuration
+    Float64 estimatedDuration;
+    UInt32 durationSize = sizeof(estimatedDuration);
+    status = AudioFileGetProperty(musicFile,
+                                  kAudioFilePropertyEstimatedDuration,
+                                  &durationSize,
+                                  &estimatedDuration);
+    CheckStatus(status, @"获取音频数据流的格式失败", YES);
+    NSLog(@"音频的预估时长为：%f", estimatedDuration);
+    
     // 通过音频文件获取音频数据流的格式
     AudioStreamBasicDescription fileASBD;
     UInt32 propSize = sizeof(fileASBD);
@@ -538,6 +549,8 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   &startTime,
                                   sizeof(startTime));
     CheckStatus(status, @"设置启动时间失败", YES);
+    
+    // 通过计时器获取回调 kAudioUnitProperty_CurrentPlayTime 获取进度
 }
 
 void AudioFileRegionCompletionProc(void * __nullable userData,
