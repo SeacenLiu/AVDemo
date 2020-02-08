@@ -49,9 +49,15 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AUNode             bgmMixerNode;
 @property (nonatomic, assign) AudioUnit          bgmMixerUnit;
 
+// 播放部分
+//@property (nonatomic, assign) AUNode             playerNode;
+//@property (nonatomic, assign) AudioUnit          playerUnit;
+//@property (nonatomic, assign) AUNode             convertNode;
+//@property (nonatomic, assign) AudioUnit          convertUnit;
 @property (nonatomic, assign) NSTimeInterval estimatedDuration;
-@property (nonatomic, assign) Float64 frameDuration;
-@property (nonatomic, strong) NSTimer *proressTimer;
+@property (nonatomic, assign) Float64        frameDuration;
+@property (nonatomic, strong) NSTimer*       proressTimer;
+@property (nonatomic, assign) AudioTimeStamp curentTimeStamp;
 
 @end
 
@@ -637,8 +643,8 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
 }
 
 - (void)playProgressHandler {
-    NSTimeInterval all = self.allTime;
-    NSTimeInterval cur = self.curTime;
+    NSTimeInterval all = self.totalSecond;
+    NSTimeInterval cur = self.currentSecond;
     NSTimeInterval progress = MIN(cur / all, 1.0);
     NSLog(@"当前进度: %f = %f / %f", progress, cur, all);
     if (self.delegate && [self.delegate respondsToSelector:@selector(audioRecorderDidPlayProgress:progress:currentSecond:totalSecond:)]) {
@@ -654,11 +660,11 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
 }
 
 #pragma mark - getter
-- (NSTimeInterval)allTime {
+- (NSTimeInterval)totalSecond {
     return _estimatedDuration;
 }
 
-- (NSTimeInterval)curTime {
+- (NSTimeInterval)currentSecond {
     OSStatus result;
     AudioTimeStamp curTime;
     UInt32 curTimeSize = sizeof(curTime);
@@ -672,7 +678,7 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     return MAX((curTime.mSampleTime * _frameDuration / 1000), 0);
 }
 
-#pragma mark - help
+#pragma mark - player tool
 - (void)debugAudioTimeStamp:(AudioTimeStamp)ats {
     NSLog(@"--------AudioTimeStamp-------");
     NSLog(@"mSampleTime:    %f", ats.mSampleTime);
@@ -708,6 +714,7 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     NSLog(@"-----------------------------");
 }
 
+#pragma mark - help
 - (AudioStreamBasicDescription)getPlayerStreamFormat {
     AudioStreamBasicDescription playerStreamFormat; // 立体声流格式
     UInt32 bytesPerSample = sizeof(Float32);
