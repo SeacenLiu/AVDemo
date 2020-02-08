@@ -44,6 +44,9 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) AUNode             convertNode;
 @property (nonatomic, assign) AudioUnit          convertUnit;
 
+@property (nonatomic, assign) NSTimeInterval estimatedDuration;
+@property (nonatomic, assign) Float64 frameDuration;
+
 @end
 
 #define BufferList_cache_size (1024*10*5)
@@ -262,16 +265,17 @@ static const AudioUnitElement outputElement = 0;
         // 播放器输出的流格式
         AudioStreamBasicDescription playerStreamFormat;
         playerStreamFormat = [self getPlayerStreamFormat];
+        printAudioStreamFormat(playerStreamFormat);
         
         // ------------------ 配置 Player Unit 属性 ------------------
         // 输出端流格式
-        status = AudioUnitSetProperty(_playerUnit,
+        CheckStatus(AudioUnitSetProperty(_playerUnit,
                                       kAudioUnitProperty_StreamFormat,
                                       kAudioUnitScope_Output,
                                       0,
                                       &playerStreamFormat,
-                                      sizeof(playerStreamFormat));
-        CheckStatus(status, @"设置播放器元件输出端失败", YES);
+                                      sizeof(playerStreamFormat)),
+                    @"设置播放器元件输出端失败", YES);
         
         
         // ------------------ 配置 Convert Unit 属性 ------------------
@@ -511,6 +515,7 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   &estimatedDuration);
     CheckStatus(status, @"获取音频数据流的格式失败", YES);
     NSLog(@"音频的预估时长为：%f", estimatedDuration);
+    _estimatedDuration = estimatedDuration;
     
     // 通过音频文件获取音频数据流的格式
     AudioStreamBasicDescription fileASBD;
@@ -520,7 +525,9 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   &propSize,
                                   &fileASBD);
     CheckStatus(status, @"获取音频数据流的格式失败", YES);
-    // TODO: - 需要将这个ASBD接在AUGraph上
+    printAudioStreamFormat(fileASBD);
+    // 毫秒：fileASBD.mFramesPerPacket * 1000 / fileASBD.mSampleRate;
+    _frameDuration = fileASBD.mFramesPerPacket / fileASBD.mSampleRate;
     
     // 通过音频文件获取音频数据包的数量
     UInt64 nPackets;
@@ -606,6 +613,25 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     CheckStatus(status, @"重置音频单元失败", YES);
 }
 
+#pragma mark - getter
+- (NSTimeInterval)allTime {
+    return _estimatedDuration;
+}
+
+- (NSTimeInterval)curTime {
+    OSStatus result;
+    AudioTimeStamp curTime;
+    UInt32 curTimeSize = sizeof(curTime);
+    result = AudioUnitGetProperty(_playerUnit,
+                                  kAudioUnitProperty_CurrentPlayTime,
+                                  kAudioUnitScope_Global,
+                                  0,
+                                  &curTime,
+                                  &curTimeSize);
+    CheckStatus(result, @"获取音频数据流的格式失败", YES);
+    return curTime.mSampleTime * _frameDuration / 1000;
+}
+
 #pragma mark - help
 - (void)debugAudioTimeStamp:(AudioTimeStamp)ats {
     NSLog(@"--------AudioTimeStamp-------");
@@ -614,9 +640,23 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     NSLog(@"mHostTime:      %llu", ats.mHostTime);
     NSLog(@"mRateScalar:    %f", ats.mRateScalar);
     NSLog(@"mWordClockTime: %llu", ats.mWordClockTime);
-    // TODO: SMPTETime 显示时间
+    [self debugSMPTETime:ats.mSMPTETime];
     NSLog(@"mFlags:         %d", ats.mFlags);
     NSLog(@"mReserved:      %u", (unsigned int)ats.mReserved);
+    NSLog(@"-----------------------------");
+}
+
+- (void)debugSMPTETime:(SMPTETime)smpteTime {
+    NSLog(@"----------SMPTETime----------");
+    NSLog(@"mSubframes:       %d", smpteTime.mSubframes);
+    NSLog(@"mSubframeDivisor: %d", smpteTime.mSubframeDivisor);
+    NSLog(@"mCounter:         %d", smpteTime.mCounter);
+    NSLog(@"mType:            %d", smpteTime.mType);
+    NSLog(@"mFlags:           %d", smpteTime.mFlags);
+    NSLog(@"mHours:           %d", smpteTime.mHours);
+    NSLog(@"mMinutes:         %d", smpteTime.mMinutes);
+    NSLog(@"mSeconds:         %d", smpteTime.mSeconds);
+    NSLog(@"mFrames:          %d", smpteTime.mFrames);
     NSLog(@"-----------------------------");
 }
 

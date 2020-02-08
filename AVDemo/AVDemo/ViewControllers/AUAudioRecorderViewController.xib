@@ -11,6 +11,7 @@
             <connections>
                 <outlet property="btn" destination="X5C-S2-qZ2" id="Xda-dA-6Ky"/>
                 <outlet property="musicSlider" destination="FaC-aZ-q8k" id="xJ6-KG-iHm"/>
+                <outlet property="progressSlider" destination="FaC-aZ-q8k" id="XgI-AX-YzR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -64,6 +65,14 @@
                         <action selector="enablePlayWhenRecorAction:" destination="-1" eventType="valueChanged" id="Vp7-lE-Tld"/>
                     </connections>
                 </switch>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0BP-2I-cFU">
+                    <rect key="frame" x="44" y="394" width="52" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="Current"/>
+                    <connections>
+                        <action selector="currentTimeAction:" destination="-1" eventType="touchUpInside" id="BoR-rT-xcB"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>

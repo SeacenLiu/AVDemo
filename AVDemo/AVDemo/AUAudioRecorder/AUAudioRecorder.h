@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 录音音量（范围0~1） */
 @property (nonatomic, assign) CGFloat voiceVolume;
 
+@property (nonatomic, assign, readonly) NSTimeInterval curTime;
+@property (nonatomic, assign, readonly) NSTimeInterval allTime;
+
 - (instancetype)initWithPath:(NSString*)path;
 
 - (void)startRecord;

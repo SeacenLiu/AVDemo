@@ -18,6 +18,9 @@ NSString * const stopText = @"Stop";
 @property (weak, nonatomic) IBOutlet UIButton *btn;
 @property (nonatomic, strong) AUAudioRecorder *recorder;
 @property (weak, nonatomic) IBOutlet UISlider *musicSlider;
+@property (weak, nonatomic) IBOutlet UISlider *progressSlider;
+
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -49,12 +52,36 @@ NSString * const stopText = @"Stop";
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音
         [_recorder startRecord];
         [sender setTitle:stopText forState:UIControlStateNormal];
+        
+        self.timer = [NSTimer timerWithTimeInterval:1/24
+                                             target:self
+                                           selector:@selector(showCurrentTime)
+                                           userInfo:nil
+                                            repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
     } else if ([sender.titleLabel.text isEqualToString:stopText]) { // 停止录音
         [_recorder stopRecord];
         [sender setTitle:startText forState:UIControlStateNormal];
+        [_timer invalidate];
     } else {
         
     }
+}
+
+- (void)showCurrentTime {
+    NSTimeInterval all = _recorder.allTime;
+    NSTimeInterval cur = _recorder.curTime;
+    NSTimeInterval progress = cur / all;
+    NSLog(@"%f = %f / %f", progress, cur, all);
+    _progressSlider.value = progress;
+}
+
+- (IBAction)currentTimeAction:(id)sender {
+    NSTimeInterval all = _recorder.allTime;
+    NSTimeInterval cur = _recorder.curTime;
+    NSTimeInterval progress = cur / all;
+    NSLog(@"%f = %f / %f", progress, cur, all);
+    _progressSlider.value = progress;
 }
 
 - (void)viewDidLoad {
@@ -64,6 +91,10 @@ NSString * const stopText = @"Stop";
     NSLog(@"%@", filePath);
     _recorder = [[AUAudioRecorder alloc] initWithPath:filePath];
     [_btn setTitle:startText forState:UIControlStateNormal];
+}
+
+- (void)dealloc {
+    [_timer invalidate];
 }
 
 @end
