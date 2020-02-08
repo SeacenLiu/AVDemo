@@ -46,6 +46,7 @@ static const AudioUnitElement outputElement = 0;
 
 @property (nonatomic, assign) NSTimeInterval estimatedDuration;
 @property (nonatomic, assign) Float64 frameDuration;
+@property (nonatomic, strong) NSTimer *proressTimer;
 
 @end
 
@@ -504,6 +505,11 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   sizeof(musicFile));
     CheckStatus(status, @"指定音频文件失败", YES);
     
+    // 加载文件完成
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioRecorderDidLoadMusicFile:)]) {
+        [self.delegate audioRecorderDidLoadMusicFile:self];
+    }
+    
     // ----------------------- Getter --------------------------
     // 通过音频文件获取音频播放预计时长
     // kAudioFilePropertyEstimatedDuration
@@ -583,7 +589,12 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
                                   sizeof(startTime));
     CheckStatus(status, @"设置启动时间失败", YES);
     
-    // 通过计时器获取回调 kAudioUnitProperty_CurrentPlayTime 获取进度
+    self.proressTimer = [NSTimer timerWithTimeInterval:1/24
+                                                target:self
+                                              selector:@selector(playProgressHandler)
+                                              userInfo:nil
+                                               repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.proressTimer forMode:NSDefaultRunLoopMode];
 }
 
 void AudioFileRegionCompletionProc(void * __nullable userData,
@@ -613,6 +624,23 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     CheckStatus(status, @"重置音频单元失败", YES);
 }
 
+- (void)playProgressHandler {
+    NSTimeInterval all = self.allTime;
+    NSTimeInterval cur = self.curTime;
+    NSTimeInterval progress = MIN(cur / all, 1.0);
+    NSLog(@"当前进度: %f = %f / %f", progress, cur, all);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioRecorderDidPlayProgress:progress:currentSecond:totalSecond:)]) {
+        [self.delegate audioRecorderDidPlayProgress:self progress:progress currentSecond:cur totalSecond:all];
+    }
+    if (progress == 1) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(audioRecorderDidCompletePlay:)]) {
+            [self.delegate audioRecorderDidCompletePlay:self];
+            [self.proressTimer invalidate];
+            self.proressTimer = nil;
+        }
+    }
+}
+
 #pragma mark - getter
 - (NSTimeInterval)allTime {
     return _estimatedDuration;
@@ -629,7 +657,7 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
                                   &curTime,
                                   &curTimeSize);
     CheckStatus(result, @"获取音频数据流的格式失败", YES);
-    return curTime.mSampleTime * _frameDuration / 1000;
+    return MAX((curTime.mSampleTime * _frameDuration / 1000), 0);
 }
 
 #pragma mark - help

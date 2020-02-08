@@ -13,14 +13,12 @@
 NSString * const startText = @"Start";
 NSString * const stopText = @"Stop";
 
-@interface AUAudioRecorderViewController ()
+@interface AUAudioRecorderViewController () <AUAudioRecorderDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *btn;
 @property (nonatomic, strong) AUAudioRecorder *recorder;
 @property (weak, nonatomic) IBOutlet UISlider *musicSlider;
 @property (weak, nonatomic) IBOutlet UISlider *progressSlider;
-
-@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -52,36 +50,12 @@ NSString * const stopText = @"Stop";
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音
         [_recorder startRecord];
         [sender setTitle:stopText forState:UIControlStateNormal];
-        
-        self.timer = [NSTimer timerWithTimeInterval:1/24
-                                             target:self
-                                           selector:@selector(showCurrentTime)
-                                           userInfo:nil
-                                            repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
     } else if ([sender.titleLabel.text isEqualToString:stopText]) { // 停止录音
         [_recorder stopRecord];
         [sender setTitle:startText forState:UIControlStateNormal];
-        [_timer invalidate];
     } else {
         
     }
-}
-
-- (void)showCurrentTime {
-    NSTimeInterval all = _recorder.allTime;
-    NSTimeInterval cur = _recorder.curTime;
-    NSTimeInterval progress = cur / all;
-    NSLog(@"%f = %f / %f", progress, cur, all);
-    _progressSlider.value = progress;
-}
-
-- (IBAction)currentTimeAction:(id)sender {
-    NSTimeInterval all = _recorder.allTime;
-    NSTimeInterval cur = _recorder.curTime;
-    NSTimeInterval progress = cur / all;
-    NSLog(@"%f = %f / %f", progress, cur, all);
-    _progressSlider.value = progress;
 }
 
 - (void)viewDidLoad {
@@ -90,11 +64,28 @@ NSString * const stopText = @"Stop";
     NSString* filePath = [NSString documentsPath:@"recorder.caf"];
     NSLog(@"%@", filePath);
     _recorder = [[AUAudioRecorder alloc] initWithPath:filePath];
+    _recorder.delegate = self;
     [_btn setTitle:startText forState:UIControlStateNormal];
 }
 
 - (void)dealloc {
-    [_timer invalidate];
+    
+}
+
+#pragma mark - AUAudioRecorderDelegate
+- (void)audioRecorderDidCompletePlay:(nonnull AUAudioRecorder *)recoder {
+    NSLog(@"播放完毕");
+}
+
+- (void)audioRecorderDidLoadMusicFile:(nonnull AUAudioRecorder *)recoder {
+    _progressSlider.value = 0;
+}
+
+- (void)audioRecorderDidPlayProgress:(nonnull AUAudioRecorder *)recoder
+                            progress:(CGFloat)progress
+                       currentSecond:(NSTimeInterval)currentSecond
+                         totalSecond:(NSTimeInterval)totalSecond {
+    _progressSlider.value = progress;
 }
 
 @end

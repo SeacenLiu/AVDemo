@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // TODO
 - (void)audioRecorderDidLoadMusicFile:(AUAudioRecorder*)recoder;
+
+- (void)audioRecorderDidPlayProgress:(AUAudioRecorder*)recoder
+                            progress:(CGFloat)progress
+                       currentSecond:(NSTimeInterval)currentSecond
+                         totalSecond:(NSTimeInterval)totalSecond;
+
 - (void)audioRecorderDidCompletePlay:(AUAudioRecorder*)recoder;
 
 @end
