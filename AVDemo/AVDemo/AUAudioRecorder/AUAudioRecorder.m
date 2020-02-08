@@ -35,14 +35,19 @@ static const AudioUnitElement outputElement = 0;
 @property (nonatomic, assign) UInt32             channels;
 
 @property (nonatomic, assign) AUGraph            auGraph;
+
 @property (nonatomic, assign) AUNode             ioNode;
 @property (nonatomic, assign) AudioUnit          ioUnit;
+
 @property (nonatomic, assign) AUNode             playerNode;
 @property (nonatomic, assign) AudioUnit          playerUnit;
-@property (nonatomic, assign) AUNode             mixerNode;
-@property (nonatomic, assign) AudioUnit          mixerUnit;
 @property (nonatomic, assign) AUNode             convertNode;
 @property (nonatomic, assign) AudioUnit          convertUnit;
+@property (nonatomic, assign) AUNode             vocalMixerNode;
+@property (nonatomic, assign) AudioUnit          vocalMixerUnit;
+
+@property (nonatomic, assign) AUNode             bgmMixerNode;
+@property (nonatomic, assign) AudioUnit          bgmMixerUnit;
 
 @property (nonatomic, assign) NSTimeInterval estimatedDuration;
 @property (nonatomic, assign) Float64 frameDuration;
@@ -100,7 +105,7 @@ static const AudioUnitElement outputElement = 0;
     AudioStreamBasicDescription clientFormat;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
-    CheckStatus(AudioUnitGetProperty(_mixerUnit,
+    CheckStatus(AudioUnitGetProperty(_vocalMixerUnit,
                          kAudioUnitProperty_StreamFormat,
                          kAudioUnitScope_Output,
                          outputElement,
@@ -162,14 +167,15 @@ static const AudioUnitElement outputElement = 0;
         playerDescription.componentType = kAudioUnitType_Generator;
         playerDescription.componentSubType = kAudioUnitSubType_AudioFilePlayer;
         status = AUGraphAddNode(_auGraph, &playerDescription, &_playerNode);
-        CheckStatus(status, @"Could not add Player node to AUGraph", YES);
+        CheckStatus(status, @"Player结点添加失败", YES);
         
         AudioComponentDescription mixerDescription;
         bzero(&mixerDescription, sizeof(mixerDescription));
         mixerDescription.componentType = kAudioUnitType_Mixer;
         mixerDescription.componentSubType = kAudioUnitSubType_MultiChannelMixer;
         mixerDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
-        status = AUGraphAddNode(_auGraph, &mixerDescription, &_mixerNode);
+        status = AUGraphAddNode(_auGraph, &mixerDescription, &_vocalMixerNode);
+        status = AUGraphAddNode(_auGraph, &mixerDescription, &_bgmMixerNode);
         CheckStatus(status, @"Mixer结点添加失败", YES);
         
         AudioComponentDescription convertDescription;
@@ -189,7 +195,8 @@ static const AudioUnitElement outputElement = 0;
     if (self.isEnableBgm) {
         status = AUGraphNodeInfo(_auGraph, _playerNode, NULL, &_playerUnit);
         CheckStatus(status, @"获取player单元失败", YES);
-        status = AUGraphNodeInfo(_auGraph, _mixerNode, NULL, &_mixerUnit);
+        status = AUGraphNodeInfo(_auGraph, _vocalMixerNode, NULL, &_vocalMixerUnit);
+        status = AUGraphNodeInfo(_auGraph, _bgmMixerNode, NULL, &_bgmMixerUnit);
         CheckStatus(status, @"获取Mixer单元失败", YES);
         status = AUGraphNodeInfo(_auGraph, _convertNode, NULL, &_convertUnit);
         CheckStatus(status, @"获取Convert单元失败", YES);
@@ -298,13 +305,31 @@ static const AudioUnitElement outputElement = 0;
                                          sizeof(micInputStreamFormat)),
                     @"设置转换器元件输出端流格式配置失败",YES);
         
+        // ---------------- 配置 BGM Mixer Unit 属性 ----------------
+        // 输入端流格式
+        CheckStatus(AudioUnitSetProperty(_bgmMixerUnit,
+                                         kAudioUnitProperty_StreamFormat,
+                                         kAudioUnitScope_Input,
+                                         0,
+                                         &micInputStreamFormat,
+                                         sizeof(micInputStreamFormat)),
+                    @"设置转换器元件输入端流格式配置失败",YES);
+        // 输出端流格式
+        CheckStatus(AudioUnitSetProperty(_bgmMixerUnit,
+                                         kAudioUnitProperty_StreamFormat,
+                                         kAudioUnitScope_Output,
+                                         0,
+                                         &micInputStreamFormat,
+                                         sizeof(micInputStreamFormat)),
+                    @"设置转换器元件输出端流格式配置失败",YES);
+        
         // ------------------ 配置 Mixer Unit 属性 ------------------
         // micInputStreamFormat
         //                      =================> micInputStreamFormat
         // micInputStreamFormat
         UInt32 mixerInputcount = 2;
         // 输入端元件数
-        CheckStatus(AudioUnitSetProperty(_mixerUnit,
+        CheckStatus(AudioUnitSetProperty(_vocalMixerUnit,
                                          kAudioUnitProperty_ElementCount,
                                          kAudioUnitScope_Input,
                                          0,
@@ -312,7 +337,7 @@ static const AudioUnitElement outputElement = 0;
                                          sizeof(mixerInputcount)),
                     @"配置混音器音轨数失败", YES);
         // 输出端采样率
-        CheckStatus(AudioUnitSetProperty(_mixerUnit,
+        CheckStatus(AudioUnitSetProperty(_vocalMixerUnit,
                                          kAudioUnitProperty_SampleRate,
                                          kAudioUnitScope_Output,
                                          0,
@@ -322,7 +347,7 @@ static const AudioUnitElement outputElement = 0;
         // 循环配置元件
         for (int i = 0; i < mixerInputcount; ++i) {
             // 输入端流格式
-            CheckStatus(AudioUnitSetProperty(_mixerUnit,
+            CheckStatus(AudioUnitSetProperty(_vocalMixerUnit,
                                              kAudioUnitProperty_StreamFormat,
                                              kAudioUnitScope_Input,
                                              i,
@@ -334,7 +359,7 @@ static const AudioUnitElement outputElement = 0;
             // 输入端渲染回调
             callback.inputProc = mixerInputDataCallback;
             callback.inputProcRefCon = (__bridge void*)self;
-            CheckStatus(AudioUnitSetProperty(_mixerUnit,
+            CheckStatus(AudioUnitSetProperty(_vocalMixerUnit,
                                              kAudioUnitProperty_SetRenderCallback,
                                              kAudioUnitScope_Input,
                                              i,
@@ -343,29 +368,13 @@ static const AudioUnitElement outputElement = 0;
                         @"配置混音器输入端回调设置失败", YES);
         }
         // 输出端流格式
-        CheckStatus(AudioUnitSetProperty(_mixerUnit,
+        CheckStatus(AudioUnitSetProperty(_vocalMixerUnit,
                                       kAudioUnitProperty_StreamFormat,
                                       kAudioUnitScope_Output,
                                       0,
                                       &micInputStreamFormat,
                                       sizeof(micInputStreamFormat)),
                     @"配置混音器输出端流格式失败", YES);
-        
-        // ----------------- 音频单元参数设置 -----------------
-        CheckStatus(AudioUnitSetParameter(_mixerUnit,
-                                          kMultiChannelMixerParam_Volume,
-                                          kAudioUnitScope_Input,
-                                          0,
-                                          1,
-                                          0),
-                    @"配置混音器音轨音量失败", YES);
-        CheckStatus(AudioUnitSetParameter(_mixerUnit,
-                                          kMultiChannelMixerParam_Volume,
-                                          kAudioUnitScope_Input,
-                                          1,
-                                          1,
-                                          0),
-                    @"配置混音器音轨音量失败", YES);
     }
 }
 
@@ -374,14 +383,15 @@ static const AudioUnitElement outputElement = 0;
 
     if (self.isEnableBgm) {
         status = AUGraphConnectNodeInput(_auGraph, _playerNode, 0, _convertNode, 0);
+        status = AUGraphConnectNodeInput(_auGraph, _convertNode, 0, _bgmMixerNode, 0);
         
-        // 不调用 AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _mixerNode, 0); 的情况下，
+        // 不调用 AUGraphConnectNodeInput(_auGraph, _ioNode, 1, _vocalMixerNode, 0); 的情况下，
         // 会导致 mixerUnit 并没有连接在音频图中，需要额外自己初始化才行
         // 结论：AUGraphInitialize 函数只换将“kAudioUnitType_Output”和“kAudioUnitType_Generator”连接的音频单元初始化
         //      对于单独未和“输出音频单元”有直接关系的音频单元会被直接跳过
         // 注意：需要在属性设置完毕后才得初始化
-        status = AudioUnitInitialize(_mixerUnit);
-        CheckStatus(status, @"初始化_mixerUnit失败", YES);
+        status = AudioUnitInitialize(_vocalMixerUnit);
+        CheckStatus(status, @"初始化_vocalMixerUnit失败", YES);
     }
 }
 
@@ -390,13 +400,13 @@ static const AudioUnitElement outputElement = 0;
     AUGraphUninitialize(_auGraph);
     AUGraphClose(_auGraph);
     AUGraphRemoveNode(_auGraph, _ioNode);
-    AUGraphRemoveNode(_auGraph, _mixerNode);
+    AUGraphRemoveNode(_auGraph, _vocalMixerNode);
     AUGraphRemoveNode(_auGraph, _convertNode);
     DisposeAUGraph(_auGraph);
     _ioNode = 0;
     _ioUnit = NULL;
-    _mixerNode = 0;
-    _mixerUnit = NULL;
+    _vocalMixerNode = 0;
+    _vocalMixerUnit = NULL;
     _convertNode = 0;
     _convertUnit = NULL;
     _auGraph = NULL;
@@ -413,7 +423,7 @@ static OSStatus remoteIOInputDataCallback(void *inRefCon,
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
     
     // 渲染音频混合器结果
-    AudioUnitRender(recorder->_mixerUnit,
+    AudioUnitRender(recorder->_vocalMixerUnit,
                     ioActionFlags,
                     inTimeStamp,
                     0,
@@ -446,11 +456,11 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
     OSStatus result = noErr;
     __unsafe_unretained AUAudioRecorder *recorder = (__bridge AUAudioRecorder *)inRefCon;
     
-    if (inBusNumber == 0) { // 还没有利用到，mixer Element 0 的回调未设置成功
+    if (inBusNumber == 0) {
         result = AudioUnitRender(recorder->_ioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
     } else if (inBusNumber == 1) {
         if (recorder->_enableBgm) {
-            result = AudioUnitRender(recorder->_convertUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
+            result = AudioUnitRender(recorder->_bgmMixerUnit, ioActionFlags, inTimeStamp, 0, inNumberFrames, ioData);
             CopyInterleavedBufferList(recorder->_bgmBufferList, ioData);
         }
     }
@@ -462,7 +472,7 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
 - (void)setVoiceVolume:(CGFloat)voiceVolume {
     _voiceVolume = voiceVolume;
     
-    CheckStatus(AudioUnitSetParameter(_mixerUnit,
+    CheckStatus(AudioUnitSetParameter(_vocalMixerUnit,
                           kMultiChannelMixerParam_Volume,
                           kAudioUnitScope_Input,
                           0,
@@ -474,13 +484,13 @@ static OSStatus mixerInputDataCallback(void *inRefCon,
 - (void)setBgmVolume:(CGFloat)bgmVolume {
     _bgmVolume = bgmVolume;
     
-    CheckStatus(AudioUnitSetParameter(_mixerUnit,
-                                      kMultiChannelMixerParam_Volume,
-                                      kAudioUnitScope_Input,
-                                      1,
-                                      bgmVolume,
-                                      0),
-                @"配置混音器音轨音量失败", YES);
+    CheckStatus(AudioUnitSetParameter(_bgmMixerUnit,
+                          kMultiChannelMixerParam_Volume,
+                          kAudioUnitScope_Input,
+                          0,
+                          bgmVolume,
+                          0),
+    @"配置混音器音轨音量失败", YES);
 }
 
 #pragma mark - AUAudioFilePlayer
@@ -622,6 +632,8 @@ void AudioFileRegionCompletionProc(void * __nullable userData,
     OSStatus status = noErr;
     status = AudioUnitReset(_playerUnit, kAudioUnitScope_Global, 0);
     CheckStatus(status, @"重置音频单元失败", YES);
+    [self.proressTimer invalidate];
+    self.proressTimer = nil;
 }
 
 - (void)playProgressHandler {
