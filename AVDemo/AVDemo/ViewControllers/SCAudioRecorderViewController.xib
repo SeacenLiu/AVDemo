@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SCAudioRecorderViewController">
+            <connections>
+                <outlet property="btn" destination="sDw-Us-A1g" id="xUx-vc-CbL"/>
+                <outlet property="progressSlider" destination="Pgp-ca-HRQ" id="lnD-YT-MWi"/>
+                <outlet property="view" destination="TfU-oR-Uq0" id="1nx-qF-3Tm"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="TfU-oR-Uq0">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sDw-Us-A1g">
+                    <rect key="frame" x="182.5" y="438" width="49" height="30"/>
+                    <state key="normal" title="Record"/>
+                    <connections>
+                        <action selector="btnClick:" destination="-1" eventType="touchUpInside" id="Nrk-JN-LMb"/>
+                    </connections>
+                </button>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Pgp-ca-HRQ">
+                    <rect key="frame" x="28" y="707" width="358" height="31"/>
+                </slider>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="oL8-uU-0AP">
+                    <rect key="frame" x="28" y="204" width="358" height="31"/>
+                    <connections>
+                        <action selector="voiceVolumeValueChange:" destination="-1" eventType="valueChanged" id="eam-FL-2oF"/>
+                    </connections>
+                </slider>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="7qr-Im-X7u">
+                    <rect key="frame" x="28" y="127" width="358" height="31"/>
+                    <connections>
+                        <action selector="musicVolumeValueChange:" destination="-1" eventType="valueChanged" id="ptZ-3g-qLa"/>
+                    </connections>
+                </slider>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kEi-di-E1l">
+                    <rect key="frame" x="172" y="556" width="67" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="endMusic"/>
+                    <connections>
+                        <action selector="endMusicBtnClick:" destination="-1" eventType="touchUpInside" id="QMX-Po-uER"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wra-E0-0G6">
+                    <rect key="frame" x="171" y="499" width="69" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="playMusic"/>
+                    <connections>
+                        <action selector="playMusicBtnClick:" destination="-1" eventType="touchUpInside" id="OMu-bX-ysb"/>
+                    </connections>
+                </button>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Uqp-d4-opB">
+                    <rect key="frame" x="171" y="321" width="49" height="31"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <connections>
+                        <action selector="enablePlayWhenRecorAction:" destination="-1" eventType="valueChanged" id="S1z-h4-ilI"/>
+                    </connections>
+                </switch>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="oL8-uU-0AP" firstAttribute="centerX" secondItem="7qr-Im-X7u" secondAttribute="centerX" id="2hZ-C3-uan"/>
+                <constraint firstItem="Pgp-ca-HRQ" firstAttribute="leading" secondItem="wXP-n2-FUG" secondAttribute="leading" constant="30" id="DAi-qN-eNU"/>
+                <constraint firstItem="7qr-Im-X7u" firstAttribute="trailing" secondItem="Pgp-ca-HRQ" secondAttribute="trailing" id="KWn-UO-GM5"/>
+                <constraint firstItem="7qr-Im-X7u" firstAttribute="centerX" secondItem="Pgp-ca-HRQ" secondAttribute="centerX" id="QZg-SF-YMW"/>
+                <constraint firstItem="sDw-Us-A1g" firstAttribute="centerY" secondItem="wXP-n2-FUG" secondAttribute="centerY" id="VfS-KI-Ph9"/>
+                <constraint firstItem="7qr-Im-X7u" firstAttribute="leading" secondItem="Pgp-ca-HRQ" secondAttribute="leading" id="Ycz-4s-Gcr"/>
+                <constraint firstItem="wXP-n2-FUG" firstAttribute="bottom" secondItem="Pgp-ca-HRQ" secondAttribute="bottom" constant="125" id="a0y-Nq-7qM"/>
+                <constraint firstItem="7qr-Im-X7u" firstAttribute="top" secondItem="wXP-n2-FUG" secondAttribute="top" constant="83" id="aHX-HB-n7l"/>
+                <constraint firstItem="wXP-n2-FUG" firstAttribute="trailing" secondItem="Pgp-ca-HRQ" secondAttribute="trailing" constant="30" id="dwS-AS-teQ"/>
+                <constraint firstItem="oL8-uU-0AP" firstAttribute="leading" secondItem="7qr-Im-X7u" secondAttribute="leading" id="gNP-JW-iVp"/>
+                <constraint firstItem="oL8-uU-0AP" firstAttribute="trailing" secondItem="7qr-Im-X7u" secondAttribute="trailing" id="lYM-Kh-Hu5"/>
+                <constraint firstItem="oL8-uU-0AP" firstAttribute="top" secondItem="7qr-Im-X7u" secondAttribute="bottom" constant="47" id="mRh-hI-Tmp"/>
+                <constraint firstItem="sDw-Us-A1g" firstAttribute="centerX" secondItem="wXP-n2-FUG" secondAttribute="centerX" id="zW1-u7-frm"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="wXP-n2-FUG"/>
+            <point key="canvasLocation" x="137.68115942028987" y="116.51785714285714"/>
+        </view>
+    </objects>
+</document>

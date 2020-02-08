@@ -11,6 +11,7 @@
 #import "AUGraphPlayerViewController.h"
 #import "AUAudioPlayerViewController.h"
 #import "AUAudioRecorderViewController.h"
+#import "SCAudioRecorderViewController.h"
 
 @interface ViewController ()
 
@@ -41,9 +42,17 @@
             [self.navigationController pushViewController:vc animated:YES];
         }
     } else if (indexPath.section == 1) {
+        // 音频采集 - AudioToolbox
         if (indexPath.row == 0) {
             // AudioUnit 录制音频并保存为 caf 文件
             AUAudioRecorderViewController *vc = [AUAudioRecorderViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    } else if (indexPath.section == 2) {
+        // 音频综合处理 - AudioToolbox
+        if (indexPath.row == 0) {
+            // AudioUnit 录音 + 背景音乐
+            SCAudioRecorderViewController *vc = [SCAudioRecorderViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
