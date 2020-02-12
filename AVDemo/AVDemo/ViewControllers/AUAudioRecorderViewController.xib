@@ -10,8 +10,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AUAudioRecorderViewController">
             <connections>
                 <outlet property="btn" destination="X5C-S2-qZ2" id="Xda-dA-6Ky"/>
-                <outlet property="musicSlider" destination="FaC-aZ-q8k" id="xJ6-KG-iHm"/>
-                <outlet property="progressSlider" destination="FaC-aZ-q8k" id="XgI-AX-YzR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -27,9 +25,6 @@
                         <action selector="btnClick:" destination="-1" eventType="touchUpInside" id="R3Z-Cs-pUn"/>
                     </connections>
                 </button>
-                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="FaC-aZ-q8k">
-                    <rect key="frame" x="28" y="707" width="358" height="31"/>
-                </slider>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="thb-vj-5Pe">
                     <rect key="frame" x="171" y="321" width="49" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -40,11 +35,8 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="FaC-aZ-q8k" secondAttribute="trailing" constant="30" id="IBk-MN-xtj"/>
                 <constraint firstItem="X5C-S2-qZ2" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="IGH-em-VmN"/>
-                <constraint firstItem="FaC-aZ-q8k" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="30" id="YIy-wa-8Qa"/>
                 <constraint firstItem="X5C-S2-qZ2" firstAttribute="centerY" secondItem="Q5M-cg-NOt" secondAttribute="centerY" id="qmE-xB-hkE"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="FaC-aZ-q8k" secondAttribute="bottom" constant="125" id="rqb-jt-adr"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="137.68115942028987" y="116.51785714285714"/>

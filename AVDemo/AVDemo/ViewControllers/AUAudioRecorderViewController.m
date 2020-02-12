@@ -28,8 +28,8 @@ static NSString * const stopText = @"Stop";
 
 - (IBAction)btnClick:(UIButton*)sender {
     if ([sender.titleLabel.text isEqualToString:startText]) { // 开始录音
-        [_recorder startRecord];
         [sender setTitle:stopText forState:UIControlStateNormal];
+        [_recorder startRecord];
     } else if ([sender.titleLabel.text isEqualToString:stopText]) { // 停止录音
         [_recorder stopRecord];
         [sender setTitle:startText forState:UIControlStateNormal];

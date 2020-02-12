@@ -134,6 +134,14 @@ static void CopyInterleavedBufferList(AudioBufferList *dst,
     dst->mBuffers[0].mDataByteSize = src->mBuffers[0].mDataByteSize;
 }
 
+static void SilenceInterleavedBufferList(AudioBufferList *bufferList) {
+     UInt32 numberBuffers = bufferList->mNumberBuffers;
+    for (int i = 0; i < numberBuffers; ++i) {
+        AudioBuffer ab = bufferList->mBuffers[i];
+        memset(ab.mData, 0, ab.mDataByteSize);
+    }
+}
+
 static void DestroyBufferList(AudioBufferList *bufferList) {
     if (bufferList != NULL) {
         for (int i = 0; i < bufferList->mNumberBuffers; ++i) {

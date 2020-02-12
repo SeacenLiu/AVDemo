@@ -109,11 +109,11 @@ static const AudioUnitElement outputElement = 0;
     UInt32 fSize = sizeof (clientFormat);
     memset(&clientFormat, 0, sizeof(clientFormat));
     CheckStatus(AudioUnitGetProperty(_vocalMixerUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Output,
-                         outputElement,
-                         &clientFormat,
-                         &fSize),
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Output,
+                                     outputElement,
+                                     &clientFormat,
+                                     &fSize),
                 @"获取 mixer unit 输出端音频流格式失败",YES);
     _dataWriter = [[AUExtAudioFile alloc] initWithWritePath:_filePath
                                                        adsb:clientFormat
