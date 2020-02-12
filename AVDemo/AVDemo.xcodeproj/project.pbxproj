@@ -55,6 +55,8 @@
 		1473BF1023E4912500FEED0F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDC23E4701F00FEED0F /* AudioToolbox.framework */; };
 		1473BF1123E4912D00FEED0F /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEDE23E4702800FEED0F /* VideoToolbox.framework */; };
 		1473BF1223E4913800FEED0F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1473BEE023E4703100FEED0F /* CoreMedia.framework */; };
+		1488A0E223F3F83C0080F2A6 /* AUAudioRecorder.png in Resources */ = {isa = PBXBuildFile; fileRef = 1488A0E123F3F83C0080F2A6 /* AUAudioRecorder.png */; };
+		1488A0E423F3F8980080F2A6 /* SCAudioRecorder.png in Resources */ = {isa = PBXBuildFile; fileRef = 1488A0E323F3F8980080F2A6 /* SCAudioRecorder.png */; };
 		1489267423E492F7008D1CD7 /* AUAudioPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */; };
 		1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */; };
 		1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 1489267623E53779008D1CD7 /* AUAudioPlayer.png */; };
@@ -281,6 +283,8 @@
 		1473BF0B23E4862100FEED0F /* AUAudioOutput+Interruption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AUAudioOutput+Interruption.m"; sourceTree = "<group>"; };
 		1473BF0D23E4872700FEED0F /* AUAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioPlayer.h; sourceTree = "<group>"; };
 		1473BF0E23E4872700FEED0F /* AUAudioPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AUAudioPlayer.mm; sourceTree = "<group>"; };
+		1488A0E123F3F83C0080F2A6 /* AUAudioRecorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AUAudioRecorder.png; sourceTree = "<group>"; };
+		1488A0E323F3F8980080F2A6 /* SCAudioRecorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SCAudioRecorder.png; sourceTree = "<group>"; };
 		1489267123E492F7008D1CD7 /* AUAudioPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUAudioPlayerViewController.h; sourceTree = "<group>"; };
 		1489267223E492F7008D1CD7 /* AUAudioPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUAudioPlayerViewController.m; sourceTree = "<group>"; };
 		1489267323E492F7008D1CD7 /* AUAudioPlayerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AUAudioPlayerViewController.xib; sourceTree = "<group>"; };
@@ -822,6 +826,7 @@
 		1489267823E5601A008D1CD7 /* AUAudioRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				1488A0E123F3F83C0080F2A6 /* AUAudioRecorder.png */,
 				1489267E23E566C9008D1CD7 /* AUAudioRecorder.h */,
 				1489267F23E566C9008D1CD7 /* AUAudioRecorder.m */,
 				1489268123E566FE008D1CD7 /* AUAudioRecorder+Interruption.h */,
@@ -846,6 +851,7 @@
 		14A34C3123EEF4F90072A7C2 /* SCAudioRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				1488A0E323F3F8980080F2A6 /* SCAudioRecorder.png */,
 				14A34C3223EEF53A0072A7C2 /* SCAudioRecorder.h */,
 				14A34C3323EEF53A0072A7C2 /* SCAudioRecorder.m */,
 				14A34C3A23EEF5810072A7C2 /* SCAudioRecorder+Interruption.h */,
@@ -957,6 +963,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1488A0E223F3F83C0080F2A6 /* AUAudioRecorder.png in Resources */,
+				1488A0E423F3F8980080F2A6 /* SCAudioRecorder.png in Resources */,
 				1489267523E492F7008D1CD7 /* AUAudioPlayerViewController.xib in Resources */,
 				14CA429623E7D59E003D4DE3 /* background.mp3 in Resources */,
 				1473BE1D23E2FE3A00FEED0F /* AUGraphPlayerViewController.xib in Resources */,
