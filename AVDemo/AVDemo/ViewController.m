@@ -13,6 +13,8 @@
 #import "AUAudioRecorderViewController.h"
 #import "SCAudioRecorderViewController.h"
 
+#import "PngPreviewViewController.h"
+
 @interface ViewController ()
 
 @end
@@ -53,6 +55,13 @@
         if (indexPath.row == 0) {
             // AudioUnit 录音 + 背景音乐
             SCAudioRecorderViewController *vc = [SCAudioRecorderViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    } else if (indexPath.section == 3) {
+        // OpenGL渲染 - OpenGLES
+        if (indexPath.row == 0) {
+            // OpenGL 渲染 png 图片
+            PngPreviewViewController *vc = [PngPreviewViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
