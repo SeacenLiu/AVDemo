@@ -102,7 +102,7 @@
                  GL_RGBA,              // 源图数据格式
                  GL_UNSIGNED_BYTE,     // 源图数据类型
                  rgbaFrame);           // 源图数据
-    UInt16
+    
     // 配置物体坐标，将其加载到GPU中
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,

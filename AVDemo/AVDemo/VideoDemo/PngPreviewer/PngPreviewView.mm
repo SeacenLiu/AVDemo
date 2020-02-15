@@ -160,7 +160,7 @@
 }
 
 - (EAGLContext*)buildEAGLContext {
-    return [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    return [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 }
 
 - (BOOL)createDisplayFramebuffer {
