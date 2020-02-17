@@ -13,7 +13,8 @@
 #import "rgba_frame.h"
 
 @interface PngPreviewView()
-@property (nonatomic, copy) NSString *filePath;
+@property (nonatomic, copy)   NSString*     filePath;
+@property (nonatomic, assign) BOOL          readyToRender;
 @end
 
 @implementation PngPreviewView
@@ -23,23 +24,28 @@
 }
 
 - (instancetype)initWithFrame:(CGRect)frame filePath:(NSString*)filePath {
-    _filePath = filePath;
-    return [super initWithFrame:frame];
-}
-
-- (BOOL)prepareRender {
-    // 获取图片的展示信息
-    _frame = [self getRGBAFrame:_filePath];
-    // 初始化渲染器（将图片像素拷贝到OpenGL的纹理上进行展示）
-    _frameCopier = [[RGBAFrameCopier alloc] init];
-    // 颜色帧准备工作
-    if (![_frameCopier prepareRender:_frame->width height:_frame->height]) {
-        return NO;
+    if (self = [super initWithFrame:frame]) {
+        _filePath = filePath;
+        // 确保当前绑定了上下文
+        [self bindEAGLContext];
+        // 获取图片的展示信息
+        _frame = [self getRGBAFrame:_filePath];
+        // 初始化渲染器（将图片像素拷贝到OpenGL的纹理上进行展示）
+        _frameCopier = [[RGBAFrameCopier alloc] init];
+        // 颜色帧准备工作
+        if (![_frameCopier prepareRender:_frame->width height:_frame->height]) {
+            self.readyToRender = NO;
+        }
+        self.readyToRender = YES;
     }
-    return YES;
+    return self;
 }
 
 - (void)coreRender {
+    if (!self.readyToRender) {
+        glFinish();
+        return;
+    }
     if (_frame) {
         glViewport(0, self.backingHeight - self.backingWidth - 75, self.backingWidth, self.backingWidth);
         [_frameCopier renderFrame:_frame->pixels];

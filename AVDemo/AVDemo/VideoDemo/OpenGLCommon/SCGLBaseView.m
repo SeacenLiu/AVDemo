@@ -14,7 +14,6 @@
 @property (nonatomic, strong) NSLock *shouldEnableOpenGLLock;
 @property (nonatomic, assign) BOOL shouldEnableOpenGL;
 
-@property (nonatomic, assign) BOOL readyToRender;
 @property (nonatomic, assign) BOOL stopping;
 
 @end
@@ -67,8 +66,6 @@
             if (![self associateEAGLContextWithLayer]) {
                 NSLog(@"EAGLContext 与 CAEAGLLayer 建立连接失败");
             }
-            
-            self.readyToRender = [self prepareRender];
         });
     }
     return self;
@@ -83,18 +80,13 @@
 }
 
 #pragma mark - Public Method
-- (BOOL)prepareRender {
-    // 同步执行的方法，用于重写并添加渲染准备逻辑
-    return NO;
-}
-
 - (void)render {
     if (_stopping) {
         return;
     }
     dispatch_async(_contextQueue, ^{
         [self.shouldEnableOpenGLLock lock];
-        if (!self.readyToRender || !self.shouldEnableOpenGL) {
+        if (!self.shouldEnableOpenGL) {
             glFinish();
             [self.shouldEnableOpenGLLock unlock];
             return;
@@ -102,12 +94,7 @@
         [self.shouldEnableOpenGLLock unlock];
         
         // *** 绑定部分 ***
-        // 绑定当前上下文环境
-        [EAGLContext setCurrentContext:_context];
-        // 绑定帧缓冲区
-        glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
-        // 绑定渲染缓冲区
-        glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+        [self bindEAGLContext];
         
         // *** 绘制部分 ***
         [self coreRender];
@@ -136,6 +123,15 @@
             [EAGLContext setCurrentContext:nil];
         }
     });
+}
+
+- (void)bindEAGLContext {
+    // 绑定当前上下文环境
+    [EAGLContext setCurrentContext:_context];
+    // 绑定帧缓冲区
+    glBindFramebuffer(GL_FRAMEBUFFER, _displayFramebuffer);
+    // 绑定渲染缓冲区
+    glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
 }
 
 #pragma mark - Private Method

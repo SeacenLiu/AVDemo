@@ -16,10 +16,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) GLint            backingWidth;
 @property (nonatomic, assign) GLint            backingHeight;
 
-- (BOOL)prepareRender;
+/** 触发渲染操作 */
 - (void)render;
-- (void)coreRender;
+/** 释放gl资源 */
 - (void)destroy;
+
+/**
+ * (需要重写)核心渲染逻辑
+ * - 重写该方法可插入核心gl渲染逻辑
+ * - 该方法默认执行前都会绑定好EAGLContext
+ */
+- (void)coreRender;
+
+/** 用于绑定EAGLContext，确保后续的gl操作有效 */
+- (void)bindEAGLContext;
 
 @end
 
