@@ -6,17 +6,13 @@
 //  Copyright © 2020 SeacenLiu. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "SCGLBaseView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PngPreviewView : UIView
+@interface PngPreviewView : SCGLBaseView
 
 - (instancetype)initWithFrame:(CGRect)frame filePath:(NSString*)filePath;
-
-- (void)render;
-
-- (void)destroy;
 
 @end
 

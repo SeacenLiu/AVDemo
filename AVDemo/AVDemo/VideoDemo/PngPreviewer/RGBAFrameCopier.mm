@@ -102,6 +102,7 @@
                  GL_RGBA,              // 源图数据格式
                  GL_UNSIGNED_BYTE,     // 源图数据类型
                  rgbaFrame);           // 源图数据
+    glBindTexture(GL_TEXTURE_2D, 0);
     
     // 配置物体坐标，将其加载到GPU中
     static const GLfloat imageVertices[] = {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		142CDBA723FA8F7F00B8D16F /* SCGLBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */; };
 		1473BDCB23E264D000FEED0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BDCA23E264D000FEED0F /* AppDelegate.m */; };
 		1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BDCD23E264D000FEED0F /* SceneDelegate.m */; };
 		1473BDD123E264D000FEED0F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BDD023E264D000FEED0F /* ViewController.m */; };
@@ -138,6 +139,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		142CDBA523FA8F7F00B8D16F /* SCGLBaseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCGLBaseView.h; sourceTree = "<group>"; };
+		142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCGLBaseView.m; sourceTree = "<group>"; };
 		1473BDC623E264D000FEED0F /* AVDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AVDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1473BDC923E264D000FEED0F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1473BDCA23E264D000FEED0F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -959,6 +962,8 @@
 			children = (
 				1488A15523F657CE0080F2A6 /* SCShader.h */,
 				1488A15623F657CE0080F2A6 /* SCShader.m */,
+				142CDBA523FA8F7F00B8D16F /* SCGLBaseView.h */,
+				142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */,
 			);
 			path = OpenGLCommon;
 			sourceTree = "<group>";
@@ -1297,6 +1302,7 @@
 				14A34C3C23EEF5810072A7C2 /* SCAudioRecorder+Interruption.m in Sources */,
 				1488A13223F64C1F0080F2A6 /* pngwrite.c in Sources */,
 				1489276A23E665B0008D1CD7 /* AUExtAudioFile+Write.m in Sources */,
+				142CDBA723FA8F7F00B8D16F /* SCGLBaseView.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
 				1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */,
 				1488A0F123F64A5C0080F2A6 /* PngPreviewView.mm in Sources */,
