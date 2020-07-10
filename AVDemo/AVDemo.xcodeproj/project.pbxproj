@@ -139,6 +139,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14104D6B24B87B6900731BAE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		142CDBA523FA8F7F00B8D16F /* SCGLBaseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCGLBaseView.h; sourceTree = "<group>"; };
 		142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCGLBaseView.m; sourceTree = "<group>"; };
 		1473BDC623E264D000FEED0F /* AVDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AVDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -943,6 +944,7 @@
 		1488A0E723F648F30080F2A6 /* PngPreviewer */ = {
 			isa = PBXGroup;
 			children = (
+				14104D6B24B87B6900731BAE /* README.md */,
 				1488A0E923F649BB0080F2A6 /* PngPreviewController.h */,
 				1488A0EA23F649BB0080F2A6 /* PngPreviewController.m */,
 				1488A0EF23F64A5C0080F2A6 /* PngPreviewView.h */,
@@ -1482,6 +1484,7 @@
 				GCC_PREFIX_HEADER = AVDemo/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/AVDemo/3rdparty/FFmpeg-iOS/include";
 				INFOPLIST_FILE = AVDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1507,6 +1510,7 @@
 				GCC_PREFIX_HEADER = AVDemo/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/AVDemo/3rdparty/FFmpeg-iOS/include";
 				INFOPLIST_FILE = AVDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

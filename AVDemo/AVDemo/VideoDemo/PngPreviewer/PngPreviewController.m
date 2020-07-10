@@ -41,6 +41,7 @@
 
 - (void) dealloc {
     if(_previewView){
+        // 销毁视图
         [_previewView destroy];
         _previewView = nil;
     }

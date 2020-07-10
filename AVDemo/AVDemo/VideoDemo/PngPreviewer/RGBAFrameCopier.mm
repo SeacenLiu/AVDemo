@@ -36,15 +36,21 @@
     frameWidth = textureWidth;
     frameHeight = textureHeight;
     
+    // ----- 自定义部分 -----
+    // 获取着色器程序字符串
     NSString *vertexPath = [NSString bundlePath:@"PngPreview.vs"];
     NSString *fragmentPath = [NSString bundlePath:@"PngPreview.fs"];
+    // --------------------
+    // 初始化顶点着色器和片元着色器
     shader = [[SCShader alloc] initWithVertexPath:vertexPath
                                      fragmentPath:fragmentPath];
     if (shader != nil) { // 着色器程序构建成功
+        // ----- 自定义部分 -----
         // 获取着色器中的属性索引
         filterPositionAttribute = [shader getAttribLocation:"position"];
         filterTextureCoordinateAttribute = [shader getAttribLocation:"texcoord"];
         filterInputTextureUniform = [shader getUniformLocation:"inputImageTexture"];
+        // --------------------
         
         // 在显卡中创建纹理对象（纹理数目, 数组返回地址）
         glGenTextures(1, &_inputTexture);

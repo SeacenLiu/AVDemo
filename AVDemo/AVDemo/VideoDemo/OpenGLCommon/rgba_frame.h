@@ -5,6 +5,7 @@
 #include <string>
 #endif
 
+// RGBA 帧数据（主要保存像素信息）
 class RGBAFrame {
 public:
 	float position;
