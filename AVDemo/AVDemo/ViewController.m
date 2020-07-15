@@ -15,6 +15,8 @@
 
 #import "PngPreviewViewController.h"
 
+#import "SCVideoPlayerTestViewController.h"
+
 @interface ViewController ()
 
 @end
@@ -62,6 +64,13 @@
         if (indexPath.row == 0) {
             // OpenGL 渲染 png 图片
             PngPreviewViewController *vc = [PngPreviewViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    } else if (indexPath.section == 4) {
+        // 视频播放 - 音频+视频结合
+        if (indexPath.row == 0) {
+            // 本地 FLV 文件视频播放
+            SCVideoPlayerTestViewController *vc = [SCVideoPlayerTestViewController new];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }

@@ -50,7 +50,6 @@
         filterPositionAttribute = [shader getAttribLocation:"position"];
         filterTextureCoordinateAttribute = [shader getAttribLocation:"texcoord"];
         filterInputTextureUniform = [shader getUniformLocation:"inputImageTexture"];
-        // --------------------
         
         // 在显卡中创建纹理对象（纹理数目, 数组返回地址）
         glGenTextures(1, &_inputTexture);
@@ -74,6 +73,8 @@
                      0);                   // 源图数据
         // 解绑纹理对象
         glBindTexture(GL_TEXTURE_2D, 0);
+        // --------------------
+        
         ret = YES;
     }
     return ret;

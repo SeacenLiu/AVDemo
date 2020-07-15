@@ -8,9 +8,9 @@
 
 #import "SCVideoPlayerViewController.h"
 
-@interface SCVideoPlayerViewController () <SCFillDataDelegate> {
+@interface SCVideoPlayerViewController () <AUAudioOutputFillDataDelegate> {
     SCVideoOutput*                                  _videoOutput;   // 视频输出模块
-    SCAudioOutput*                                  _audioOutput;   // 音频输出模块
+    AUAudioOutput*                                  _audioOutput;   // 音频输出模块
     NSDictionary*                                   _parameters;
     CGRect                                          _contentFrame;
     
@@ -70,13 +70,12 @@
 #pragma mark - 核心初始化方法
 - (instancetype)initWithContentPath:(NSString *)path
                        contentFrame:(CGRect)frame
-                       usingHWCodec:(BOOL) usingHWCodec
-                playerStateDelegate:(id) playerStateDelegate
+                       usingHWCodec:(BOOL)usingHWCodec
+                playerStateDelegate:(id)playerStateDelegate
                          parameters:(NSDictionary *)parameters
         outputEAGLContextShareGroup:(EAGLSharegroup *)sharegroup {
     NSAssert(path.length > 0, @"empty path");
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
+    if (self = [super initWithNibName:nil bundle:nil]) {
         _contentFrame = frame;
         _usingHWCodec = usingHWCodec;
         _parameters = parameters;
@@ -101,7 +100,7 @@
         NSError *error = nil;
         OpenState state = OPEN_FAILED;
         // 使用同步器打开视频文件路径
-        if([strongSelf->_parameters count] > 0){
+        if ([strongSelf->_parameters count] > 0){
             state = [strongSelf->_synchronizer openFile:strongSelf->_videoFilePath
                                            usingHWCodec:strongSelf->_usingHWCodec
                                              parameters:strongSelf->_parameters
@@ -114,7 +113,7 @@
         // 按照同步器情况重新设置 _usingHWCode
         strongSelf->_usingHWCodec = [strongSelf->_synchronizer usingHWCodec];
         if (OPEN_SUCCESS == state) { // 同步器启动成功的情况
-            // 启动 VideoOutput
+            // 启动 VideoOutput（需要回主线程）
             dispatch_async(dispatch_get_main_queue(), ^{
                 strongSelf->_videoOutput = [strongSelf createVideoOutputInstance];
                 strongSelf->_videoOutput.contentMode = UIViewContentModeScaleAspectFill;
@@ -132,7 +131,7 @@
             
             // 打开成功回调
             if (strongSelf->_playerStateDelegate &&
-               [strongSelf->_playerStateDelegate respondsToSelector:@selector(openSucceed)]) {
+                [strongSelf->_playerStateDelegate respondsToSelector:@selector(openSucceed)]) {
                 [strongSelf->_playerStateDelegate openSucceed];
             }
         } else if (OPEN_FAILED == state) { // 同步器启动失败情况
@@ -159,17 +158,17 @@
     return _videoOutput;
 }
 
-- (SCAudioOutput*)createAudioOutputInstance {
+- (AUAudioOutput*)createAudioOutputInstance {
     NSInteger audioChannels = [_synchronizer getAudioChannels];
     NSInteger audioSampleRate = [_synchronizer getAudioSampleRate];
     NSInteger bytesPerSample = 2;
-    return [[SCAudioOutput alloc] initWithChannels:audioChannels
+    return [[AUAudioOutput alloc] initWithChannels:audioChannels
                                         sampleRate:audioSampleRate
                                     bytesPerSample:bytesPerSample
                                  filleDataDelegate:self];
 }
 
-- (SCAudioOutput*)getAudioOutputInstance {
+- (AUAudioOutput*)getAudioOutputInstance {
     return _audioOutput;
 }
 
@@ -180,7 +179,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    //    [self stop];
+    // [self stop];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -243,11 +242,11 @@
 #pragma mark - 音视频渲染核心方法
 // [_audioOutput play]; 之后播放音频会调用该方法，在这里面再从同步模块中读取音频数据和视频数据
 - (NSInteger)fillAudioData:(SInt16*)sampleBuffer numFrames:(NSInteger)frameNum numChannels:(NSInteger)channels {
-    if(_synchronizer && ![_synchronizer isPlayCompleted]){
+    if (_synchronizer && ![_synchronizer isPlayCompleted]){
         [_synchronizer audioCallbackFillData:sampleBuffer numFrames:(UInt32)frameNum numChannels:(UInt32)channels];
         // 画面对齐音频，渲染当前音频的画面
         VideoFrame* videoFrame = [_synchronizer getCorrectVideoFrame];
-        if(videoFrame){
+        if (videoFrame) {
             [_videoOutput presentVideoFrame:videoFrame];
         }
     } else {

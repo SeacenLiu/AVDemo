@@ -7,8 +7,8 @@
 //
 
 #import "VideoDecoder.h"
-#import <Accelerate/Accelerate.h>
 
+// 拷贝帧数据
 static NSData * copyFrameData(UInt8 *src, int linesize, int width, int height)
 {
     width = MIN(linesize, width);
@@ -82,20 +82,20 @@ static NSArray *collectStreams(AVFormatContext *formatCtx, enum FFAVMediaType co
     AVFrame*                    _videoFrame;                 // 视频帧数据(YUV420P裸数据)
     AVFrame*                    _audioFrame;                 // 音频帧数据(PCM裸数据)
     
-    CGFloat                     _fps;
+    CGFloat                     _fps;                        // 帧率
     
-    CGFloat                     _decodePosition;
+    CGFloat                     _decodePosition;             // 解码位置
     
     BOOL                        _isSubscribe;                // 是否订阅中
     BOOL                        _isEOF;                      // 是否结束
     
-    SwrContext*                 _swrContext;                 // 重采样结构体
-    void*                       _swrBuffer;
-    NSUInteger                  _swrBufferSize;
+    SwrContext*                 _swrContext;                 // (音频)重采样结构体
+    void*                       _swrBuffer;                  // (音频)重采样缓冲
+    NSUInteger                  _swrBufferSize;              // (音频)重采样缓冲大小
     
-    AVPicture                   _picture;
-    BOOL                        _pictureValid;
-    struct SwsContext*          _swsContext;
+    AVPicture                   _picture;                    //
+    BOOL                        _pictureValid;               //
+    struct SwsContext*          _swsContext;                 // 视频图像的转换结构体，如格式转换
     
     int                         _subscribeTimeOutTimeInSecs; // 超时时长（单位秒）
     int                         _readLastestFrameTime;       // 最新的帧时间
@@ -398,12 +398,16 @@ static int interrupt_callback(void *ctx)
     VideoFrame *frame = nil;
     while (pktSize > 0) {
         int gotframe = 0;
+        
         int len = avcodec_decode_video2(_videoCodecCtx,
                                         _videoFrame,
                                         &gotframe,
                                         &packet);
+//        int a = avcodec_send_packet(_videoCodecCtx, &packet);
+//        int len = avcodec_receive_frame(_videoCodecCtx, _videoFrame);
+        
         if (len < 0) {
-            NSLog(@"decode video error, skip packet %s", av_err2str(len));
+            NSLog(@"decode video error, skip packet: %s", av_err2str(len));
             *decodeVideoErrorState = 1;
             break;
         }

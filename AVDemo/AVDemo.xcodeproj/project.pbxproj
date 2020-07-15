@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14104D6F24B8CE8F00731BAE /* SCVideoPlayerTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D6D24B8CE8F00731BAE /* SCVideoPlayerTestViewController.m */; };
+		14104D7024B8CE8F00731BAE /* SCVideoPlayerTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14104D6E24B8CE8F00731BAE /* SCVideoPlayerTestViewController.xib */; };
+		14104D9E24B8D08200731BAE /* ELVideoViewPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D7424B8D08100731BAE /* ELVideoViewPlayerController.m */; };
+		14104D9F24B8D08200731BAE /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D7524B8D08200731BAE /* LoadingView.m */; };
+		14104DA124B8D08200731BAE /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D7D24B8D08200731BAE /* VideoDecoder.m */; };
+		14104DA224B8D08200731BAE /* VideoToolboxDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D7F24B8D08200731BAE /* VideoToolboxDecoder.m */; };
+		14104DA324B8D08200731BAE /* AVSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D8224B8D08200731BAE /* AVSynchronizer.m */; };
+		14104DA424B8D08200731BAE /* SCVideoOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D8524B8D08200731BAE /* SCVideoOutput.m */; };
+		14104DA524B8D08200731BAE /* DirectPassRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D8724B8D08200731BAE /* DirectPassRenderer.m */; };
+		14104DA624B8D08200731BAE /* YUVFrameCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D8D24B8D08200731BAE /* YUVFrameCopier.m */; };
+		14104DA724B8D08200731BAE /* YUVFrameFastCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D8E24B8D08200731BAE /* YUVFrameFastCopier.m */; };
+		14104DA824B8D08200731BAE /* BaseEffectFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D9124B8D08200731BAE /* BaseEffectFilter.m */; };
+		14104DA924B8D08200731BAE /* ContrastEnhancerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D9324B8D08200731BAE /* ContrastEnhancerFilter.m */; };
+		14104DAD24B8D08200731BAE /* SCVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14104D9D24B8D08200731BAE /* SCVideoPlayerViewController.m */; };
+		14104DB124B8D5FB00731BAE /* test.flv in Resources */ = {isa = PBXBuildFile; fileRef = 14104DB024B8D43C00731BAE /* test.flv */; };
 		142CDBA723FA8F7F00B8D16F /* SCGLBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */; };
 		1473BDCB23E264D000FEED0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BDCA23E264D000FEED0F /* AppDelegate.m */; };
 		1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1473BDCD23E264D000FEED0F /* SceneDelegate.m */; };
@@ -140,6 +155,38 @@
 
 /* Begin PBXFileReference section */
 		14104D6B24B87B6900731BAE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		14104D6C24B8CE8F00731BAE /* SCVideoPlayerTestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCVideoPlayerTestViewController.h; sourceTree = "<group>"; };
+		14104D6D24B8CE8F00731BAE /* SCVideoPlayerTestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCVideoPlayerTestViewController.m; sourceTree = "<group>"; };
+		14104D6E24B8CE8F00731BAE /* SCVideoPlayerTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SCVideoPlayerTestViewController.xib; sourceTree = "<group>"; };
+		14104D7224B8D08100731BAE /* ELVideoViewPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELVideoViewPlayerController.h; sourceTree = "<group>"; };
+		14104D7324B8D08100731BAE /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		14104D7424B8D08100731BAE /* ELVideoViewPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELVideoViewPlayerController.m; sourceTree = "<group>"; };
+		14104D7524B8D08200731BAE /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		14104D7724B8D08200731BAE /* SCVideoPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCVideoPlayerViewController.h; sourceTree = "<group>"; };
+		14104D7D24B8D08200731BAE /* VideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDecoder.m; sourceTree = "<group>"; };
+		14104D7F24B8D08200731BAE /* VideoToolboxDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoToolboxDecoder.m; sourceTree = "<group>"; };
+		14104D8024B8D08200731BAE /* VideoToolboxDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoToolboxDecoder.h; sourceTree = "<group>"; };
+		14104D8124B8D08200731BAE /* VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDecoder.h; sourceTree = "<group>"; };
+		14104D8224B8D08200731BAE /* AVSynchronizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVSynchronizer.m; sourceTree = "<group>"; };
+		14104D8324B8D08200731BAE /* AVSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVSynchronizer.h; sourceTree = "<group>"; };
+		14104D8524B8D08200731BAE /* SCVideoOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCVideoOutput.m; sourceTree = "<group>"; };
+		14104D8724B8D08200731BAE /* DirectPassRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectPassRenderer.m; sourceTree = "<group>"; };
+		14104D8824B8D08200731BAE /* BaseEffectFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseEffectFilter.h; sourceTree = "<group>"; };
+		14104D8B24B8D08200731BAE /* DirectPassRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectPassRenderer.h; sourceTree = "<group>"; };
+		14104D8D24B8D08200731BAE /* YUVFrameCopier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YUVFrameCopier.m; sourceTree = "<group>"; };
+		14104D8E24B8D08200731BAE /* YUVFrameFastCopier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YUVFrameFastCopier.m; sourceTree = "<group>"; };
+		14104D8F24B8D08200731BAE /* YUVFrameFastCopier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUVFrameFastCopier.h; sourceTree = "<group>"; };
+		14104D9024B8D08200731BAE /* YUVFrameCopier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUVFrameCopier.h; sourceTree = "<group>"; };
+		14104D9124B8D08200731BAE /* BaseEffectFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseEffectFilter.m; sourceTree = "<group>"; };
+		14104D9324B8D08200731BAE /* ContrastEnhancerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContrastEnhancerFilter.m; sourceTree = "<group>"; };
+		14104D9424B8D08200731BAE /* ContrastEnhancerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContrastEnhancerFilter.h; sourceTree = "<group>"; };
+		14104D9524B8D08200731BAE /* SCVideoOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCVideoOutput.h; sourceTree = "<group>"; };
+		14104D9D24B8D08200731BAE /* SCVideoPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCVideoPlayerViewController.m; sourceTree = "<group>"; };
+		14104DAE24B8D0CC00731BAE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		14104DAF24B8D1B100731BAE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		14104DB024B8D43C00731BAE /* test.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.flv; sourceTree = "<group>"; };
+		14104DB224B8D6BE00731BAE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		14104DB424BAA95E00731BAE /* ShaderUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderUtils.h; sourceTree = "<group>"; };
 		142CDBA523FA8F7F00B8D16F /* SCGLBaseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCGLBaseView.h; sourceTree = "<group>"; };
 		142CDBA623FA8F7F00B8D16F /* SCGLBaseView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCGLBaseView.m; sourceTree = "<group>"; };
 		1473BDC623E264D000FEED0F /* AVDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AVDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -466,6 +513,129 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14104D7124B8D04700731BAE /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				14104D7224B8D08100731BAE /* ELVideoViewPlayerController.h */,
+				14104D7424B8D08100731BAE /* ELVideoViewPlayerController.m */,
+				14104D7324B8D08100731BAE /* LoadingView.h */,
+				14104D7524B8D08200731BAE /* LoadingView.m */,
+				14104D7624B8D08200731BAE /* VideoPlayer */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		14104D7624B8D08200731BAE /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				14104D7724B8D08200731BAE /* SCVideoPlayerViewController.h */,
+				14104D9D24B8D08200731BAE /* SCVideoPlayerViewController.m */,
+				14104D7B24B8D08200731BAE /* Sync */,
+				14104D8424B8D08200731BAE /* VideoOutput */,
+				14104D9624B8D08200731BAE /* AudioOutput */,
+				14104D7824B8D08200731BAE /* Utils */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		14104D7824B8D08200731BAE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				14104DAE24B8D0CC00731BAE /* README.md */,
+				14104DB424BAA95E00731BAE /* ShaderUtils.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		14104D7B24B8D08200731BAE /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				14104D8324B8D08200731BAE /* AVSynchronizer.h */,
+				14104D8224B8D08200731BAE /* AVSynchronizer.m */,
+				14104D7C24B8D08200731BAE /* Decoder */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		14104D7C24B8D08200731BAE /* Decoder */ = {
+			isa = PBXGroup;
+			children = (
+				14104D8124B8D08200731BAE /* VideoDecoder.h */,
+				14104D7D24B8D08200731BAE /* VideoDecoder.m */,
+				14104D7E24B8D08200731BAE /* hw_decoder */,
+			);
+			path = Decoder;
+			sourceTree = "<group>";
+		};
+		14104D7E24B8D08200731BAE /* hw_decoder */ = {
+			isa = PBXGroup;
+			children = (
+				14104D7F24B8D08200731BAE /* VideoToolboxDecoder.m */,
+				14104D8024B8D08200731BAE /* VideoToolboxDecoder.h */,
+			);
+			path = hw_decoder;
+			sourceTree = "<group>";
+		};
+		14104D8424B8D08200731BAE /* VideoOutput */ = {
+			isa = PBXGroup;
+			children = (
+				14104D9524B8D08200731BAE /* SCVideoOutput.h */,
+				14104D8524B8D08200731BAE /* SCVideoOutput.m */,
+				14104D8624B8D08200731BAE /* Render */,
+			);
+			path = VideoOutput;
+			sourceTree = "<group>";
+		};
+		14104D8624B8D08200731BAE /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				14104D8824B8D08200731BAE /* BaseEffectFilter.h */,
+				14104D9124B8D08200731BAE /* BaseEffectFilter.m */,
+				14104D8B24B8D08200731BAE /* DirectPassRenderer.h */,
+				14104D8724B8D08200731BAE /* DirectPassRenderer.m */,
+				14104D8C24B8D08200731BAE /* Copier */,
+				14104D9224B8D08200731BAE /* Filter */,
+				14104D8924B8D08200731BAE /* Utils */,
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
+		14104D8924B8D08200731BAE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				14104DB224B8D6BE00731BAE /* README.md */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		14104D8C24B8D08200731BAE /* Copier */ = {
+			isa = PBXGroup;
+			children = (
+				14104D9024B8D08200731BAE /* YUVFrameCopier.h */,
+				14104D8D24B8D08200731BAE /* YUVFrameCopier.m */,
+				14104D8F24B8D08200731BAE /* YUVFrameFastCopier.h */,
+				14104D8E24B8D08200731BAE /* YUVFrameFastCopier.m */,
+			);
+			path = Copier;
+			sourceTree = "<group>";
+		};
+		14104D9224B8D08200731BAE /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				14104D9424B8D08200731BAE /* ContrastEnhancerFilter.h */,
+				14104D9324B8D08200731BAE /* ContrastEnhancerFilter.m */,
+			);
+			path = Filter;
+			sourceTree = "<group>";
+		};
+		14104D9624B8D08200731BAE /* AudioOutput */ = {
+			isa = PBXGroup;
+			children = (
+				14104DAF24B8D1B100731BAE /* README.md */,
+			);
+			path = AudioOutput;
+			sourceTree = "<group>";
+		};
 		1473BDBD23E264CF00FEED0F = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +728,7 @@
 				1473BE3823E3D42E00FEED0F /* heart.mp3 */,
 				14CA429523E7D59E003D4DE3 /* background.mp3 */,
 				1473BE0F23E2B20000FEED0F /* start-dash.pcm */,
+				14104DB024B8D43C00731BAE /* test.flv */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -935,6 +1106,7 @@
 		1488A0E623F648E60080F2A6 /* VideoDemo */ = {
 			isa = PBXGroup;
 			children = (
+				14104D7124B8D04700731BAE /* VideoPlayer */,
 				1488A0E723F648F30080F2A6 /* PngPreviewer */,
 				1488A0E823F649860080F2A6 /* OpenGLCommon */,
 			);
@@ -1050,6 +1222,9 @@
 				1488A14923F653960080F2A6 /* PngPreviewViewController.h */,
 				1488A14A23F653960080F2A6 /* PngPreviewViewController.m */,
 				1488A14B23F653960080F2A6 /* PngPreviewViewController.xib */,
+				14104D6C24B8CE8F00731BAE /* SCVideoPlayerTestViewController.h */,
+				14104D6D24B8CE8F00731BAE /* SCVideoPlayerTestViewController.m */,
+				14104D6E24B8CE8F00731BAE /* SCVideoPlayerTestViewController.xib */,
 			);
 			path = VideoDemo;
 			sourceTree = "<group>";
@@ -1210,6 +1385,7 @@
 				1488A13023F64C1F0080F2A6 /* pngbar.jpg in Resources */,
 				1473BE3723E3BDC700FEED0F /* AUPCMPlayer.png in Resources */,
 				1473BE3B23E3D44200FEED0F /* walking.mp3 in Resources */,
+				14104DB124B8D5FB00731BAE /* test.flv in Resources */,
 				1488A12E23F64C1F0080F2A6 /* pngnow.png in Resources */,
 				1473BE1023E2B20000FEED0F /* start-dash.pcm in Resources */,
 				1488A15323F656540080F2A6 /* test.png in Resources */,
@@ -1223,6 +1399,7 @@
 				1488A12A23F64C1F0080F2A6 /* LICENSE in Resources */,
 				1488A12B23F64C1F0080F2A6 /* libpng.pc.in in Resources */,
 				1489267723E53779008D1CD7 /* AUAudioPlayer.png in Resources */,
+				14104D7024B8CE8F00731BAE /* SCVideoPlayerTestViewController.xib in Resources */,
 				1473BF0523E4828900FEED0F /* spark.aac in Resources */,
 				1488A13E23F64C1F0080F2A6 /* pngtest.png in Resources */,
 				1488A12623F64C1F0080F2A6 /* INSTALL in Resources */,
@@ -1261,13 +1438,18 @@
 				1488A14023F64C1F0080F2A6 /* pngget.c in Sources */,
 				1488A12C23F64C1F0080F2A6 /* pngtrans.c in Sources */,
 				1488A15723F657CE0080F2A6 /* SCShader.m in Sources */,
+				14104DA624B8D08200731BAE /* YUVFrameCopier.m in Sources */,
+				14104DA824B8D08200731BAE /* BaseEffectFilter.m in Sources */,
+				14104DA524B8D08200731BAE /* DirectPassRenderer.m in Sources */,
 				1473BF0F23E4872700FEED0F /* AUAudioPlayer.mm in Sources */,
 				1473BDD123E264D000FEED0F /* ViewController.m in Sources */,
 				1473BF0023E470EC00FEED0F /* packet_pool.cpp in Sources */,
 				1488A0EE23F649E00080F2A6 /* rgba_frame.cpp in Sources */,
 				1488A13323F64C1F0080F2A6 /* image.c in Sources */,
 				1488A14223F64C1F0080F2A6 /* pngrtran.c in Sources */,
+				14104D9F24B8D08200731BAE /* LoadingView.m in Sources */,
 				1489267C23E56618008D1CD7 /* AUAudioRecorderViewController.m in Sources */,
+				14104DA724B8D08200731BAE /* YUVFrameFastCopier.m in Sources */,
 				14A34C3423EEF53A0072A7C2 /* SCAudioRecorder.m in Sources */,
 				1473BF0123E470ED00FEED0F /* accompany_decoder.cpp in Sources */,
 				1489276723E665A3008D1CD7 /* AUExtAudioFile+Read.m in Sources */,
@@ -1275,6 +1457,7 @@
 				1488A13523F64C1F0080F2A6 /* pngwutil.c in Sources */,
 				1488A12923F64C1F0080F2A6 /* pngwio.c in Sources */,
 				1473BF0223E470ED00FEED0F /* packet_queue.cpp in Sources */,
+				14104D6F24B8CE8F00731BAE /* SCVideoPlayerTestViewController.m in Sources */,
 				1473BE2F23E2FF8E00FEED0F /* SCAudioSession.m in Sources */,
 				1489268323E566FE008D1CD7 /* AUAudioRecorder+Interruption.m in Sources */,
 				1488A0EB23F649BB0080F2A6 /* PngPreviewController.m in Sources */,
@@ -1286,26 +1469,33 @@
 				1488A14523F64C1F0080F2A6 /* pngset.c in Sources */,
 				1473BE0723E2AAD200FEED0F /* AUPCMPlayer.m in Sources */,
 				1488A13A23F64C1F0080F2A6 /* pngpread.c in Sources */,
+				14104DAD24B8D08200731BAE /* SCVideoPlayerViewController.m in Sources */,
+				14104DA924B8D08200731BAE /* ContrastEnhancerFilter.m in Sources */,
 				1473BE3223E2FFA000FEED0F /* NSString+Path.m in Sources */,
 				1488A12423F64C1F0080F2A6 /* pngrio.c in Sources */,
 				1473BE0323E2AAAB00FEED0F /* AUPCMPlayerViewController.m in Sources */,
 				1473BDCB23E264D000FEED0F /* AppDelegate.m in Sources */,
 				1488A13B23F64C1F0080F2A6 /* pngread.c in Sources */,
+				14104DA324B8D08200731BAE /* AVSynchronizer.m in Sources */,
 				1473BE1C23E2FE3A00FEED0F /* AUGraphPlayerViewController.m in Sources */,
 				1488A14C23F653960080F2A6 /* PngPreviewViewController.m in Sources */,
 				1488A14323F64C1F0080F2A6 /* pngrutil.c in Sources */,
 				1473BF0323E470ED00FEED0F /* accompany_decoder_controller.cpp in Sources */,
+				14104DA124B8D08200731BAE /* VideoDecoder.m in Sources */,
 				1488A0F423F64A850080F2A6 /* RGBAFrameCopier.mm in Sources */,
 				1473BDDC23E264D100FEED0F /* main.m in Sources */,
 				1488A13723F64C1F0080F2A6 /* pngwtran.c in Sources */,
 				1488A12523F64C1F0080F2A6 /* pngerror.c in Sources */,
 				1488A14123F64C1F0080F2A6 /* png.c in Sources */,
+				14104DA224B8D08200731BAE /* VideoToolboxDecoder.m in Sources */,
 				1473BE2E23E2FF8E00FEED0F /* AVAudioSession+RouteUtils.m in Sources */,
 				14A34C3C23EEF5810072A7C2 /* SCAudioRecorder+Interruption.m in Sources */,
 				1488A13223F64C1F0080F2A6 /* pngwrite.c in Sources */,
 				1489276A23E665B0008D1CD7 /* AUExtAudioFile+Write.m in Sources */,
+				14104DA424B8D08200731BAE /* SCVideoOutput.m in Sources */,
 				142CDBA723FA8F7F00B8D16F /* SCGLBaseView.m in Sources */,
 				1473BDCE23E264D000FEED0F /* SceneDelegate.m in Sources */,
+				14104D9E24B8D08200731BAE /* ELVideoViewPlayerController.m in Sources */,
 				1473BF0923E4843D00FEED0F /* AUAudioOutput.m in Sources */,
 				1488A0F123F64A5C0080F2A6 /* PngPreviewView.mm in Sources */,
 				1489268023E566C9008D1CD7 /* AUAudioRecorder.m in Sources */,
